@@ -1,0 +1,12 @@
+FROM golang:1.13.1
+LABEL maintainer="morteza.alizadeh@gmail.com"
+
+ARG CI_SERVICE
+ARG COVERALLS_TOKEN
+
+ADD . /src
+WORKDIR /src
+
+RUN make dep
+RUN make test
+RUN make publish-test-results

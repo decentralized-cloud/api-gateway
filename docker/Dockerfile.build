@@ -1,0 +1,14 @@
+FROM golang:1.13.1
+LABEL maintainer="morteza.alizadeh@gmail.com"
+
+ARG VERSION
+
+ADD . /src
+WORKDIR /src
+RUN make build
+
+FROM alpine:3.10.2
+WORKDIR /
+COPY --from=0 /src/bin/api-gateway .
+CMD ["/api-gateway", "start"]
+
