@@ -1,0 +1,1 @@
+export RootMutation from './RootMutation';

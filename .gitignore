@@ -12,3 +12,6 @@ bin
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
 reports
+*-packr.go
+node_modules
+

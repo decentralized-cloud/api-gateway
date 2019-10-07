@@ -1,5 +1,6 @@
 SHELL = /bin/bash
 OS = $(shell uname -s | tr '[:upper:]' '[:lower:]')
+CURRENT_DIRECTORY = $(shell pwd)
 
 # Build variables
 BINARY_NAME = api-gateway
@@ -18,26 +19,33 @@ COVERALLS_TOKEN ?=
 export CGO_ENABLED ?= 0
 export GOOS ?= $(OS)
 export GOARCH ?= amd64
-GOFILES = $(shell find . -type f -name '*.go' -not -path "*/mock/*.go")
+GOFILES = $(shell find . -type f -name '*.go' -not -path "*/mock/*.go" -not -path "*.pb.go" -not -path "*-packr.go")
 
 .PHONY: all
-all: dep build install ## Get deps, build, and install binary
+all: build-graphql dep build install ## Build GraphQL contract, get deps, and build, and install binary
 
 .PHONY: clean
 clean: ## Clean the working area and the project
-	rm -rf $(BUILD_DIR)/
-	rm -rf $(REPORTS_DIR)
+	@rm -rf $(BUILD_DIR)/
+	@rm -rf $(REPORTS_DIR)
+	@packr clean
 
 .PHONY: dep
 dep: ## Install dependencies
+	@go get -u github.com/gobuffalo/packr/packr
 	@go get golang.org/x/tools/cmd/cover
 	@go get github.com/mattn/goveralls
 	@go mod tidy
 	@go get -v -t ./...
 
+.PHONY: build-graphql
+build-graphql: ## Build GraphQL
+	@$(CURRENT_DIRECTORY)/script/compile-graphql.sh
+
 .PHONY: build
 build: GOARGS += -tags "$(GOTAGS)" -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINARY_NAME)
 build: ## Build the binary
+	@packr
 	@go build -v $(GOARGS) $(PACKAGE_DIR)/main.go
 
 .PHONY: install
@@ -50,8 +58,8 @@ format: ## Format the source
 
 .PHONY: test
 test: ## Run unit tests
-	mkdir -p $(REPORTS_DIR)
-	rm -f $(REPORTS_DIR)/*
+	@mkdir -p $(REPORTS_DIR)
+	@rm -f $(REPORTS_DIR)/*
 	@go test -ldflags "$(LDFLAGS)" -v -covermode=count -coverprofile="$(REPORTS_DIR)/coverage.out" ./...
 
 .PHONY: publish-test-results

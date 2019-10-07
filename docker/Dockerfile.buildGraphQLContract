@@ -1,0 +1,8 @@
+FROM node:10.16.3
+LABEL maintainer="morteza.alizadeh@gmail.com"
+
+ADD . /src
+WORKDIR /src/contract/graphql/schema-generator
+RUN npm install
+RUN npm run build
+

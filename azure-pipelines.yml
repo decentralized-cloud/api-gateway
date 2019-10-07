@@ -18,31 +18,35 @@ pool:
 variables:
   DOCKER_CONTAINER_REGISTRY: 'Decentralized Cloud Docker Hub'
   DOCKER_REPOSITORY_NAME: 'decentralizedcloud/api-gateway'
-  TEST_AND_COVERAGE_DOCKER_FILE_PATH: '$(system.defaultWorkingDirectory)/docker/Dockerfile.testAndCoverage'
-  BUILD_DOCKER_FILE_PATH: '$(system.defaultWorkingDirectory)/docker/Dockerfile.build'
 
 steps:
 - task: Bash@3
   displayName: "Generating docker tags"
   inputs:
-    filePath:  '$(system.defaultWorkingDirectory)/script/generate-version.sh'
+    filePath: '$(system.defaultWorkingDirectory)/script/generate-version.sh'
     arguments: $(Build.SourceBranch)
 
+- task: Bash@3
+  displayName: "Build GraphQL contract"
+  inputs:
+    filePath: '$(system.defaultWorkingDirectory)/script/compile-graphql.sh'
+    arguments: '$(system.defaultWorkingDirectory)/script'
+
 - task: Docker@2
-  displayName: Build
+  displayName: "Build"
   inputs:
     repository: $(DOCKER_REPOSITORY_NAME)
     command: 'build'
-    Dockerfile: $(BUILD_DOCKER_FILE_PATH)
+    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.build'
     buildContext: '$(system.defaultWorkingDirectory)'
     arguments: '--build-arg VERSION=$(VERSION)'
     tags: $(VERSION)
 
 - task: Docker@2
-  displayName: Test and Coverage
+  displayName: "Test and Coverage"
   inputs:
     command: 'build'
-    Dockerfile: $(TEST_AND_COVERAGE_DOCKER_FILE_PATH)
+    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.testAndCoverage'
     buildContext: '$(system.defaultWorkingDirectory)'
     arguments: '--build-arg CI_SERVICE=$(CI_SERVICE) --build-arg COVERALLS_TOKEN=$(COVERALLS_TOKEN)'
 
@@ -58,7 +62,6 @@ steps:
     containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
     repository: $(DOCKER_REPOSITORY_NAME)
     command: 'push'
-    Dockerfile: $(BUILD_DOCKER_FILE_PATH)
     buildContext: '$(system.defaultWorkingDirectory)'
     tags: $(VERSION)
 
