@@ -1,0 +1,155 @@
+input CreateEdgeClusterInput {
+  name: String!
+  clientMutationId: String
+}
+
+type CreateEdgeClusterPayload {
+  edgeCluster: EdgeClusterTypeEdge
+  clientMutationId: String
+}
+
+input CreateTenantInput {
+  name: String!
+  clientMutationId: String
+}
+
+type CreateTenantPayload {
+  tenant: TenantTypeEdge
+  clientMutationId: String
+}
+
+input DeleteEdgeClusterInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type DeleteEdgeClusterPayload {
+  clientMutationId: String
+}
+
+input DeleteTenantInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type DeleteTenantPayload {
+  clientMutationId: String
+}
+
+type EdgeCluster implements Node {
+  id: ID!
+  name: String
+}
+
+"""A connection to a list of items."""
+type EdgeClusterTypeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [EdgeClusterTypeEdge]
+}
+
+"""An edge in a connection."""
+type EdgeClusterTypeEdge {
+  """The item at the end of the edge"""
+  node: EdgeCluster
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+type Mutation {
+  createTenant(input: CreateTenantInput!): CreateTenantPayload
+  updateTenant(input: UpdateTenantInput!): UpdateTenantPayload
+  deleteTenant(input: DeleteTenantInput!): DeleteTenantPayload
+  createEdgeCluster(input: CreateEdgeClusterInput!): CreateEdgeClusterPayload
+  updateEdgeCluster(input: UpdateEdgeClusterInput!): UpdateEdgeClusterPayload
+  deleteEdgeCluster(input: DeleteEdgeClusterInput!): DeleteEdgeClusterPayload
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Query {
+  user: User
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+type Tenant implements Node {
+  id: ID!
+  name: String
+  edgeCluster(edgeClusterId: ID!): EdgeCluster
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIds: [ID!], sortOption: String): EdgeClusterTypeConnection
+}
+
+"""A connection to a list of items."""
+type TenantTypeConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TenantTypeEdge]
+}
+
+"""An edge in a connection."""
+type TenantTypeEdge {
+  """The item at the end of the edge"""
+  node: Tenant
+
+  """A cursor for use in pagination"""
+  cursor: String!
+}
+
+input UpdateEdgeClusterInput {
+  id: ID!
+  name: String!
+  clientMutationId: String
+}
+
+type UpdateEdgeClusterPayload {
+  edgeCluster: EdgeClusterTypeEdge
+  clientMutationId: String
+}
+
+input UpdateTenantInput {
+  id: ID!
+  name: String!
+  clientMutationId: String
+}
+
+type UpdateTenantPayload {
+  tenant: TenantTypeEdge
+  clientMutationId: String
+}
+
+type User implements Node {
+  id: ID!
+  tenant(tenantId: ID!): Tenant
+  tenants(after: String, first: Int, before: String, last: Int, tenantIds: [ID!], sortOption: String): TenantTypeConnection
+  edgeCluster(edgeClusterId: ID!): EdgeCluster
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIds: [ID!], sortOption: String): EdgeClusterTypeConnection
+}

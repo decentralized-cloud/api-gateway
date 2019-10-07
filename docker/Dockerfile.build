@@ -5,6 +5,7 @@ ARG VERSION
 
 ADD . /src
 WORKDIR /src
+RUN make dep
 RUN make build
 
 FROM alpine:3.10.2
