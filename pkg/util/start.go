@@ -8,10 +8,12 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/resolver"
 	"go.uber.org/zap"
 )
 
 var configurationService configuration.ConfigurationContract
+var resolverCreator resolver.ResolverCreatorContract
 
 // StartService setups all dependecies required to start the API Gateway service and
 // start the service
@@ -23,13 +25,14 @@ func StartService() {
 
 	defer logger.Sync()
 
-	if err = setupDependencies(); err != nil {
+	if err = setupDependencies(logger); err != nil {
 		logger.Fatal("Failed to setup dependecies", zap.Error(err))
 	}
 
 	graphqlTransportService, err := graphql.NewTransportService(
 		logger,
-		configurationService)
+		configurationService,
+		resolverCreator)
 	if err != nil {
 		logger.Fatal("Failed to create GraphQL transport service", zap.Error(err))
 	}
@@ -53,8 +56,12 @@ func StartService() {
 	<-cleanupDone
 }
 
-func setupDependencies() (err error) {
+func setupDependencies(logger *zap.Logger) (err error) {
 	if configurationService, err = configuration.NewEnvConfigurationService(); err != nil {
+		return
+	}
+
+	if resolverCreator, err = resolver.NewResolverCreator(logger); err != nil {
 		return
 	}
 

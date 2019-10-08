@@ -15,28 +15,28 @@ export default new GraphQLObjectType({
     tenant: {
       type: Tenant,
       args: {
-        tenantId: { type: new GraphQLNonNull(GraphQLID) },
+        tenantID: { type: new GraphQLNonNull(GraphQLID) },
       },
     },
     tenants: {
       type: TenantConnection.connectionType,
       args: {
         ...connectionArgs,
-        tenantIds: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+        tenantIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
         sortOption: { type: GraphQLString },
       },
     },
     edgeCluster: {
       type: EdgeCluster,
       args: {
-        edgeClusterId: { type: new GraphQLNonNull(GraphQLID) },
+        edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
       },
     },
     edgeClusters: {
       type: EdgeClusterConnection.connectionType,
       args: {
         ...connectionArgs,
-        edgeClusterIds: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+        edgeClusterIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
         sortOption: { type: GraphQLString },
       },
     },
