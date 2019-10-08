@@ -7,7 +7,7 @@ export default new GraphQLObjectType({
   name: 'EdgeCluster',
   fields: {
     id: { type: new GraphQLNonNull(GraphQLID) },
-    name: { type: GraphQLString },
+    name: { type: new GraphQLNonNull(GraphQLString) },
   },
   interfaces: [NodeInterface],
 });

@@ -8,6 +8,7 @@ require (
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/mock v1.3.1
 	github.com/graph-gophers/graphql-go v0.0.0-20190917030536-38a077bc812d
+	github.com/lucsky/cuid v1.0.2
 	github.com/micro-business/go-core v0.0.9
 	github.com/rogpeppe/go-internal v1.4.0 // indirect
 	github.com/savsgio/atreugo v5.4.0+incompatible

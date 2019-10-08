@@ -10,18 +10,18 @@ export default new GraphQLObjectType({
   name: 'Tenant',
   fields: {
     id: { type: new GraphQLNonNull(GraphQLID) },
-    name: { type: GraphQLString },
+    name: { type: new GraphQLNonNull(GraphQLString) },
     edgeCluster: {
       type: EdgeCluster,
       args: {
-        edgeClusterId: { type: new GraphQLNonNull(GraphQLID) },
+        edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
       },
     },
     edgeClusters: {
       type: EdgeClusterConnection.connectionType,
       args: {
         ...connectionArgs,
-        edgeClusterIds: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+        edgeClusterIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
         sortOption: { type: GraphQLString },
       },
     },
