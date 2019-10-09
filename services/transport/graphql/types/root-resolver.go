@@ -12,10 +12,17 @@ type RootResolverContract interface {
 	// Returns the user resolver or error if something goes wrong
 	User(ctx context.Context) (UserResolverContract, error)
 
-	// User returns user resolver
+	// CreateTenant returns create tenant mutator
 	// ctx: Mandatory. Reference to the context
-	// Returns the user resolver or error if something goes wrong
+	// Returns the create tenant mutator or error if something goes wrong
 	CreateTenant(
 		ctx context.Context,
 		args CreateTenantInputArgument) (CreateTenantPayloadResolverContract, error)
+
+	// UpdateTenant returns update tenant mutator
+	// ctx: Mandatory. Reference to the context
+	// Returns the update tenant mutator or error if something goes wrong
+	UpdateTenant(
+		ctx context.Context,
+		args UpdateTenantInputArgument) (UpdateTenantPayloadResolverContract, error)
 }
