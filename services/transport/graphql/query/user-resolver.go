@@ -1,78 +1,19 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package resolver
+// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+package query
 
 import (
 	"context"
 	"strings"
 
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
-type userTenantInputArgument struct {
-	TenantID graphql.ID
-}
-
-type userTenantsInputArgument struct {
-	connectionArgument
-	TenantIDs  *[]graphql.ID
-	SortOption *string
-}
-
-type userEdgeClusterInputArgument struct {
-	EdgeClusterID graphql.ID
-}
-
-type userEdgeClustersInputArgument struct {
-	connectionArgument
-	EdgeClusterIDs *[]graphql.ID
-	SortOption     *string
-}
-
-// UserResolverContract declares the resolver that can retrieve user information
-type UserResolverContract interface {
-	// ID returns user unique identifier
-	// ctx: Mandatory. Reference to the context
-	// Returns the user unique identifier
-	ID(ctx context.Context) graphql.ID
-
-	// Tenant returns tenant resolver
-	// ctx: Mandatory. Reference to the context
-	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
-	Tenant(
-		ctx context.Context,
-		args userTenantInputArgument) (TenantResolverContract, error)
-
-	// Tenants returns tenant conenction compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
-	Tenants(
-		ctx context.Context,
-		args userTenantsInputArgument) (TenantTypeConnectionResolverContract, error)
-
-	// EdgeCluster returns tenant resolver
-	// ctx: Mandatory. Reference to the context
-	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
-	EdgeCluster(
-		ctx context.Context,
-		args userEdgeClusterInputArgument) (EdgeClusterResolverContract, error)
-
-	// EdgeClusters returns tenant conenction compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
-	EdgeClusters(
-		ctx context.Context,
-		args userEdgeClustersInputArgument) (EdgeClusterTypeConnectionResolverContract, error)
-}
-
 type userResolver struct {
 	logger          *zap.Logger
-	resolverCreator ResolverCreatorContract
+	resolverCreator types.ResolverCreatorContract
 	userID          graphql.ID
 }
 
@@ -84,9 +25,9 @@ type userResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewUserResolver(
 	ctx context.Context,
-	resolverCreator ResolverCreatorContract,
+	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	userID graphql.ID) (UserResolverContract, error) {
+	userID graphql.ID) (types.UserResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -123,7 +64,7 @@ func (r *userResolver) ID(ctx context.Context) graphql.ID {
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) Tenant(
 	ctx context.Context,
-	args userTenantInputArgument) (TenantResolverContract, error) {
+	args types.UserTenantInputArgument) (types.TenantResolverContract, error) {
 	return r.resolverCreator.NewTenantResolver(
 		ctx,
 		args.TenantID)
@@ -135,7 +76,7 @@ func (r *userResolver) Tenant(
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) Tenants(
 	ctx context.Context,
-	args userTenantsInputArgument) (TenantTypeConnectionResolverContract, error) {
+	args types.UserTenantsInputArgument) (types.TenantTypeConnectionResolverContract, error) {
 	return r.resolverCreator.NewTenantTypeConnectionResolver(ctx)
 }
 
@@ -145,7 +86,7 @@ func (r *userResolver) Tenants(
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) EdgeCluster(
 	ctx context.Context,
-	args userEdgeClusterInputArgument) (EdgeClusterResolverContract, error) {
+	args types.UserEdgeClusterInputArgument) (types.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
 		args.EdgeClusterID)
@@ -157,6 +98,6 @@ func (r *userResolver) EdgeCluster(
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) EdgeClusters(
 	ctx context.Context,
-	args userEdgeClustersInputArgument) (EdgeClusterTypeConnectionResolverContract, error) {
+	args types.UserEdgeClustersInputArgument) (types.EdgeClusterTypeConnectionResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(ctx)
 }

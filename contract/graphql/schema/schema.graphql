@@ -1,3 +1,13 @@
+input CreateTenantInput {
+  name: String!
+  clientMutationId: String
+}
+
+type CreateTenantPayload {
+  tenant: TenantTypeEdge
+  clientMutationId: String
+}
+
 type EdgeCluster implements Node {
   id: ID!
   name: String!
@@ -19,6 +29,10 @@ type EdgeClusterTypeEdge {
 
   """A cursor for use in pagination"""
   cursor: String!
+}
+
+type Mutation {
+  createTenant(input: CreateTenantInput!): CreateTenantPayload
 }
 
 """An object with an ID"""

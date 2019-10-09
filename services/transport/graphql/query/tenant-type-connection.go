@@ -1,27 +1,15 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package resolver
+// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+package query
 
 import (
 	"context"
 
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
-// TenantTypeConnectionResolverContract declares the resolver that returns tenant edge compatible with graphql-relay
-type TenantTypeConnectionResolverContract interface {
-	// PageInfo returns the paging information compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the paging information
-	PageInfo(ctx context.Context) (PageInfoResolverContract, error)
-
-	// Edges returns the tenant edges compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the tenant edges
-	Edges(ctx context.Context) (*[]TenantTypeEdgeResolverContract, error)
-}
-
 type tenantTypeConnectionResolver struct {
-	resolverCreator ResolverCreatorContract
+	resolverCreator types.ResolverCreatorContract
 }
 
 // NewTenantTypeConnectionResolver creates new instance of the tenantTypeConnectionResolver, setting up all dependencies and returns the instance
@@ -32,7 +20,7 @@ type tenantTypeConnectionResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewTenantTypeConnectionResolver(
 	ctx context.Context,
-	resolverCreator ResolverCreatorContract) (TenantTypeConnectionResolverContract, error) {
+	resolverCreator types.ResolverCreatorContract) (types.TenantTypeConnectionResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -49,7 +37,7 @@ func NewTenantTypeConnectionResolver(
 // PageInfo returns the paging information compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the paging information
-func (r *tenantTypeConnectionResolver) PageInfo(ctx context.Context) (PageInfoResolverContract, error) {
+func (r *tenantTypeConnectionResolver) PageInfo(ctx context.Context) (types.PageInfoResolverContract, error) {
 	startCursor := "start cursor"
 	endCurstor := "End cursor"
 
@@ -64,6 +52,6 @@ func (r *tenantTypeConnectionResolver) PageInfo(ctx context.Context) (PageInfoRe
 // Edges returns the tenant edges compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the tenant edges
-func (r *tenantTypeConnectionResolver) Edges(ctx context.Context) (*[]TenantTypeEdgeResolverContract, error) {
-	return &[]TenantTypeEdgeResolverContract{}, nil
+func (r *tenantTypeConnectionResolver) Edges(ctx context.Context) (*[]types.TenantTypeEdgeResolverContract, error) {
+	return &[]types.TenantTypeEdgeResolverContract{}, nil
 }

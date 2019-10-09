@@ -1,29 +1,17 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package resolver
+// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+package query
 
 import (
 	"context"
 	"strings"
 
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
-// EdgeClusterTypeEdgeResolverContract declares the resolver that returns edge-cluster edge compatible with graphql-relay
-type EdgeClusterTypeEdgeResolverContract interface {
-	// Node returns the edge-cluster resolver
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge-cluster resolver or error if something goes wrong
-	Node(ctx context.Context) (EdgeClusterResolverContract, error)
-
-	// Cursor returns the cursor for the edge-cluster edge compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the cursor
-	Cursor(ctx context.Context) string
-}
-
 type edgeClusterTypeEdgeResolver struct {
-	resolverCreator ResolverCreatorContract
+	resolverCreator types.ResolverCreatorContract
 	edgeClusterID   graphql.ID
 	cursor          string
 }
@@ -36,9 +24,9 @@ type edgeClusterTypeEdgeResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterTypeEdgeResolver(
 	ctx context.Context,
-	resolverCreator ResolverCreatorContract,
+	resolverCreator types.ResolverCreatorContract,
 	edgeClusterID graphql.ID,
-	cursor string) (EdgeClusterTypeEdgeResolverContract, error) {
+	cursor string) (types.EdgeClusterTypeEdgeResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -65,7 +53,7 @@ func NewEdgeClusterTypeEdgeResolver(
 // Node returns the edge-cluster resolver
 // ctx: Mandatory. Reference to the context
 // Returns the edge-cluster resolver or error if something goes wrong
-func (r *edgeClusterTypeEdgeResolver) Node(ctx context.Context) (EdgeClusterResolverContract, error) {
+func (r *edgeClusterTypeEdgeResolver) Node(ctx context.Context) (types.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(ctx, r.edgeClusterID)
 }
 

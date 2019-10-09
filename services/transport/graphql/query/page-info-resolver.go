@@ -1,32 +1,11 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package resolver
+// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+package query
 
 import (
 	"context"
+
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 )
-
-// PageInfoResolverContract declares the resolver that returns paging information compatible with graphql-relay specification
-type PageInfoResolverContract interface {
-	// StartCursor returns start cursor
-	// ctx: Mandatory. Reference to the context
-	// Returns the start cursor
-	StartCursor(ctx context.Context) *string
-
-	// EndCursor returns end cursor
-	// ctx: Mandatory. Reference to the context
-	// Returns the end cursor
-	EndCursor(ctx context.Context) *string
-
-	// HasNextPage indicates whether returned page has next page to be retrieved
-	// ctx: Mandatory. Reference to the context
-	// Returns the value indicates whether returned page has next page to be retrieved
-	HasNextPage(ctx context.Context) bool
-
-	// HasPreviousPage indicates whether returned page has previous page to be retrieved
-	// ctx: Mandatory. Reference to the context
-	// Returns the value indicates whether returned page has previous page to be retrieved
-	HasPreviousPage(ctx context.Context) bool
-}
 
 type pageInfoResolver struct {
 	startCursor     *string
@@ -45,7 +24,7 @@ func NewPageInfoResolver(
 	startCursor *string,
 	endCursor *string,
 	hasNextPage bool,
-	hasPreviousPage bool) (PageInfoResolverContract, error) {
+	hasPreviousPage bool) (types.PageInfoResolverContract, error) {
 	return &pageInfoResolver{
 		startCursor:     startCursor,
 		endCursor:       endCursor,

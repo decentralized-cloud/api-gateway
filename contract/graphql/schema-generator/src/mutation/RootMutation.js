@@ -10,10 +10,10 @@ export default new GraphQLObjectType({
   name: 'Mutation',
   fields: {
     createTenant,
-    updateTenant,
+    /* updateTenant,
     deleteTenant,
     createEdgeCluster,
     updateEdgeCluster,
-    deleteEdgeCluster,
+    deleteEdgeCluster, */
   },
 });
