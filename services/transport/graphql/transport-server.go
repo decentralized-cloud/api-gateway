@@ -9,7 +9,7 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/transport"
-	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/resolver"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	"github.com/gobuffalo/packr"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -20,7 +20,7 @@ import (
 type transportService struct {
 	logger               *zap.Logger
 	configurationService configuration.ConfigurationContract
-	resolverCreator      resolver.ResolverCreatorContract
+	resolverCreator      types.ResolverCreatorContract
 	schema               *graphql.Schema
 }
 
@@ -31,7 +31,7 @@ type transportService struct {
 func NewTransportService(
 	logger *zap.Logger,
 	configurationService configuration.ConfigurationContract,
-	resolverCreator resolver.ResolverCreatorContract) (transport.TransportContract, error) {
+	resolverCreator types.ResolverCreatorContract) (transport.TransportContract, error) {
 	if logger == nil {
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
@@ -80,15 +80,16 @@ func (service *transportService) Start() error {
 	graphqlSchema = `
 		schema {
 		  query: Query
+		  mutation: Mutation
 		}
 	` + "\n" + graphqlSchema
 
-	queryResolver, err := service.resolverCreator.NewQueryResolver(context.Background())
+	rootResolver, err := service.resolverCreator.NewRootResolver(context.Background())
 	if err != nil {
 		return err
 	}
 
-	service.schema = graphql.MustParseSchema(graphqlSchema, queryResolver)
+	service.schema = graphql.MustParseSchema(graphqlSchema, rootResolver)
 	server.Path("POST", "/query", service.graphQLHandler)
 	service.logger.Info("GraphQL server started", zap.String("address", config.Addr))
 

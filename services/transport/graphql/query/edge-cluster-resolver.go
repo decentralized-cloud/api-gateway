@@ -1,32 +1,20 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package resolver
+// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+package query
 
 import (
 	"context"
 	"strings"
 
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
-// EdgeClusterResolverContract declares the resolver that can retrieve edge-cluster information
-type EdgeClusterResolverContract interface {
-	// ID returns edge-cluster unique identifier
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge-cluster unique identifier
-	ID(ctx context.Context) graphql.ID
-
-	// Name returns edge-cluster name
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge-cluster name
-	Name(ctx context.Context) string
-}
-
 type edgeClusterResolver struct {
 	logger          *zap.Logger
-	resolverCreator ResolverCreatorContract
+	resolverCreator types.ResolverCreatorContract
 	id              graphql.ID
 	name            string
 }
@@ -39,9 +27,9 @@ type edgeClusterResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterResolver(
 	ctx context.Context,
-	resolverCreator ResolverCreatorContract,
+	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	edgeClusterID graphql.ID) (EdgeClusterResolverContract, error) {
+	edgeClusterID graphql.ID) (types.EdgeClusterResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}

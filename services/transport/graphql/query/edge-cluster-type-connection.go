@@ -1,27 +1,15 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package resolver
+// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+package query
 
 import (
 	"context"
 
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
-// EdgeClusterTypeConnectionResolverContract declares the resolver that returns edge-cluster edge compatible with graphql-relay
-type EdgeClusterTypeConnectionResolverContract interface {
-	// PageInfo returns the paging information compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the paging information
-	PageInfo(ctx context.Context) (PageInfoResolverContract, error)
-
-	// Edges returns the edge-cluster edges compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge-cluster edges
-	Edges(ctx context.Context) (*[]EdgeClusterTypeEdgeResolverContract, error)
-}
-
 type edgeClusterTypeConnectionResolver struct {
-	resolverCreator ResolverCreatorContract
+	resolverCreator types.ResolverCreatorContract
 }
 
 // NewEdgeClusterTypeConnectionResolver creates new instance of the edgeClusterTypeConnectionResolver, setting up all dependencies and returns the instance
@@ -32,7 +20,7 @@ type edgeClusterTypeConnectionResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterTypeConnectionResolver(
 	ctx context.Context,
-	resolverCreator ResolverCreatorContract) (EdgeClusterTypeConnectionResolverContract, error) {
+	resolverCreator types.ResolverCreatorContract) (types.EdgeClusterTypeConnectionResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -49,7 +37,7 @@ func NewEdgeClusterTypeConnectionResolver(
 // PageInfo returns the paging information compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the paging information
-func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (PageInfoResolverContract, error) {
+func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (types.PageInfoResolverContract, error) {
 	startCursor := "start cursor"
 	endCurstor := "End cursor"
 
@@ -64,6 +52,6 @@ func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (PageI
 // Edges returns the edge-cluster edges compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the edge-cluster edges
-func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]EdgeClusterTypeEdgeResolverContract, error) {
-	return &[]EdgeClusterTypeEdgeResolverContract{}, nil
+func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]types.EdgeClusterTypeEdgeResolverContract, error) {
+	return &[]types.EdgeClusterTypeEdgeResolverContract{}, nil
 }
