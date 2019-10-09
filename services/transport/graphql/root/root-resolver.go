@@ -50,13 +50,27 @@ func (r *rootResolver) User(ctx context.Context) (types.UserResolverContract, er
 	return r.resolverCreator.NewUserResolver(ctx, graphql.ID(cuid.New()))
 }
 
-// User returns user resolver
+// CreateTenant returns create tenant mutator
 // ctx: Mandatory. Reference to the context
-// Returns the user resolver or error if something goes wrong
+// Returns the create tenant mutator or error if something goes wrong
 func (r *rootResolver) CreateTenant(
 	ctx context.Context,
 	args types.CreateTenantInputArgument) (types.CreateTenantPayloadResolverContract, error) {
 	mutation, err := r.resolverCreator.NewCreateTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return mutation.MutateAndGetPayload(ctx, args)
+}
+
+// UpdateTenant returns update tenant mutator
+// ctx: Mandatory. Reference to the context
+// Returns the update tenant mutator or error if something goes wrong
+func (r *rootResolver) UpdateTenant(
+	ctx context.Context,
+	args types.UpdateTenantInputArgument) (types.UpdateTenantPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewUpdateTenant(ctx)
 	if err != nil {
 		return nil, err
 	}

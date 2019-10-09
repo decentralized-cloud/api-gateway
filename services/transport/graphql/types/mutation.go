@@ -15,3 +15,14 @@ type CreateTenantContract interface {
 		ctx context.Context,
 		args CreateTenantInputArgument) (CreateTenantPayloadResolverContract, error)
 }
+
+// UpdateTenantContract declares the type to use when updating an existing tenant
+type UpdateTenantContract interface {
+	// MutateAndGetPayload update an existing tenant and returns the payload contains the result of updating an existing tenant
+	// ctx: Mandatory. Reference to the context
+	// args: Mandatory. Reference to the input argument contains tenant information to update
+	// Returns the updated tennt payload or error if something goes wrong
+	MutateAndGetPayload(
+		ctx context.Context,
+		args UpdateTenantInputArgument) (UpdateTenantPayloadResolverContract, error)
+}

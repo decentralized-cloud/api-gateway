@@ -158,13 +158,35 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (types.Crea
 		creator.logger)
 }
 
-// NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolvere, setting up all dependencies and returns the instance
+// NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateTenantPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string) (types.CreateTenantPayloadResolverContract, error) {
 	return mutation.NewCreateTenantPayloadResolver(
+		ctx,
+		creator,
+		clientMutationId)
+}
+
+// NewUpdateTenant creates new instance of the updateTenant, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (types.UpdateTenantContract, error) {
+	return mutation.NewUpdateTenant(
+		ctx,
+		creator,
+		creator.logger)
+}
+
+// NewUpdateTenantPayloadResolver creates new instance of the updateTenantPayloadResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
+	ctx context.Context,
+	clientMutationId *string) (types.UpdateTenantPayloadResolverContract, error) {
+	return mutation.NewUpdateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)

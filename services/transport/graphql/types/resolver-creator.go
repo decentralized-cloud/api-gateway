@@ -82,15 +82,27 @@ type ResolverCreatorContract interface {
 	// Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
 	NewEdgeClusterTypeConnectionResolver(ctx context.Context) (EdgeClusterTypeConnectionResolverContract, error)
 
-	// NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
+	// NewCreateTenant creates new instance of the CreateTenantContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
 	// Returns the new instance or error if something goes wrong
 	NewCreateTenant(ctx context.Context) (CreateTenantContract, error)
 
-	// NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolvere, setting up all dependencies and returns the instance
+	// NewCreateTenantPayloadResolver creates new instance of the CreateTenantPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
 	// Returns the new instance or error if something goes wrong
 	NewCreateTenantPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string) (CreateTenantPayloadResolverContract, error)
+
+	// NewUpdateTenant creates new instance of the UpdateTenantContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewUpdateTenant(ctx context.Context) (UpdateTenantContract, error)
+
+	// NewUpdateTenantPayloadResolver creates new instance of the UpdateTenantPayloadResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewUpdateTenantPayloadResolver(
+		ctx context.Context,
+		clientMutationId *string) (UpdateTenantPayloadResolverContract, error)
 }
