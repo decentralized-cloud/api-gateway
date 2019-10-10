@@ -1,10 +1,11 @@
-// package resolver implements different GraphQL resolvers required by the GraphQL transport layer
-package mutation
+// package edgecluster implements edge cluster mutation required by the GraphQL transport layer
+package edgeclster
 
 import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/edgecluster"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -29,7 +30,7 @@ type createEdgeClusterPayloadResolver struct {
 func NewCreateEdgeCluster(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	logger *zap.Logger) (types.CreateEdgeClusterContract, error) {
+	logger *zap.Logger) (edgecluster.CreateEdgeClusterContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -55,7 +56,7 @@ func NewCreateEdgeCluster(
 func NewCreateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	clientMutationId *string) (types.CreateEdgeClusterPayloadResolverContract, error) {
+	clientMutationId *string) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -76,14 +77,14 @@ func NewCreateEdgeClusterPayloadResolver(
 // Returns the new edge cluster payload or error if something goes wrong
 func (m *createEdgeCluster) MutateAndGetPayload(
 	ctx context.Context,
-	args types.CreateEdgeClusterInputArgument) (types.CreateEdgeClusterPayloadResolverContract, error) {
+	args edgecluster.CreateEdgeClusterInputArgument) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
 	return m.resolverCreator.NewCreateEdgeClusterPayloadResolver(ctx, args.Input.ClientMutationId)
 }
 
 // EdgeCluster returns the new edge cluster inforamtion
 // ctx: Mandatory. Reference to the context
 // Returns the new edge cluster inforamtion
-func (r *createEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (types.EdgeClusterTypeEdgeResolverContract, error) {
+func (r *createEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
 	resolver, err := r.resolverCreator.NewEdgeClusterTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New edge cluster cursor")
 
 	return resolver, err

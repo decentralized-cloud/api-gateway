@@ -1,11 +1,12 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
-package query
+// package tenant implements different tenant GraphQL query resovlers required by the GraphQL transport layer
+package tenant
 
 import (
 	"context"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/tenant"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
@@ -26,7 +27,7 @@ func NewTenantTypeEdgeResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	tenantID graphql.ID,
-	cursor string) (types.TenantTypeEdgeResolverContract, error) {
+	cursor string) (tenant.TenantTypeEdgeResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -53,7 +54,7 @@ func NewTenantTypeEdgeResolver(
 // Node returns the tenant resolver
 // ctx: Mandatory. Reference to the context
 // Returns the tenant resolver or error if something goes wrong
-func (r *tenantTypeEdgeResolver) Node(ctx context.Context) (types.TenantResolverContract, error) {
+func (r *tenantTypeEdgeResolver) Node(ctx context.Context) (tenant.TenantResolverContract, error) {
 	return r.resolverCreator.NewTenantResolver(ctx, r.tenantID)
 }
 

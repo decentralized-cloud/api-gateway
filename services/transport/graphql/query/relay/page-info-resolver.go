@@ -1,10 +1,10 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
-package query
+// package relay implements common relay GraphQL query resovlers required by the GraphQL transport layer
+package relay
 
 import (
 	"context"
 
-	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/relay"
 )
 
 type pageInfoResolver struct {
@@ -24,7 +24,7 @@ func NewPageInfoResolver(
 	startCursor *string,
 	endCursor *string,
 	hasNextPage bool,
-	hasPreviousPage bool) (types.PageInfoResolverContract, error) {
+	hasPreviousPage bool) (relay.PageInfoResolverContract, error) {
 	return &pageInfoResolver{
 		startCursor:     startCursor,
 		endCursor:       endCursor,

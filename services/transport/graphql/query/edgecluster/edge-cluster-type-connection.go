@@ -1,10 +1,12 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
-package query
+// package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
+package edgeclster
 
 import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/edgecluster"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/relay"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
@@ -20,7 +22,7 @@ type edgeClusterTypeConnectionResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterTypeConnectionResolver(
 	ctx context.Context,
-	resolverCreator types.ResolverCreatorContract) (types.EdgeClusterTypeConnectionResolverContract, error) {
+	resolverCreator types.ResolverCreatorContract) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -37,7 +39,7 @@ func NewEdgeClusterTypeConnectionResolver(
 // PageInfo returns the paging information compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the paging information
-func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (types.PageInfoResolverContract, error) {
+func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (relay.PageInfoResolverContract, error) {
 	startCursor := "start cursor"
 	endCurstor := "End cursor"
 
@@ -52,6 +54,6 @@ func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (types
 // Edges returns the edge-cluster edges compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the edge-cluster edges
-func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]types.EdgeClusterTypeEdgeResolverContract, error) {
-	return &[]types.EdgeClusterTypeEdgeResolverContract{}, nil
+func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
+	return &[]edgecluster.EdgeClusterTypeEdgeResolverContract{}, nil
 }

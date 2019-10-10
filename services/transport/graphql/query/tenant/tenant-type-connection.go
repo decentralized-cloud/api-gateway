@@ -1,10 +1,12 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
-package query
+// package tenant implements different tenant GraphQL query resovlers required by the GraphQL transport layer
+package tenant
 
 import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/relay"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/tenant"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
@@ -20,7 +22,7 @@ type tenantTypeConnectionResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewTenantTypeConnectionResolver(
 	ctx context.Context,
-	resolverCreator types.ResolverCreatorContract) (types.TenantTypeConnectionResolverContract, error) {
+	resolverCreator types.ResolverCreatorContract) (tenant.TenantTypeConnectionResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -37,7 +39,7 @@ func NewTenantTypeConnectionResolver(
 // PageInfo returns the paging information compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the paging information
-func (r *tenantTypeConnectionResolver) PageInfo(ctx context.Context) (types.PageInfoResolverContract, error) {
+func (r *tenantTypeConnectionResolver) PageInfo(ctx context.Context) (relay.PageInfoResolverContract, error) {
 	startCursor := "start cursor"
 	endCurstor := "End cursor"
 
@@ -52,6 +54,6 @@ func (r *tenantTypeConnectionResolver) PageInfo(ctx context.Context) (types.Page
 // Edges returns the tenant edges compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the tenant edges
-func (r *tenantTypeConnectionResolver) Edges(ctx context.Context) (*[]types.TenantTypeEdgeResolverContract, error) {
-	return &[]types.TenantTypeEdgeResolverContract{}, nil
+func (r *tenantTypeConnectionResolver) Edges(ctx context.Context) (*[]tenant.TenantTypeEdgeResolverContract, error) {
+	return &[]tenant.TenantTypeEdgeResolverContract{}, nil
 }
