@@ -1,3 +1,13 @@
+input CreateEdgeClusterInput {
+  name: String!
+  clientMutationId: String
+}
+
+type CreateEdgeClusterPayload {
+  edgeCluster: EdgeClusterTypeEdge
+  clientMutationId: String
+}
+
 input CreateTenantInput {
   name: String!
   clientMutationId: String
@@ -5,6 +15,24 @@ input CreateTenantInput {
 
 type CreateTenantPayload {
   tenant: TenantTypeEdge
+  clientMutationId: String
+}
+
+input DeleteEdgeClusterInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type DeleteEdgeClusterPayload {
+  clientMutationId: String
+}
+
+input DeleteTenantInput {
+  id: ID!
+  clientMutationId: String
+}
+
+type DeleteTenantPayload {
   clientMutationId: String
 }
 
@@ -34,6 +62,10 @@ type EdgeClusterTypeEdge {
 type Mutation {
   createTenant(input: CreateTenantInput!): CreateTenantPayload
   updateTenant(input: UpdateTenantInput!): UpdateTenantPayload
+  deleteTenant(input: DeleteTenantInput!): DeleteTenantPayload
+  createEdgeCluster(input: CreateEdgeClusterInput!): CreateEdgeClusterPayload
+  updateEdgeCluster(input: UpdateEdgeClusterInput!): UpdateEdgeClusterPayload
+  deleteEdgeCluster(input: DeleteEdgeClusterInput!): DeleteEdgeClusterPayload
 }
 
 """An object with an ID"""
@@ -84,6 +116,17 @@ type TenantTypeEdge {
 
   """A cursor for use in pagination"""
   cursor: String!
+}
+
+input UpdateEdgeClusterInput {
+  id: ID!
+  name: String!
+  clientMutationId: String
+}
+
+type UpdateEdgeClusterPayload {
+  edgeCluster: EdgeClusterTypeEdge
+  clientMutationId: String
 }
 
 input UpdateTenantInput {

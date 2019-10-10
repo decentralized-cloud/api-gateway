@@ -11,9 +11,9 @@ export default new GraphQLObjectType({
   fields: {
     createTenant,
     updateTenant,
-    /* deleteTenant,
+    deleteTenant,
     createEdgeCluster,
     updateEdgeCluster,
-    deleteEdgeCluster, */
+    deleteEdgeCluster,
   },
 });

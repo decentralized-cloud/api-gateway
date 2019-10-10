@@ -11,25 +11,25 @@ import (
 	"go.uber.org/zap"
 )
 
-type createTenant struct {
+type createEdgeCluster struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
 }
 
-type createTenantPayloadResolver struct {
+type createEdgeClusterPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
 }
 
-// NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
+// NewCreateEdgeCluster creates new instance of the createEdgeCluster, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
 // Returns the new instance or error if something goes wrong
-func NewCreateTenant(
+func NewCreateEdgeCluster(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	logger *zap.Logger) (types.CreateTenantContract, error) {
+	logger *zap.Logger) (types.CreateEdgeClusterContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -42,20 +42,20 @@ func NewCreateTenant(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	return &createTenant{
+	return &createEdgeCluster{
 		logger:          logger,
 		resolverCreator: resolverCreator,
 	}, nil
 }
 
-// NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolvere, setting up all dependencies and returns the instance
+// NewCreateEdgeClusterPayloadResolver creates new instance of the createEdgeClusterPayloadResolvere, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // Returns the new instance or error if something goes wrong
-func NewCreateTenantPayloadResolver(
+func NewCreateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	clientMutationId *string) (types.CreateTenantPayloadResolverContract, error) {
+	clientMutationId *string) (types.CreateEdgeClusterPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -64,27 +64,27 @@ func NewCreateTenantPayloadResolver(
 		return nil, commonErrors.NewArgumentNilError("resolverCreator", "resolverCreator is required")
 	}
 
-	return &createTenantPayloadResolver{
+	return &createEdgeClusterPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
 	}, nil
 }
 
-// MutateAndGetPayload creates a new tenant and returns the payload contains the result of creating a new tenant
+// MutateAndGetPayload creates a new edge cluster and returns the payload contains the result of creating a new edge cluster
 // ctx: Mandatory. Reference to the context
-// args: Mandatory. Reference to the input argument contains tenant information to create
-// Returns the new tenant payload or error if something goes wrong
-func (m *createTenant) MutateAndGetPayload(
+// args: Mandatory. Reference to the input argument contains edge cluster information to create
+// Returns the new edge cluster payload or error if something goes wrong
+func (m *createEdgeCluster) MutateAndGetPayload(
 	ctx context.Context,
-	args types.CreateTenantInputArgument) (types.CreateTenantPayloadResolverContract, error) {
-	return m.resolverCreator.NewCreateTenantPayloadResolver(ctx, args.Input.ClientMutationId)
+	args types.CreateEdgeClusterInputArgument) (types.CreateEdgeClusterPayloadResolverContract, error) {
+	return m.resolverCreator.NewCreateEdgeClusterPayloadResolver(ctx, args.Input.ClientMutationId)
 }
 
-// Tenant returns the new tenant inforamtion
+// EdgeCluster returns the new edge cluster inforamtion
 // ctx: Mandatory. Reference to the context
-// Returns the new tenant inforamtion
-func (r *createTenantPayloadResolver) Tenant(ctx context.Context) (types.TenantTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New tenant cursor")
+// Returns the new edge cluster inforamtion
+func (r *createEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (types.EdgeClusterTypeEdgeResolverContract, error) {
+	resolver, err := r.resolverCreator.NewEdgeClusterTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New edge cluster cursor")
 
 	return resolver, err
 }
@@ -92,6 +92,6 @@ func (r *createTenantPayloadResolver) Tenant(ctx context.Context) (types.TenantT
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request
 // ctx: Mandatory. Reference to the context
 // Returns the provided clientMutationId as part of mutation request
-func (r *createTenantPayloadResolver) ClientMutationId(ctx context.Context) *string {
+func (r *createEdgeClusterPayloadResolver) ClientMutationId(ctx context.Context) *string {
 	return r.clientMutationId
 }

@@ -105,4 +105,52 @@ type ResolverCreatorContract interface {
 	NewUpdateTenantPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string) (UpdateTenantPayloadResolverContract, error)
+
+	// NewDeleteTenant creates new instance of the DeleteTenantContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewDeleteTenant(ctx context.Context) (DeleteTenantContract, error)
+
+	// NewDeleteTenantPayloadResolver creates new instance of the DeleteTenantPayloadResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewDeleteTenantPayloadResolver(
+		ctx context.Context,
+		clientMutationId *string) (DeleteTenantPayloadResolverContract, error)
+
+	// NewCreateEdgeCluster creates new instance of the CreateEdgeClusterContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewCreateEdgeCluster(ctx context.Context) (CreateEdgeClusterContract, error)
+
+	// NewCreateEdgeClusterPayloadResolver creates new instance of the CreateEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewCreateEdgeClusterPayloadResolver(
+		ctx context.Context,
+		clientMutationId *string) (CreateEdgeClusterPayloadResolverContract, error)
+
+	// NewUpdateEdgeCluster creates new instance of the UpdateEdgeClusterContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewUpdateEdgeCluster(ctx context.Context) (UpdateEdgeClusterContract, error)
+
+	// NewUpdateEdgeClusterPayloadResolver creates new instance of the UpdateEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewUpdateEdgeClusterPayloadResolver(
+		ctx context.Context,
+		clientMutationId *string) (UpdateEdgeClusterPayloadResolverContract, error)
+
+	// NewDeleteEdgeCluster creates new instance of the DeleteEdgeClusterContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewDeleteEdgeCluster(ctx context.Context) (DeleteEdgeClusterContract, error)
+
+	// NewDeleteEdgeClusterPayloadResolver creates new instance of the DeleteEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// Returns the new instance or error if something goes wrong
+	NewDeleteEdgeClusterPayloadResolver(
+		ctx context.Context,
+		clientMutationId *string) (DeleteEdgeClusterPayloadResolverContract, error)
 }

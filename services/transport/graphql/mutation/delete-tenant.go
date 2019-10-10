@@ -5,31 +5,29 @@ import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
-	"github.com/graph-gophers/graphql-go"
-	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
-type updateTenant struct {
+type deleteTenant struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
 }
 
-type updateTenantPayloadResolver struct {
+type deleteTenantPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
 }
 
-// NewUpdateTenant updates new instance of the updateTenant, setting up all dependencies and returns the instance
+// NewDeleteTenant deletes new instance of the deleteTenant, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
-// resolverCreator: Mandatory. Reference to the resolver creator service that can update new instances of resolvers
+// resolverCreator: Mandatory. Reference to the resolver creator service that can delete new instances of resolvers
 // logger: Mandatory. Reference to the logger service
 // Returns the new instance or error if something goes wrong
-func NewUpdateTenant(
+func NewDeleteTenant(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	logger *zap.Logger) (types.UpdateTenantContract, error) {
+	logger *zap.Logger) (types.DeleteTenantContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -42,19 +40,19 @@ func NewUpdateTenant(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	return &updateTenant{
+	return &deleteTenant{
 		logger:          logger,
 		resolverCreator: resolverCreator,
 	}, nil
 }
 
-// Tenant returns the updated tenant inforamtion
+// Tenant returns the deleted tenant inforamtion
 // ctx: Mandatory. Reference to the context
-// Returns the updated tenant inforamtion
-func NewUpdateTenantPayloadResolver(
+// Returns the deleted tenant inforamtion
+func NewDeleteTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	clientMutationId *string) (types.UpdateTenantPayloadResolverContract, error) {
+	clientMutationId *string) (types.DeleteTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -63,34 +61,25 @@ func NewUpdateTenantPayloadResolver(
 		return nil, commonErrors.NewArgumentNilError("resolverCreator", "resolverCreator is required")
 	}
 
-	return &updateTenantPayloadResolver{
+	return &deleteTenantPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
 	}, nil
 }
 
-// MutateAndGetPayload update an existing tenant and returns the payload contains the result of updating an existing tenant
+// MutateAndGetPayload delete an existing tenant and returns the payload contains the result of deleting an existing tenant
 // ctx: Mandatory. Reference to the context
-// args: Mandatory. Reference to the input argument contains tenant information to update
-// Returns the updated tenant payload or error if something goes wrong
-func (m *updateTenant) MutateAndGetPayload(
+// args: Mandatory. Reference to the input argument contains tenant information to delete
+// Returns the deleted tenant payload or error if something goes wrong
+func (m *deleteTenant) MutateAndGetPayload(
 	ctx context.Context,
-	args types.UpdateTenantInputArgument) (types.UpdateTenantPayloadResolverContract, error) {
-	return m.resolverCreator.NewUpdateTenantPayloadResolver(ctx, args.Input.ClientMutationId)
-}
-
-// Tenant returns the updated tenant inforamtion
-// ctx: Mandatory. Reference to the context
-// Returns the updated tenant inforamtion
-func (r *updateTenantPayloadResolver) Tenant(ctx context.Context) (types.TenantTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New tenant cursor")
-
-	return resolver, err
+	args types.DeleteTenantInputArgument) (types.DeleteTenantPayloadResolverContract, error) {
+	return m.resolverCreator.NewDeleteTenantPayloadResolver(ctx, args.Input.ClientMutationId)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request
 // ctx: Mandatory. Reference to the context
 // Returns the provided clientMutationId as part of mutation request
-func (r *updateTenantPayloadResolver) ClientMutationId(ctx context.Context) *string {
+func (r *deleteTenantPayloadResolver) ClientMutationId(ctx context.Context) *string {
 	return r.clientMutationId
 }
