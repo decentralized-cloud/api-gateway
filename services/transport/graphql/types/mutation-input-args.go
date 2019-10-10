@@ -21,3 +21,40 @@ type UpdateTenantInput struct {
 type UpdateTenantInputArgument struct {
 	Input UpdateTenantInput
 }
+
+type DeleteTenantInput struct {
+	ID               graphql.ID
+	ClientMutationId *string
+}
+
+type DeleteTenantInputArgument struct {
+	Input DeleteTenantInput
+}
+
+type CreateEdgeClusterInput struct {
+	Name             string
+	ClientMutationId *string
+}
+
+type CreateEdgeClusterInputArgument struct {
+	Input CreateEdgeClusterInput
+}
+
+type UpdateEdgeClusterInput struct {
+	ID               graphql.ID
+	Name             string
+	ClientMutationId *string
+}
+
+type UpdateEdgeClusterInputArgument struct {
+	Input UpdateEdgeClusterInput
+}
+
+type DeleteEdgeClusterInput struct {
+	ID               graphql.ID
+	ClientMutationId *string
+}
+
+type DeleteEdgeClusterInputArgument struct {
+	Input DeleteEdgeClusterInput
+}

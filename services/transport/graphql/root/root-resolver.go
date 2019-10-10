@@ -77,3 +77,59 @@ func (r *rootResolver) UpdateTenant(
 
 	return mutation.MutateAndGetPayload(ctx, args)
 }
+
+// DeleteTenant returns delete tenant mutator
+// ctx: Mandatory. Reference to the context
+// Returns the delete tenant mutator or error if something goes wrong
+func (r *rootResolver) DeleteTenant(
+	ctx context.Context,
+	args types.DeleteTenantInputArgument) (types.DeleteTenantPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewDeleteTenant(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return mutation.MutateAndGetPayload(ctx, args)
+}
+
+// CreateEdgeCluster returns create edge cluster mutator
+// ctx: Mandatory. Reference to the context
+// Returns the create edge cluster mutator or error if something goes wrong
+func (r *rootResolver) CreateEdgeCluster(
+	ctx context.Context,
+	args types.CreateEdgeClusterInputArgument) (types.CreateEdgeClusterPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewCreateEdgeCluster(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return mutation.MutateAndGetPayload(ctx, args)
+}
+
+// UpdateEdgeCluster returns update edge cluster mutator
+// ctx: Mandatory. Reference to the context
+// Returns the update edge cluster mutator or error if something goes wrong
+func (r *rootResolver) UpdateEdgeCluster(
+	ctx context.Context,
+	args types.UpdateEdgeClusterInputArgument) (types.UpdateEdgeClusterPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewUpdateEdgeCluster(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return mutation.MutateAndGetPayload(ctx, args)
+}
+
+// DeleteEdgeCluster returns delete edge cluster mutator
+// ctx: Mandatory. Reference to the context
+// Returns the delete edge cluster mutator or error if something goes wrong
+func (r *rootResolver) DeleteEdgeCluster(
+	ctx context.Context,
+	args types.DeleteEdgeClusterInputArgument) (types.DeleteEdgeClusterPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewDeleteEdgeCluster(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return mutation.MutateAndGetPayload(ctx, args)
+}
