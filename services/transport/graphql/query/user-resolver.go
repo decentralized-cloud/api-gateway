@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/edgecluster"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/tenant"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
@@ -64,7 +66,7 @@ func (r *userResolver) ID(ctx context.Context) graphql.ID {
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) Tenant(
 	ctx context.Context,
-	args types.UserTenantInputArgument) (types.TenantResolverContract, error) {
+	args types.UserTenantInputArgument) (tenant.TenantResolverContract, error) {
 	return r.resolverCreator.NewTenantResolver(
 		ctx,
 		args.TenantID)
@@ -76,7 +78,7 @@ func (r *userResolver) Tenant(
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) Tenants(
 	ctx context.Context,
-	args types.UserTenantsInputArgument) (types.TenantTypeConnectionResolverContract, error) {
+	args types.UserTenantsInputArgument) (tenant.TenantTypeConnectionResolverContract, error) {
 	return r.resolverCreator.NewTenantTypeConnectionResolver(ctx)
 }
 
@@ -86,7 +88,7 @@ func (r *userResolver) Tenants(
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) EdgeCluster(
 	ctx context.Context,
-	args types.UserEdgeClusterInputArgument) (types.EdgeClusterResolverContract, error) {
+	args types.UserEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
 		args.EdgeClusterID)
@@ -98,6 +100,6 @@ func (r *userResolver) EdgeCluster(
 // Returns the tenant resolver or error if something goes wrong
 func (r *userResolver) EdgeClusters(
 	ctx context.Context,
-	args types.UserEdgeClustersInputArgument) (types.EdgeClusterTypeConnectionResolverContract, error) {
+	args types.UserEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(ctx)
 }

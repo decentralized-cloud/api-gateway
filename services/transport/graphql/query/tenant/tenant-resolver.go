@@ -1,11 +1,13 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
-package query
+// package tenant implements different tenant GraphQL query resovlers required by the GraphQL transport layer
+package tenant
 
 import (
 	"context"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/edgecluster"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/tenant"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -29,7 +31,7 @@ func NewTenantResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	tenantID graphql.ID) (types.TenantResolverContract, error) {
+	tenantID graphql.ID) (tenant.TenantResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -74,7 +76,7 @@ func (r *tenantResolver) Name(ctx context.Context) string {
 // Returns the tenant resolver or error if something goes wrong
 func (r *tenantResolver) EdgeCluster(
 	ctx context.Context,
-	args types.TenantClusterEdgeClusterInputArgument) (types.EdgeClusterResolverContract, error) {
+	args tenant.TenantClusterEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
 		args.EdgeClusterID)
@@ -86,6 +88,6 @@ func (r *tenantResolver) EdgeCluster(
 // Returns the tenant resolver or error if something goes wrong
 func (r *tenantResolver) EdgeClusters(
 	ctx context.Context,
-	args types.TenantEdgeClustersInputArgument) (types.EdgeClusterTypeConnectionResolverContract, error) {
+	args tenant.TenantEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(ctx)
 }

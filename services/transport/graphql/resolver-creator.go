@@ -4,10 +4,17 @@ package graphql
 import (
 	"context"
 
-	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/mutation"
+	mutationedgecluster "github.com/decentralized-cloud/api-gateway/services/transport/graphql/mutation/edgecluster"
+	mutationtenant "github.com/decentralized-cloud/api-gateway/services/transport/graphql/mutation/tenant"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/query"
+	queryedgecluster "github.com/decentralized-cloud/api-gateway/services/transport/graphql/query/edgecluster"
+	queryrelay "github.com/decentralized-cloud/api-gateway/services/transport/graphql/query/relay"
+	querytenant "github.com/decentralized-cloud/api-gateway/services/transport/graphql/query/tenant"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/root"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/edgecluster"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/relay"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/tenant"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
@@ -42,8 +49,8 @@ func (creator *resolverCreator) NewPageInfoResolver(
 	startCursor *string,
 	endCursor *string,
 	hasNextPage bool,
-	hasPreviousPage bool) (types.PageInfoResolverContract, error) {
-	return query.NewPageInfoResolver(
+	hasPreviousPage bool) (relay.PageInfoResolverContract, error) {
+	return queryrelay.NewPageInfoResolver(
 		startCursor,
 		endCursor,
 		hasNextPage,
@@ -80,8 +87,8 @@ func (creator *resolverCreator) NewUserResolver(
 // Returns the TenantResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewTenantResolver(
 	ctx context.Context,
-	tenantID graphql.ID) (types.TenantResolverContract, error) {
-	return query.NewTenantResolver(
+	tenantID graphql.ID) (tenant.TenantResolverContract, error) {
+	return querytenant.NewTenantResolver(
 		ctx,
 		creator,
 		creator.logger,
@@ -96,8 +103,8 @@ func (creator *resolverCreator) NewTenantResolver(
 func (creator *resolverCreator) NewTenantTypeEdgeResolver(
 	ctx context.Context,
 	tenantID graphql.ID,
-	cursor string) (types.TenantTypeEdgeResolverContract, error) {
-	return query.NewTenantTypeEdgeResolver(
+	cursor string) (tenant.TenantTypeEdgeResolverContract, error) {
+	return querytenant.NewTenantTypeEdgeResolver(
 		ctx,
 		creator,
 		tenantID,
@@ -107,8 +114,8 @@ func (creator *resolverCreator) NewTenantTypeEdgeResolver(
 // NewTenantTypeConnectionResolver creates new TenantTypeConnectionResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // Returns the TenantTypeConnectionResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewTenantTypeConnectionResolver(ctx context.Context) (types.TenantTypeConnectionResolverContract, error) {
-	return query.NewTenantTypeConnectionResolver(ctx, creator)
+func (creator *resolverCreator) NewTenantTypeConnectionResolver(ctx context.Context) (tenant.TenantTypeConnectionResolverContract, error) {
+	return querytenant.NewTenantTypeConnectionResolver(ctx, creator)
 }
 
 // NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
@@ -117,8 +124,8 @@ func (creator *resolverCreator) NewTenantTypeConnectionResolver(ctx context.Cont
 // Returns the EdgeClusterResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterResolver(
 	ctx context.Context,
-	tenantID graphql.ID) (types.EdgeClusterResolverContract, error) {
-	return query.NewEdgeClusterResolver(
+	tenantID graphql.ID) (edgecluster.EdgeClusterResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterResolver(
 		ctx,
 		creator,
 		creator.logger,
@@ -133,8 +140,8 @@ func (creator *resolverCreator) NewEdgeClusterResolver(
 func (creator *resolverCreator) NewEdgeClusterTypeEdgeResolver(
 	ctx context.Context,
 	tenantID graphql.ID,
-	cursor string) (types.EdgeClusterTypeEdgeResolverContract, error) {
-	return query.NewEdgeClusterTypeEdgeResolver(
+	cursor string) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterTypeEdgeResolver(
 		ctx,
 		creator,
 		tenantID,
@@ -144,15 +151,15 @@ func (creator *resolverCreator) NewEdgeClusterTypeEdgeResolver(
 // NewEdgeClusterTypeConnectionResolver creates new EdgeClusterTypeConnectionResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewEdgeClusterTypeConnectionResolver(ctx context.Context) (types.EdgeClusterTypeConnectionResolverContract, error) {
-	return query.NewEdgeClusterTypeConnectionResolver(ctx, creator)
+func (creator *resolverCreator) NewEdgeClusterTypeConnectionResolver(ctx context.Context) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterTypeConnectionResolver(ctx, creator)
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (types.CreateTenantContract, error) {
-	return mutation.NewCreateTenant(
+func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.CreateTenantContract, error) {
+	return mutationtenant.NewCreateTenant(
 		ctx,
 		creator,
 		creator.logger)
@@ -163,8 +170,8 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (types.Crea
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateTenantPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (types.CreateTenantPayloadResolverContract, error) {
-	return mutation.NewCreateTenantPayloadResolver(
+	clientMutationId *string) (tenant.CreateTenantPayloadResolverContract, error) {
+	return mutationtenant.NewCreateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)
@@ -173,8 +180,8 @@ func (creator *resolverCreator) NewCreateTenantPayloadResolver(
 // NewUpdateTenant creates new instance of the updateTenant, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (types.UpdateTenantContract, error) {
-	return mutation.NewUpdateTenant(
+func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.UpdateTenantContract, error) {
+	return mutationtenant.NewUpdateTenant(
 		ctx,
 		creator,
 		creator.logger)
@@ -185,8 +192,8 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (types.Upda
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (types.UpdateTenantPayloadResolverContract, error) {
-	return mutation.NewUpdateTenantPayloadResolver(
+	clientMutationId *string) (tenant.UpdateTenantPayloadResolverContract, error) {
+	return mutationtenant.NewUpdateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)
@@ -195,8 +202,8 @@ func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
 // NewDeleteTenant creates new instance of the deleteTenant, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (types.DeleteTenantContract, error) {
-	return mutation.NewDeleteTenant(
+func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.DeleteTenantContract, error) {
+	return mutationtenant.NewDeleteTenant(
 		ctx,
 		creator,
 		creator.logger)
@@ -207,8 +214,8 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (types.Dele
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (types.DeleteTenantPayloadResolverContract, error) {
-	return mutation.NewDeleteTenantPayloadResolver(
+	clientMutationId *string) (tenant.DeleteTenantPayloadResolverContract, error) {
+	return mutationtenant.NewDeleteTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)
@@ -217,8 +224,8 @@ func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
 // NewCreateEdgeCluster creates new instance of the createEdgeCluster, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewCreateEdgeCluster(ctx context.Context) (types.CreateEdgeClusterContract, error) {
-	return mutation.NewCreateEdgeCluster(
+func (creator *resolverCreator) NewCreateEdgeCluster(ctx context.Context) (edgecluster.CreateEdgeClusterContract, error) {
+	return mutationedgecluster.NewCreateEdgeCluster(
 		ctx,
 		creator,
 		creator.logger)
@@ -229,8 +236,8 @@ func (creator *resolverCreator) NewCreateEdgeCluster(ctx context.Context) (types
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateEdgeClusterPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (types.CreateEdgeClusterPayloadResolverContract, error) {
-	return mutation.NewCreateEdgeClusterPayloadResolver(
+	clientMutationId *string) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
+	return mutationedgecluster.NewCreateEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)
@@ -239,8 +246,8 @@ func (creator *resolverCreator) NewCreateEdgeClusterPayloadResolver(
 // NewUpdateEdgeCluster creates new instance of the updateEdgeCluster, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewUpdateEdgeCluster(ctx context.Context) (types.UpdateEdgeClusterContract, error) {
-	return mutation.NewUpdateEdgeCluster(
+func (creator *resolverCreator) NewUpdateEdgeCluster(ctx context.Context) (edgecluster.UpdateEdgeClusterContract, error) {
+	return mutationedgecluster.NewUpdateEdgeCluster(
 		ctx,
 		creator,
 		creator.logger)
@@ -251,8 +258,8 @@ func (creator *resolverCreator) NewUpdateEdgeCluster(ctx context.Context) (types
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateEdgeClusterPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (types.UpdateEdgeClusterPayloadResolverContract, error) {
-	return mutation.NewUpdateEdgeClusterPayloadResolver(
+	clientMutationId *string) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
+	return mutationedgecluster.NewUpdateEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)
@@ -261,8 +268,8 @@ func (creator *resolverCreator) NewUpdateEdgeClusterPayloadResolver(
 // NewDeleteEdgeCluster creates new instance of the deleteEdgeCluster, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewDeleteEdgeCluster(ctx context.Context) (types.DeleteEdgeClusterContract, error) {
-	return mutation.NewDeleteEdgeCluster(
+func (creator *resolverCreator) NewDeleteEdgeCluster(ctx context.Context) (edgecluster.DeleteEdgeClusterContract, error) {
+	return mutationedgecluster.NewDeleteEdgeCluster(
 		ctx,
 		creator,
 		creator.logger)
@@ -273,8 +280,8 @@ func (creator *resolverCreator) NewDeleteEdgeCluster(ctx context.Context) (types
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteEdgeClusterPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (types.DeleteEdgeClusterPayloadResolverContract, error) {
-	return mutation.NewDeleteEdgeClusterPayloadResolver(
+	clientMutationId *string) (edgecluster.DeleteEdgeClusterPayloadResolverContract, error) {
+	return mutationedgecluster.NewDeleteEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId)

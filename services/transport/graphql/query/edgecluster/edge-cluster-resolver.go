@@ -1,11 +1,12 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
-package query
+// package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
+package edgeclster
 
 import (
 	"context"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/edgecluster"
 	"github.com/graph-gophers/graphql-go"
 	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -29,7 +30,7 @@ func NewEdgeClusterResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	edgeClusterID graphql.ID) (types.EdgeClusterResolverContract, error) {
+	edgeClusterID graphql.ID) (edgecluster.EdgeClusterResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
