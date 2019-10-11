@@ -55,7 +55,6 @@ func NewTransportService(
 // Returns error if something goes wrong
 func (service *transportService) Start() error {
 	config := &atreugo.Config{}
-	server := atreugo.New(config)
 	var err error
 
 	host, err := service.configurationService.GetHost()
@@ -69,6 +68,7 @@ func (service *transportService) Start() error {
 	}
 
 	config.Addr = fmt.Sprintf("%s:%d", host, port)
+	server := atreugo.New(config)
 
 	box := packr.NewBox("../../../contract/graphql/schema")
 	graphqlSchema, err := box.FindString("schema.graphql")
