@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/decentralized-cloud/tenant v0.0.7 // indirect
+	github.com/friendsofgo/graphiql v0.2.2
 	github.com/gobuffalo/envy v1.7.1 // indirect
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/mock v1.3.1
