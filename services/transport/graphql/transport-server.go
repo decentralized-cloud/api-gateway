@@ -10,6 +10,7 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/transport"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/friendsofgo/graphiql"
 	"github.com/gobuffalo/packr"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -54,7 +55,7 @@ func NewTransportService(
 // Start starts the GraphQL transport service
 // Returns error if something goes wrong
 func (service *transportService) Start() error {
-	config := &atreugo.Config{}
+	config := &atreugo.Config{GracefulShutdown: true}
 	var err error
 
 	host, err := service.configurationService.GetHost()
@@ -90,7 +91,14 @@ func (service *transportService) Start() error {
 	}
 
 	service.schema = graphql.MustParseSchema(graphqlSchema, rootResolver)
+
+	graphiqlHandler, err := graphiql.NewGraphiqlHandler("/query")
+	if err != nil {
+		return err
+	}
+
 	server.Path("POST", "/query", service.graphQLHandler)
+	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	service.logger.Info("GraphQL server started", zap.String("address", config.Addr))
 
 	return server.ListenAndServe()
