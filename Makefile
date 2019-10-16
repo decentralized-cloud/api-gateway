@@ -66,6 +66,10 @@ test: ## Run unit tests
 publish-test-results: ## Publish test results
 	@goveralls -coverprofile="$(REPORTS_DIR)/coverage.out" -service=$(CI_SERVICE) -repotoken $(COVERALLS_TOKEN)
 
+.PHONY: build-and-push-helm-chart
+build-and-push-helm-chart: ## Build and push helm chart
+	@$(CURRENT_DIRECTORY)/script/build-and-push-helm-chart.sh
+
 .PHONY: list
 list: ## List all make targets
 	@$(MAKE) -pRrn : -f $(MAKEFILE_LIST) 2>/dev/null | awk -v RS= -F: '/^# File/,/^# Finished Make data base/ {if ($$1 !~ "^[#.]") {print $$1}}' | egrep -v -e '^[^[:alnum:]]' -e '^$@$$' | sort
