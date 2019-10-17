@@ -33,3 +33,10 @@ func (service *envConfigurationService) GetPort() (int, error) {
 
 	return portNumber, nil
 }
+
+// GetTenantServiceAddress retrieves tenant service full gRPC address and returns it.
+// The address will be used to dial the gRPC client to connect to the tenant service.
+// Returns the tenant service address or error if something goes wrong
+func (service *envConfigurationService) GetTenantServiceAddress() (string, error) {
+	return os.Getenv("TENANT_ADDRESS"), nil
+}

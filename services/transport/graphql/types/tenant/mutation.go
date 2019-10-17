@@ -15,10 +15,13 @@ type MutationResolverCreatorContract interface {
 
 	// NewCreateTenantPayloadResolver creates new instance of the CreateTenantPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+	// tenantID: Mandatory. The tenant unique identifier
 	// Returns the new instance or error if something goes wrong
 	NewCreateTenantPayloadResolver(
 		ctx context.Context,
-		clientMutationId *string) (CreateTenantPayloadResolverContract, error)
+		clientMutationId *string,
+		tenantID string) (CreateTenantPayloadResolverContract, error)
 
 	// NewUpdateTenant creates new instance of the UpdateTenantContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
@@ -27,6 +30,7 @@ type MutationResolverCreatorContract interface {
 
 	// NewUpdateTenantPayloadResolver creates new instance of the UpdateTenantPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// Returns the new instance or error if something goes wrong
 	NewUpdateTenantPayloadResolver(
 		ctx context.Context,
@@ -39,6 +43,7 @@ type MutationResolverCreatorContract interface {
 
 	// NewDeleteTenantPayloadResolver creates new instance of the DeleteTenantPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// Returns the new instance or error if something goes wrong
 	NewDeleteTenantPayloadResolver(
 		ctx context.Context,

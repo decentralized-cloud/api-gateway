@@ -10,4 +10,9 @@ type ConfigurationContract interface {
 	// GetPort retrieves port number
 	// Returns the port number or error if something goes wrong
 	GetPort() (int, error)
+
+	// GetTenantServiceAddress retrieves tenant service full gRPC address and returns it.
+	// The address will be used to dial the gRPC client to connect to the tenant service.
+	// Returns the tenant service address or error if something goes wrong
+	GetTenantServiceAddress() (string, error)
 }

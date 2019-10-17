@@ -61,3 +61,18 @@ func (mr *MockConfigurationContractMockRecorder) GetPort() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPort", reflect.TypeOf((*MockConfigurationContract)(nil).GetPort))
 }
+
+// GetTenantServiceAddress mocks base method
+func (m *MockConfigurationContract) GetTenantServiceAddress() (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetTenantServiceAddress")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetTenantServiceAddress indicates an expected call of GetTenantServiceAddress
+func (mr *MockConfigurationContractMockRecorder) GetTenantServiceAddress() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTenantServiceAddress", reflect.TypeOf((*MockConfigurationContract)(nil).GetTenantServiceAddress))
+}
