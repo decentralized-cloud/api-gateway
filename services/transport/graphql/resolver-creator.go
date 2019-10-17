@@ -4,6 +4,7 @@ package graphql
 import (
 	"context"
 
+	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	mutationedgecluster "github.com/decentralized-cloud/api-gateway/services/transport/graphql/mutation/edgecluster"
 	mutationtenant "github.com/decentralized-cloud/api-gateway/services/transport/graphql/mutation/tenant"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/query"
@@ -21,19 +22,28 @@ import (
 )
 
 type resolverCreator struct {
-	logger *zap.Logger
+	logger               *zap.Logger
+	configurationService configuration.ConfigurationContract
 }
 
 // NewResolverCreator creates new instance of the resolverCreator, setting up all dependencies and returns the instance
 // logger: Mandatory. Reference to the logger service
+// configurationService: Mandatory. Reference to the configuration service
 // Returns the new instance or error if something goes wrong
-func NewResolverCreator(logger *zap.Logger) (types.ResolverCreatorContract, error) {
+func NewResolverCreator(
+	logger *zap.Logger,
+	configurationService configuration.ConfigurationContract) (types.ResolverCreatorContract, error) {
 	if logger == nil {
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
+	if configurationService == nil {
+		return nil, commonErrors.NewArgumentNilError("configurationService", "configurationService is required")
+	}
+
 	return &resolverCreator{
-		logger: logger,
+		logger:               logger,
+		configurationService: configurationService,
 	}, nil
 }
 
@@ -92,6 +102,7 @@ func (creator *resolverCreator) NewTenantResolver(
 		ctx,
 		creator,
 		creator.logger,
+		creator.configurationService,
 		tenantID)
 }
 
@@ -162,19 +173,24 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.Cre
 	return mutationtenant.NewCreateTenant(
 		ctx,
 		creator,
-		creator.logger)
+		creator.logger,
+		creator.configurationService)
 }
 
 // NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+// tenantID: Mandatory. The tenant unique identifier
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateTenantPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (tenant.CreateTenantPayloadResolverContract, error) {
+	clientMutationId *string,
+	tenantID string) (tenant.CreateTenantPayloadResolverContract, error) {
 	return mutationtenant.NewCreateTenantPayloadResolver(
 		ctx,
 		creator,
-		clientMutationId)
+		clientMutationId,
+		tenantID)
 }
 
 // NewUpdateTenant creates new instance of the updateTenant, setting up all dependencies and returns the instance
@@ -189,6 +205,7 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.Upd
 
 // NewUpdateTenantPayloadResolver creates new instance of the updateTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
 	ctx context.Context,
@@ -211,6 +228,7 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.Del
 
 // NewDeleteTenantPayloadResolver creates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
 	ctx context.Context,
@@ -233,6 +251,7 @@ func (creator *resolverCreator) NewCreateEdgeCluster(ctx context.Context) (edgec
 
 // NewCreateEdgeClusterPayloadResolver creates new instance of the createEdgeClusterPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateEdgeClusterPayloadResolver(
 	ctx context.Context,
@@ -255,6 +274,7 @@ func (creator *resolverCreator) NewUpdateEdgeCluster(ctx context.Context) (edgec
 
 // NewUpdateEdgeClusterPayloadResolver creates new instance of the updateEdgeClusterPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateEdgeClusterPayloadResolver(
 	ctx context.Context,
@@ -277,6 +297,7 @@ func (creator *resolverCreator) NewDeleteEdgeCluster(ctx context.Context) (edgec
 
 // NewDeleteEdgeClusterPayloadResolver creates new instance of the deleteEdgeClusterPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteEdgeClusterPayloadResolver(
 	ctx context.Context,

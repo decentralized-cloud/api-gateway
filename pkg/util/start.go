@@ -61,7 +61,9 @@ func setupDependencies(logger *zap.Logger) (err error) {
 		return
 	}
 
-	if resolverCreator, err = graphql.NewResolverCreator(logger); err != nil {
+	if resolverCreator, err = graphql.NewResolverCreator(
+		logger,
+		configurationService); err != nil {
 		return
 	}
 

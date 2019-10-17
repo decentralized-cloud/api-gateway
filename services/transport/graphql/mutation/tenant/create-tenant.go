@@ -3,23 +3,28 @@ package tenant
 
 import (
 	"context"
+	"errors"
 
+	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types/tenant"
+	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
-	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 type createTenant struct {
-	logger          *zap.Logger
-	resolverCreator types.ResolverCreatorContract
+	logger               *zap.Logger
+	resolverCreator      types.ResolverCreatorContract
+	tenantServiceAddress string
 }
 
 type createTenantPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
+	tenantID         string
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
@@ -30,7 +35,8 @@ type createTenantPayloadResolver struct {
 func NewCreateTenant(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	logger *zap.Logger) (tenant.CreateTenantContract, error) {
+	logger *zap.Logger,
+	configurationService configuration.ConfigurationContract) (tenant.CreateTenantContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -43,9 +49,19 @@ func NewCreateTenant(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
+	if configurationService == nil {
+		return nil, commonErrors.NewArgumentNilError("configurationService", "configurationService is required")
+	}
+
+	tenantServiceAddress, err := configurationService.GetTenantServiceAddress()
+	if err != nil {
+		return nil, err
+	}
+
 	return &createTenant{
-		logger:          logger,
-		resolverCreator: resolverCreator,
+		logger:               logger,
+		resolverCreator:      resolverCreator,
+		tenantServiceAddress: tenantServiceAddress,
 	}, nil
 }
 
@@ -56,7 +72,8 @@ func NewCreateTenant(
 func NewCreateTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	clientMutationId *string) (tenant.CreateTenantPayloadResolverContract, error) {
+	clientMutationId *string,
+	tenantID string) (tenant.CreateTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -68,6 +85,7 @@ func NewCreateTenantPayloadResolver(
 	return &createTenantPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
+		tenantID:         tenantID,
 	}, nil
 }
 
@@ -78,14 +96,38 @@ func NewCreateTenantPayloadResolver(
 func (m *createTenant) MutateAndGetPayload(
 	ctx context.Context,
 	args tenant.CreateTenantInputArgument) (tenant.CreateTenantPayloadResolverContract, error) {
-	return m.resolverCreator.NewCreateTenantPayloadResolver(ctx, args.Input.ClientMutationId)
+	connection, err := grpc.Dial(m.tenantServiceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+	defer connection.Close()
+
+	client := tenantGrpcContract.NewTenantServiceClient(connection)
+	response, err := client.CreateTenant(
+		ctx,
+		&tenantGrpcContract.CreateTenantRequest{
+			Tenant: &tenantGrpcContract.Tenant{
+				Name: args.Input.Name,
+			}})
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error != tenantGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(response.ErrorMessage)
+	}
+
+	return m.resolverCreator.NewCreateTenantPayloadResolver(
+		ctx,
+		args.Input.ClientMutationId,
+		response.TenantID)
 }
 
 // Tenant returns the new tenant inforamtion
 // ctx: Mandatory. Reference to the context
 // Returns the new tenant inforamtion
 func (r *createTenantPayloadResolver) Tenant(ctx context.Context) (tenant.TenantTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New tenant cursor")
+	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(r.tenantID), "Not implemented")
 
 	return resolver, err
 }

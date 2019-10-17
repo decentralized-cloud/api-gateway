@@ -84,7 +84,7 @@ func (m *updateTenant) MutateAndGetPayload(
 // ctx: Mandatory. Reference to the context
 // Returns the updated tenant inforamtion
 func (r *updateTenantPayloadResolver) Tenant(ctx context.Context) (tenant.TenantTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New tenant cursor")
+	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "Not implemented")
 
 	return resolver, err
 }
