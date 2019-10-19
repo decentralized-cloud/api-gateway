@@ -73,6 +73,7 @@ steps:
 
 - task: Docker@2
   displayName: "Build and Push Helm Chart"
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
   inputs:
     repository: $(DOCKER_REPOSITORY_NAME)
     command: 'build'
