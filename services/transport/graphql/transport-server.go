@@ -99,6 +99,8 @@ func (service *transportService) Start() error {
 	}
 
 	server.Path("POST", "/graphql", service.graphQLHandler)
+	server.Path("GET", "/live", service.livenessCheckHandler)
+	server.Path("GET", "/ready", service.readinessCheckHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	server.NetHTTPPath("GET", "/metrics", promhttp.Handler())
 	service.logger.Info("GraphQL server started", zap.String("address", config.Addr))
@@ -128,4 +130,16 @@ func (service *transportService) graphQLHandler(ctx *atreugo.RequestCtx) error {
 	response := service.schema.Exec(ctx, params.Query, params.OperationName, params.Variables)
 
 	return ctx.JSONResponse(response, http.StatusOK)
+}
+
+func (service *transportService) readinessCheckHandler(ctx *atreugo.RequestCtx) error {
+	ctx.Response.SetStatusCode(http.StatusOK)
+
+	return nil
+}
+
+func (service *transportService) livenessCheckHandler(ctx *atreugo.RequestCtx) error {
+	ctx.Response.SetStatusCode(http.StatusOK)
+
+	return nil
 }
