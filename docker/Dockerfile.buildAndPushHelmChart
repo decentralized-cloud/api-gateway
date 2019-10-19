@@ -1,0 +1,26 @@
+FROM decentralizedcloud/k8s-toolset:v0.0.5
+LABEL maintainer="morteza.alizadeh@gmail.com"
+
+ARG VERSION
+ARG GITHUB_ACCESS_CREDENTIAL
+
+ADD . /src
+WORKDIR /src
+
+RUN git config --global http.sslVerify false
+RUN git config --global user.email "ci@micro-business.co.nz"
+RUN git config --global user.name "CI-Pipeline"
+
+RUN sed -i -e 's/version: 0\.0\.0/version: '$VERSION'/g' helm-charts/Chart.yaml
+RUN sed -i -e 's/appVersion: 0\.0\.0/appVersion: '$VERSION'/g' helm-charts/Chart.yaml
+RUN helm package helm-charts
+
+RUN git clone https://$GITHUB_ACCESS_CREDENTIAL@github.com/decentralized-cloud/helm.git
+RUN mv -f api-gateway-$VERSION.tgz helm
+
+WORKDIR /src/helm
+RUN helm repo index . --url https://decentralized-cloud.github.io/helm/
+RUN git add .
+RUN git commit -am "CI: API Gateway - $VERSION"
+RUN git push
+

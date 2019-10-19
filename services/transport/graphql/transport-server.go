@@ -92,12 +92,12 @@ func (service *transportService) Start() error {
 
 	service.schema = graphql.MustParseSchema(graphqlSchema, rootResolver)
 
-	graphiqlHandler, err := graphiql.NewGraphiqlHandler("/query")
+	graphiqlHandler, err := graphiql.NewGraphiqlHandler("/graphql")
 	if err != nil {
 		return err
 	}
 
-	server.Path("POST", "/query", service.graphQLHandler)
+	server.Path("POST", "/graphql", service.graphQLHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	service.logger.Info("GraphQL server started", zap.String("address", config.Addr))
 
