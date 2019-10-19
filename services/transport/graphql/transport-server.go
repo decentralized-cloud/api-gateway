@@ -14,6 +14,7 @@ import (
 	"github.com/gobuffalo/packr"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/savsgio/atreugo/v9"
 	"go.uber.org/zap"
 )
@@ -99,6 +100,7 @@ func (service *transportService) Start() error {
 
 	server.Path("POST", "/graphql", service.graphQLHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
+	server.NetHTTPPath("GET", "/metrics", promhttp.Handler())
 	service.logger.Info("GraphQL server started", zap.String("address", config.Addr))
 
 	return server.ListenAndServe()
