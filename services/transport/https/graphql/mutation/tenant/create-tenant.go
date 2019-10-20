@@ -5,20 +5,18 @@ import (
 	"context"
 	"errors"
 
-	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
 	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 type createTenant struct {
-	logger               *zap.Logger
-	resolverCreator      types.ResolverCreatorContract
-	tenantServiceAddress string
+	logger              *zap.Logger
+	resolverCreator     types.ResolverCreatorContract
+	tenantServiceClient tenantGrpcContract.TenantServiceClient
 }
 
 type createTenantPayloadResolver struct {
@@ -31,12 +29,13 @@ type createTenantPayloadResolver struct {
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
+// tenantServiceClient: Mandatory. Reference to the tenant service gRPC client that will be used to contact the tenant service
 // Returns the new instance or error if something goes wrong
 func NewCreateTenant(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	configurationService configuration.ConfigurationContract) (tenant.CreateTenantContract, error) {
+	tenantServiceClient tenantGrpcContract.TenantServiceClient) (tenant.CreateTenantContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -49,19 +48,14 @@ func NewCreateTenant(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if configurationService == nil {
-		return nil, commonErrors.NewArgumentNilError("configurationService", "configurationService is required")
-	}
-
-	tenantServiceAddress, err := configurationService.GetTenantServiceAddress()
-	if err != nil {
-		return nil, err
+	if tenantServiceClient == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
 	}
 
 	return &createTenant{
-		logger:               logger,
-		resolverCreator:      resolverCreator,
-		tenantServiceAddress: tenantServiceAddress,
+		logger:              logger,
+		resolverCreator:     resolverCreator,
+		tenantServiceClient: tenantServiceClient,
 	}, nil
 }
 
@@ -98,14 +92,7 @@ func NewCreateTenantPayloadResolver(
 func (m *createTenant) MutateAndGetPayload(
 	ctx context.Context,
 	args tenant.CreateTenantInputArgument) (tenant.CreateTenantPayloadResolverContract, error) {
-	connection, err := grpc.Dial(m.tenantServiceAddress, grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-	defer connection.Close()
-
-	client := tenantGrpcContract.NewTenantServiceClient(connection)
-	response, err := client.CreateTenant(
+	response, err := m.tenantServiceClient.CreateTenant(
 		ctx,
 		&tenantGrpcContract.CreateTenantRequest{
 			Tenant: &tenantGrpcContract.Tenant{
