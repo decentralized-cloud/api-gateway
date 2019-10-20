@@ -12,10 +12,11 @@ require (
 	github.com/lucsky/cuid v1.0.2
 	github.com/micro-business/go-core v0.0.9
 	github.com/prometheus/client_golang v1.2.1
-	github.com/rogpeppe/go-internal v1.4.0 // indirect
+	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/savsgio/atreugo/v9 v9.0.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/zap v1.10.0
+	golang.org/x/sys v0.0.0-20191018095205-727590c5006e // indirect
 	google.golang.org/grpc v1.24.0
 )

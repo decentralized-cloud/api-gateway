@@ -53,7 +53,7 @@ func StartService() {
 		logger.Info("Received an interrupt, stopping services...")
 
 		if err := httpsTransportService.Stop(); err != nil {
-			logger.Error("Failed to stop GraphQL transport service", zap.Error(err))
+			logger.Error("Failed to stop HTTPS transport service", zap.Error(err))
 		}
 
 		close(cleanupDone)
