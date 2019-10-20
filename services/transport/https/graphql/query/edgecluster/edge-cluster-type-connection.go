@@ -1,4 +1,4 @@
-// package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
+// Package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
 package edgeclster
 
 import (

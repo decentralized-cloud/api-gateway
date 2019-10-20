@@ -1,4 +1,4 @@
-// package tenant implements tenant mutation required by the GraphQL transport layer
+// Package tenant implements tenant mutation required by the GraphQL transport layer
 package tenant
 
 import (
@@ -65,9 +65,11 @@ func NewCreateTenant(
 	}, nil
 }
 
-// NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolvere, setting up all dependencies and returns the instance
+// NewCreateTenantPayloadResolver updates new instance of the createTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
-// resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
+// resolverCreator: Mandatory. Reference to the resolver creator service that can update new instances of resolvers
+// clientMutationId: Optional. Reference to the client mutation ID
+// tenantID: Mandatory. The tenant unique identifier
 // Returns the new instance or error if something goes wrong
 func NewCreateTenantPayloadResolver(
 	ctx context.Context,

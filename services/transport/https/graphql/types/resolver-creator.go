@@ -1,4 +1,4 @@
-// package types defines the different interfaces used in the GraphQL implementation
+// Package types defines the different interfaces used in the GraphQL implementation
 package types
 
 import (

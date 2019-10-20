@@ -54,7 +54,7 @@ type TenantResolverContract interface {
 		ctx context.Context,
 		args TenantClusterEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error)
 
-	// EdgeClusters returns tenant conenction compatible with graphql-relay
+	// EdgeClusters returns tenant connection compatible with graphql-relay
 	// ctx: Mandatory. Reference to the context
 	// args: Mandatory. The argument list
 	// Returns the tenant resolver or error if something goes wrong

@@ -1,4 +1,4 @@
-// package edgecluster implements edge cluster mutation required by the GraphQL transport layer
+// Package edgecluster implements edge cluster mutation required by the GraphQL transport layer
 package edgeclster
 
 import (
