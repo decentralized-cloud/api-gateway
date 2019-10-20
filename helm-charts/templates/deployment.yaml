@@ -28,22 +28,22 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: PORT
-              value: "{{ .Values.pod.port }}"
+            - name: HTTPS_PORT
+              value: "{{ .Values.pod.httpsport }}"
             - name: TENANT_ADDRESS
               value: "{{ .Values.pod.services.tenant }}"
           ports:
-            - name: http
-              containerPort: {{ .Values.pod.port }}
+            - name: https
+              containerPort: {{ .Values.pod.httpsport }}
               protocol: TCP
           livenessProbe:
             httpGet:
               path: /live
-              port: http
+              port: https
           readinessProbe:
             httpGet:
               path: /ready
-              port: http
+              port: https
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}

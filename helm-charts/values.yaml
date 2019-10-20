@@ -31,13 +31,13 @@ securityContext: {}
   # runAsUser: 1000
 
 pod:
-  port: 80
+  httpsport: 80
   services:
     tenant: "tenant:80"
 
 service:
   type: LoadBalancer
-  port: 80
+  httpsport: 80
 
 ingress:
   enabled: false
