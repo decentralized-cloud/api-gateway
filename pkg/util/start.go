@@ -7,8 +7,9 @@ import (
 	"os/signal"
 
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
-	"github.com/decentralized-cloud/api-gateway/services/transport/graphql"
-	"github.com/decentralized-cloud/api-gateway/services/transport/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/transport/https"
+	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql"
+	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"go.uber.org/zap"
 )
 
@@ -29,7 +30,7 @@ func StartService() {
 		logger.Fatal("Failed to setup dependecies", zap.Error(err))
 	}
 
-	graphqlTransportService, err := graphql.NewTransportService(
+	httpsTransportService, err := https.NewTransportService(
 		logger,
 		configurationService,
 		resolverCreator)
@@ -37,17 +38,21 @@ func StartService() {
 		logger.Fatal("Failed to create GraphQL transport service", zap.Error(err))
 	}
 
-	go graphqlTransportService.Start()
-
 	signalChan := make(chan os.Signal, 1)
 	cleanupDone := make(chan struct{})
 	signal.Notify(signalChan, os.Interrupt)
 
 	go func() {
+		if serviceErr := httpsTransportService.Start(); serviceErr != nil {
+			logger.Fatal("Failed to start HTTPS transport service", zap.Error(serviceErr))
+		}
+	}()
+
+	go func() {
 		<-signalChan
 		logger.Info("Received an interrupt, stopping services...")
 
-		if err := graphqlTransportService.Stop(); err != nil {
+		if err := httpsTransportService.Stop(); err != nil {
 			logger.Error("Failed to stop GraphQL transport service", zap.Error(err))
 		}
 

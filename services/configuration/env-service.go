@@ -4,6 +4,7 @@ package configuration
 import (
 	"os"
 	"strconv"
+	"strings"
 )
 
 type envConfigurationService struct {
@@ -25,10 +26,13 @@ func (service *envConfigurationService) GetHost() (string, error) {
 // Returns the port number or error if something goes wrong
 func (service *envConfigurationService) GetPort() (int, error) {
 	portNumberString := os.Getenv("PORT")
-	portNumber, err := strconv.Atoi(portNumberString)
+	if strings.Trim(portNumberString, " ") == "" {
+		return 0, NewUnknownError("PORT is required")
+	}
 
+	portNumber, err := strconv.Atoi(portNumberString)
 	if err != nil {
-		return 0, NewUnknownError(err.Error())
+		return 0, NewUnknownErrorWithError("Failed to convert PORT to integer", err)
 	}
 
 	return portNumber, nil
@@ -38,5 +42,10 @@ func (service *envConfigurationService) GetPort() (int, error) {
 // The address will be used to dial the gRPC client to connect to the tenant service.
 // Returns the tenant service address or error if something goes wrong
 func (service *envConfigurationService) GetTenantServiceAddress() (string, error) {
-	return os.Getenv("TENANT_ADDRESS"), nil
+	address := os.Getenv("TENANT_ADDRESS")
+	if strings.Trim(address, " ") == "" {
+		return "", NewUnknownError("TENANT_ADDRESS is required")
+	}
+
+	return address, nil
 }
