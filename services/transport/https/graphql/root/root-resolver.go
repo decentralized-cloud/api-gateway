@@ -1,4 +1,4 @@
-// package root implements GraphQL root resolvers required by the GraphQL transport layer
+// Package root implements GraphQL root resolvers required by the GraphQL transport layer
 package root
 
 import (

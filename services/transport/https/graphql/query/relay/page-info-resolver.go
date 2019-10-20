@@ -1,4 +1,4 @@
-// package relay implements common relay GraphQL query resovlers required by the GraphQL transport layer
+// Package relay implements common relay GraphQL query resovlers required by the GraphQL transport layer
 package relay
 
 import (

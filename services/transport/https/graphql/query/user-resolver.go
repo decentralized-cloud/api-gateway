@@ -1,4 +1,4 @@
-// package query implements different GraphQL query resovlers required by the GraphQL transport layer
+// Package query implements different GraphQL query resovlers required by the GraphQL transport layer
 package query
 
 import (
@@ -72,7 +72,7 @@ func (r *userResolver) Tenant(
 		args.TenantID)
 }
 
-// Tenants returns tenant conenction compatible with graphql-relay
+// Tenants returns tenant connection compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
 // Returns the tenant resolver or error if something goes wrong
@@ -94,7 +94,7 @@ func (r *userResolver) EdgeCluster(
 		args.EdgeClusterID)
 }
 
-// EdgeClusters returns tenant conenction compatible with graphql-relay
+// EdgeClusters returns tenant connection compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
 // Returns the tenant resolver or error if something goes wrong

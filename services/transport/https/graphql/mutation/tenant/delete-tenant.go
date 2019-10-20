@@ -1,4 +1,4 @@
-// package tenant implements tenant mutation required by the GraphQL transport layer
+// Package tenant implements tenant mutation required by the GraphQL transport layer
 package tenant
 
 import (
@@ -47,9 +47,11 @@ func NewDeleteTenant(
 	}, nil
 }
 
-// Tenant returns the deleted tenant inforamtion
+// NewDeleteTenantPayloadResolver updates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
-// Returns the deleted tenant inforamtion
+// resolverCreator: Mandatory. Reference to the resolver creator service that can update new instances of resolvers
+// clientMutationId: Optional. Reference to the client mutation ID
+// Returns the new instance or error if something goes wrong
 func NewDeleteTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,

@@ -1,4 +1,4 @@
-// package tenant implements different tenant GraphQL query resovlers required by the GraphQL transport layer
+// Package tenant implements different tenant GraphQL query resovlers required by the GraphQL transport layer
 package tenant
 
 import (
