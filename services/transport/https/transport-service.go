@@ -103,7 +103,7 @@ func (service *transportService) Start() error {
 	server.Path("GET", "/ready", service.readinessCheckHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	server.NetHTTPPath("GET", "/metrics", promhttp.Handler())
-	service.logger.Info("GraphQL service started", zap.String("address", config.Addr))
+	service.logger.Info("HTTPS service started", zap.String("address", config.Addr))
 
 	return server.ListenAndServe()
 }
