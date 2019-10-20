@@ -1,15 +1,15 @@
-// Package configuration implements configuration service required by the tenant service
+// Package configuration implements configuration service required by the api-gateway service
 package configuration
 
 // ConfigurationContract declares the service that provides configuration required by different Tenat modules
 type ConfigurationContract interface {
-	// GetHost retrieves host name
-	// Returns the host name or error if something goes wrong
-	GetHost() (string, error)
+	// GetHttpsHost retrieves HTTPS host name
+	// Returns the HTTPS host name or error if something goes wrong
+	GetHttpsHost() (string, error)
 
-	// GetPort retrieves port number
-	// Returns the port number or error if something goes wrong
-	GetPort() (int, error)
+	// GetHttpsPort retrieves HTTPS port number
+	// Returns the HTTPS port number or error if something goes wrong
+	GetHttpsPort() (int, error)
 
 	// GetTenantServiceAddress retrieves tenant service full gRPC address and returns it.
 	// The address will be used to dial the gRPC client to connect to the tenant service.

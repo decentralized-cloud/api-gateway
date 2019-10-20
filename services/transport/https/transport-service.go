@@ -26,7 +26,7 @@ type transportService struct {
 	schema               *graphql.Schema
 }
 
-// NewTransportService creates new instance of the GRPCService, setting up all dependencies and returns the instance
+// NewTransportService creates new instance of the transportService, setting up all dependencies and returns the instance
 // logger: Mandatory. Reference to the logger service
 // configurationService: Mandatory. Reference to the service that provides required configurations
 // Returns the new service or error if something goes wrong
@@ -59,12 +59,12 @@ func (service *transportService) Start() error {
 	config := &atreugo.Config{GracefulShutdown: true}
 	var err error
 
-	host, err := service.configurationService.GetHost()
+	host, err := service.configurationService.GetHttpsHost()
 	if err != nil {
 		return err
 	}
 
-	port, err := service.configurationService.GetPort()
+	port, err := service.configurationService.GetHttpsPort()
 	if err != nil {
 		return err
 	}
@@ -103,7 +103,7 @@ func (service *transportService) Start() error {
 	server.Path("GET", "/ready", service.readinessCheckHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	server.NetHTTPPath("GET", "/metrics", promhttp.Handler())
-	service.logger.Info("GraphQL server started", zap.String("address", config.Addr))
+	service.logger.Info("GraphQL service started", zap.String("address", config.Addr))
 
 	return server.ListenAndServe()
 }
