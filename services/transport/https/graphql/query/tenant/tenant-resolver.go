@@ -6,7 +6,6 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
@@ -14,7 +13,6 @@ import (
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 type tenantResolver struct {
@@ -28,13 +26,14 @@ type tenantResolver struct {
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
+// tenantServiceClient: Mandatory. Reference to the tenant service gRPC client that will be used to contact the tenant service
 // tenantID: Mandatory. the tenant unique identifier
 // Returns the new instance or error if something goes wrong
 func NewTenantResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	configurationService configuration.ConfigurationContract,
+	tenantServiceClient tenantGrpcContract.TenantServiceClient,
 	tenantID graphql.ID) (tenant.TenantResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -48,28 +47,15 @@ func NewTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if configurationService == nil {
-		return nil, commonErrors.NewArgumentNilError("configurationService", "configurationService is required")
+	if tenantServiceClient == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
 	}
 
 	if strings.Trim(string(tenantID), " ") == "" {
 		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
 	}
 
-	tenantServiceAddress, err := configurationService.GetTenantServiceAddress()
-	if err != nil {
-		return nil, err
-	}
-
-	connection, err := grpc.Dial(tenantServiceAddress, grpc.WithInsecure())
-	if err != nil {
-		return nil, err
-	}
-
-	defer connection.Close()
-
-	client := tenantGrpcContract.NewTenantServiceClient(connection)
-	response, err := client.ReadTenant(
+	response, err := tenantServiceClient.ReadTenant(
 		ctx,
 		&tenantGrpcContract.ReadTenantRequest{
 			TenantID: string(tenantID),

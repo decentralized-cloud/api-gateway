@@ -16,14 +16,16 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/relay"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
+	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 type resolverCreator struct {
-	logger               *zap.Logger
-	configurationService configuration.ConfigurationContract
+	logger                 *zap.Logger
+	tenantClientConnection *grpc.ClientConn
 }
 
 // NewResolverCreator creates new instance of the resolverCreator, setting up all dependencies and returns the instance
@@ -41,9 +43,21 @@ func NewResolverCreator(
 		return nil, commonErrors.NewArgumentNilError("configurationService", "configurationService is required")
 	}
 
+	tenantServiceAddress, err := configurationService.GetTenantServiceAddress()
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: 20/10/2019 - Morteza, two things here, first we need to find out whether the below created connection can recover from failure
+	// and second when to call connection.Close function.
+	tenantClientConnection, err := grpc.Dial(tenantServiceAddress, grpc.WithInsecure())
+	if err != nil {
+		return nil, err
+	}
+
 	return &resolverCreator{
-		logger:               logger,
-		configurationService: configurationService,
+		logger:                 logger,
+		tenantClientConnection: tenantClientConnection,
 	}, nil
 }
 
@@ -102,7 +116,7 @@ func (creator *resolverCreator) NewTenantResolver(
 		ctx,
 		creator,
 		creator.logger,
-		creator.configurationService,
+		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection),
 		tenantID)
 }
 
@@ -174,7 +188,7 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.Cre
 		ctx,
 		creator,
 		creator.logger,
-		creator.configurationService)
+		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
 }
 
 // NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolver, setting up all dependencies and returns the instance
