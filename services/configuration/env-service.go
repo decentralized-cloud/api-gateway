@@ -1,4 +1,4 @@
-// Package configuration implements configuration service required by the tenant service
+// Package configuration implements configuration service required by the api-gateway service
 package configuration
 
 import (
@@ -16,23 +16,23 @@ func NewEnvConfigurationService() (ConfigurationContract, error) {
 	return &envConfigurationService{}, nil
 }
 
-// GetHost retrieves host name
-// Returns the host name or error if something goes wrong
-func (service *envConfigurationService) GetHost() (string, error) {
-	return os.Getenv("HOST"), nil
+// GetHttpsHost retrieves HTTPS host name
+// Returns the HTTPS host name or error if something goes wrong
+func (service *envConfigurationService) GetHttpsHost() (string, error) {
+	return os.Getenv("HTTPS_HOST"), nil
 }
 
-// GetPort retrieves port number
-// Returns the port number or error if something goes wrong
-func (service *envConfigurationService) GetPort() (int, error) {
-	portNumberString := os.Getenv("PORT")
+// GetHttpsPort retrieves HTTPS port number
+// Returns the HTTPS port number or error if something goes wrong
+func (service *envConfigurationService) GetHttpsPort() (int, error) {
+	portNumberString := os.Getenv("HTTPS_PORT")
 	if strings.Trim(portNumberString, " ") == "" {
-		return 0, NewUnknownError("PORT is required")
+		return 0, NewUnknownError("HTTPS_PORT is required")
 	}
 
 	portNumber, err := strconv.Atoi(portNumberString)
 	if err != nil {
-		return 0, NewUnknownErrorWithError("Failed to convert PORT to integer", err)
+		return 0, NewUnknownErrorWithError("Failed to convert HTTPS_PORT to integer", err)
 	}
 
 	return portNumber, nil

@@ -3,7 +3,7 @@ module github.com/decentralized-cloud/api-gateway
 go 1.13
 
 require (
-	github.com/decentralized-cloud/tenant v0.0.7
+	github.com/decentralized-cloud/tenant v0.0.9
 	github.com/friendsofgo/graphiql v0.2.2
 	github.com/gobuffalo/envy v1.7.1 // indirect
 	github.com/gobuffalo/packr v1.30.1
@@ -15,7 +15,6 @@ require (
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/savsgio/atreugo/v9 v9.0.0
 	github.com/spf13/cobra v0.0.5
-	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/zap v1.10.0
 	golang.org/x/sys v0.0.0-20191018095205-727590c5006e // indirect
 	google.golang.org/grpc v1.24.0

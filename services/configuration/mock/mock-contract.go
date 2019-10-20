@@ -32,34 +32,34 @@ func (m *MockConfigurationContract) EXPECT() *MockConfigurationContractMockRecor
 	return m.recorder
 }
 
-// GetHost mocks base method
-func (m *MockConfigurationContract) GetHost() (string, error) {
+// GetHttpsHost mocks base method
+func (m *MockConfigurationContract) GetHttpsHost() (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetHost")
+	ret := m.ctrl.Call(m, "GetHttpsHost")
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetHost indicates an expected call of GetHost
-func (mr *MockConfigurationContractMockRecorder) GetHost() *gomock.Call {
+// GetHttpsHost indicates an expected call of GetHttpsHost
+func (mr *MockConfigurationContractMockRecorder) GetHttpsHost() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHost", reflect.TypeOf((*MockConfigurationContract)(nil).GetHost))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHttpsHost", reflect.TypeOf((*MockConfigurationContract)(nil).GetHttpsHost))
 }
 
-// GetPort mocks base method
-func (m *MockConfigurationContract) GetPort() (int, error) {
+// GetHttpsPort mocks base method
+func (m *MockConfigurationContract) GetHttpsPort() (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetPort")
+	ret := m.ctrl.Call(m, "GetHttpsPort")
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetPort indicates an expected call of GetPort
-func (mr *MockConfigurationContractMockRecorder) GetPort() *gomock.Call {
+// GetHttpsPort indicates an expected call of GetHttpsPort
+func (mr *MockConfigurationContractMockRecorder) GetHttpsPort() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPort", reflect.TypeOf((*MockConfigurationContract)(nil).GetPort))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHttpsPort", reflect.TypeOf((*MockConfigurationContract)(nil).GetHttpsPort))
 }
 
 // GetTenantServiceAddress mocks base method
