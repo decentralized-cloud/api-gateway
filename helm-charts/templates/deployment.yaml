@@ -32,6 +32,8 @@ spec:
               value: "{{ .Values.pod.httpsport }}"
             - name: TENANT_ADDRESS
               value: "{{ .Values.pod.services.tenant }}"
+            - name: EDGE_CLUSTER_ADDRESS
+              value: "{{ .Values.pod.services.edgeCluster }}"
           ports:
             - name: https
               containerPort: {{ .Values.pod.httpsport }}
