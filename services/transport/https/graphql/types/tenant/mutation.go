@@ -47,7 +47,8 @@ type MutationResolverCreatorContract interface {
 	// Returns the new instance or error if something goes wrong
 	NewDeleteTenantPayloadResolver(
 		ctx context.Context,
-		clientMutationId *string) (DeleteTenantPayloadResolverContract, error)
+		clientMutationId *string,
+		tenantID string) (DeleteTenantPayloadResolverContract, error)
 }
 
 // RootResolverContract declares the root resolver
@@ -162,6 +163,7 @@ type UpdateTenantInputArgument struct {
 
 type DeleteTenantInput struct {
 	ID               graphql.ID
+	Name             string
 	ClientMutationId *string
 }
 

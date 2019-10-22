@@ -237,7 +237,8 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.Del
 	return mutationtenant.NewDeleteTenant(
 		ctx,
 		creator,
-		creator.logger)
+		creator.logger,
+		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
 }
 
 // NewDeleteTenantPayloadResolver creates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance
@@ -246,11 +247,13 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.Del
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (tenant.DeleteTenantPayloadResolverContract, error) {
+	clientMutationId *string,
+	tenantID string) (tenant.DeleteTenantPayloadResolverContract, error) {
 	return mutationtenant.NewDeleteTenantPayloadResolver(
 		ctx,
 		creator,
-		clientMutationId)
+		clientMutationId,
+		tenantID)
 }
 
 // NewCreateEdgeCluster creates new instance of the createEdgeCluster, setting up all dependencies and returns the instance
