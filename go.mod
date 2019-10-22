@@ -17,5 +17,6 @@ require (
 	github.com/spf13/cobra v0.0.5
 	go.uber.org/zap v1.10.0
 	golang.org/x/sys v0.0.0-20191020212454-3e7259c5e7c2 // indirect
+	golang.org/x/tools v0.0.0-20191021224128-7178990c2503 // indirect
 	google.golang.org/grpc v1.24.0
 )

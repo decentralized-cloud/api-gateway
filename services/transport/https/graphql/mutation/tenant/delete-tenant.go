@@ -3,21 +3,25 @@ package tenant
 
 import (
 	"context"
+	"errors"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
+	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
 type deleteTenant struct {
-	logger          *zap.Logger
-	resolverCreator types.ResolverCreatorContract
+	logger              *zap.Logger
+	resolverCreator     types.ResolverCreatorContract
+	tenantServiceClient tenantGrpcContract.TenantServiceClient
 }
 
 type deleteTenantPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
+	tenantID         string
 }
 
 // NewDeleteTenant deletes new instance of the deleteTenant, setting up all dependencies and returns the instance
@@ -28,7 +32,8 @@ type deleteTenantPayloadResolver struct {
 func NewDeleteTenant(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	logger *zap.Logger) (tenant.DeleteTenantContract, error) {
+	logger *zap.Logger,
+	tenantServiceClient tenantGrpcContract.TenantServiceClient) (tenant.DeleteTenantContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -41,9 +46,14 @@ func NewDeleteTenant(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
+	if tenantServiceClient == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
+	}
+
 	return &deleteTenant{
-		logger:          logger,
-		resolverCreator: resolverCreator,
+		logger:              logger,
+		resolverCreator:     resolverCreator,
+		tenantServiceClient: tenantServiceClient,
 	}, nil
 }
 
@@ -55,7 +65,8 @@ func NewDeleteTenant(
 func NewDeleteTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	clientMutationId *string) (tenant.DeleteTenantPayloadResolverContract, error) {
+	clientMutationId *string,
+	tenantID string) (tenant.DeleteTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -67,6 +78,7 @@ func NewDeleteTenantPayloadResolver(
 	return &deleteTenantPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
+		tenantID:         tenantID,
 	}, nil
 }
 
@@ -77,7 +89,25 @@ func NewDeleteTenantPayloadResolver(
 func (m *deleteTenant) MutateAndGetPayload(
 	ctx context.Context,
 	args tenant.DeleteTenantInputArgument) (tenant.DeleteTenantPayloadResolverContract, error) {
-	return m.resolverCreator.NewDeleteTenantPayloadResolver(ctx, args.Input.ClientMutationId)
+	tenantID := string(args.Input.ID)
+	response, err := m.tenantServiceClient.DeleteTenant(
+		ctx,
+		&tenantGrpcContract.DeleteTenantRequest{
+			TenantID: tenantID,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error != tenantGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(response.ErrorMessage)
+	}
+
+	return m.resolverCreator.NewDeleteTenantPayloadResolver(
+		ctx,
+		args.Input.ClientMutationId,
+		tenantID,
+	)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request
