@@ -5,7 +5,7 @@ import { TenantConnection } from '../type';
 export default mutationWithClientMutationId({
   name: 'UpdateTenant',
   inputFields: {
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    tenantID: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: new GraphQLNonNull(GraphQLString) },
   },
   outputFields: {

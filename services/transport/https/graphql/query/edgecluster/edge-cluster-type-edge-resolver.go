@@ -20,7 +20,7 @@ type edgeClusterTypeEdgeResolver struct {
 // NewEdgeClusterTypeEdgeResolver creates new instance of the edgeClusterTypeEdgeResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
-// edgeClusterID: Mandatory. the edge-cluster unique identifier
+// edgeClusterID: Mandatory. the edge cluster unique identifier
 // cursor: Mandatory. the cursor
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterTypeEdgeResolver(
@@ -51,14 +51,14 @@ func NewEdgeClusterTypeEdgeResolver(
 	}, nil
 }
 
-// Node returns the edge-cluster resolver
+// Node returns the edge cluster resolver
 // ctx: Mandatory. Reference to the context
-// Returns the edge-cluster resolver or error if something goes wrong
+// Returns the edge cluster resolver or error if something goes wrong
 func (r *edgeClusterTypeEdgeResolver) Node(ctx context.Context) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(ctx, r.edgeClusterID)
 }
 
-// Cursor returns the cursor for the edge-cluster edge compatible with graphql-relay
+// Cursor returns the cursor for the edge cluster edge compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // Returns the cursor
 func (r *edgeClusterTypeEdgeResolver) Cursor(ctx context.Context) string {

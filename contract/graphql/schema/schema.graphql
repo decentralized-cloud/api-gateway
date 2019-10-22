@@ -19,7 +19,7 @@ type CreateTenantPayload {
 }
 
 input DeleteEdgeClusterInput {
-  id: ID!
+  edgeClusterID: ID!
   clientMutationId: String
 }
 
@@ -28,7 +28,7 @@ type DeleteEdgeClusterPayload {
 }
 
 input DeleteTenantInput {
-  id: ID!
+  tenantID: ID!
   clientMutationId: String
 }
 
@@ -37,6 +37,12 @@ type DeleteTenantPayload {
 }
 
 type EdgeCluster implements Node {
+  id: ID!
+  name: String!
+  tenant: EdgeClusterTenant!
+}
+
+type EdgeClusterTenant implements Node {
   id: ID!
   name: String!
 }
@@ -119,7 +125,7 @@ type TenantTypeEdge {
 }
 
 input UpdateEdgeClusterInput {
-  id: ID!
+  edgeClusterID: ID!
   name: String!
   clientMutationId: String
 }
@@ -130,7 +136,7 @@ type UpdateEdgeClusterPayload {
 }
 
 input UpdateTenantInput {
-  id: ID!
+  tenantID: ID!
   name: String!
   clientMutationId: String
 }

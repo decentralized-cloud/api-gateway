@@ -140,7 +140,9 @@ func (creator *resolverCreator) NewTenantTypeEdgeResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the TenantTypeConnectionResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewTenantTypeConnectionResolver(ctx context.Context) (tenant.TenantTypeConnectionResolverContract, error) {
-	return querytenant.NewTenantTypeConnectionResolver(ctx, creator)
+	return querytenant.NewTenantTypeConnectionResolver(
+		ctx,
+		creator)
 }
 
 // NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
@@ -177,7 +179,23 @@ func (creator *resolverCreator) NewEdgeClusterTypeEdgeResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterTypeConnectionResolver(ctx context.Context) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
-	return queryedgecluster.NewEdgeClusterTypeConnectionResolver(ctx, creator)
+	return queryedgecluster.NewEdgeClusterTypeConnectionResolver(
+		ctx,
+		creator)
+}
+
+// NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it
+// ctx: Mandatory. Reference to the context
+// tenantID: Mandatory. The tenant unique identifier
+// Returns the EdgeClusterTenatnResolverContract or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterTenantResolver(
+	ctx context.Context,
+	tenantID graphql.ID) (edgecluster.EdgeClusterTenantResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterTenantResolver(
+		ctx,
+		creator,
+		creator.logger,
+		tenantID)
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
@@ -244,6 +262,7 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.Del
 // NewDeleteTenantPayloadResolver creates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+// tenantID: Mandatory. The tenant unique identifier
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
 	ctx context.Context,

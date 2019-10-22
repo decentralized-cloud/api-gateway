@@ -13,25 +13,23 @@ import (
 	"go.uber.org/zap"
 )
 
-type edgeClusterResolver struct {
+type edgeClusterTenantResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
-	edgeclusterID   graphql.ID
-	name            string
 	tenantID        graphql.ID
+	name            string
 }
 
-// NewEdgeClusterResolver creates new instance of the edgeClusterResolver, setting up all dependencies and returns the instance
+// NewEdgeClusterTenantResolver creates new instance of the edgeClusterTenantResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
-// logger: Mandatory. Reference to the logger service
-// edgeClusterID: Mandatory. the edge cluster unique identifier
+// tenantID: Mandatory. the tenant unique identifier
 // Returns the new instance or error if something goes wrong
-func NewEdgeClusterResolver(
+func NewEdgeClusterTenantResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	edgeClusterID graphql.ID) (edgecluster.EdgeClusterResolverContract, error) {
+	tenantID graphql.ID) (edgecluster.EdgeClusterTenantResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -44,36 +42,28 @@ func NewEdgeClusterResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if strings.Trim(string(edgeClusterID), " ") == "" {
-		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
+	if strings.Trim(string(tenantID), " ") == "" {
+		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
 	}
 
-	return &edgeClusterResolver{
+	return &edgeClusterTenantResolver{
 		logger:          logger,
 		resolverCreator: resolverCreator,
-		edgeclusterID:   edgeClusterID,
+		tenantID:        tenantID,
 		name:            cuid.New(),
-		tenantID:        graphql.ID(cuid.New()),
 	}, nil
 }
 
-// ID returns edge cluster unique identifier
+// ID returns tenant unique identifier
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster unique identifier
-func (r *edgeClusterResolver) ID(ctx context.Context) graphql.ID {
-	return r.edgeclusterID
+// Returns the tenant unique identifier
+func (r *edgeClusterTenantResolver) ID(ctx context.Context) graphql.ID {
+	return r.tenantID
 }
 
-// Name returns edge cluster name
+// Name returns tenant name
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster name or error
-func (r *edgeClusterResolver) Name(ctx context.Context) string {
+// Returns the tenant name or error
+func (r *edgeClusterTenantResolver) Name(ctx context.Context) string {
 	return r.name
-}
-
-// Name returns edge cluster tenant
-// ctx: Mandatory. Reference to the context
-// Returns the edge cluster tenant
-func (r *edgeClusterResolver) Tenant(ctx context.Context) (edgecluster.EdgeClusterTenantResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.tenantID)
 }

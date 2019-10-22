@@ -28,6 +28,7 @@ type deleteTenantPayloadResolver struct {
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can delete new instances of resolvers
 // logger: Mandatory. Reference to the logger service
+// tenantServiceClient: Mandatory. Reference to the tenant service gRPC client that will be used to contact the tenant service
 // Returns the new instance or error if something goes wrong
 func NewDeleteTenant(
 	ctx context.Context,
@@ -89,7 +90,7 @@ func NewDeleteTenantPayloadResolver(
 func (m *deleteTenant) MutateAndGetPayload(
 	ctx context.Context,
 	args tenant.DeleteTenantInputArgument) (tenant.DeleteTenantPayloadResolverContract, error) {
-	tenantID := string(args.Input.ID)
+	tenantID := string(args.Input.TenantID)
 	response, err := m.tenantServiceClient.DeleteTenant(
 		ctx,
 		&tenantGrpcContract.DeleteTenantRequest{
