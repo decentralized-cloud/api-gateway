@@ -4,7 +4,7 @@ import { mutationWithClientMutationId } from 'graphql-relay';
 export default mutationWithClientMutationId({
   name: 'DeleteTenant',
   inputFields: {
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    tenantID: { type: new GraphQLNonNull(GraphQLID) },
   },
   outputFields: {},
   mutateAndGetPayload: () => ({}),

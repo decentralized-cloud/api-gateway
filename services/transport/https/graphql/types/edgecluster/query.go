@@ -31,6 +31,14 @@ type QueryResolverCreatorContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
 	NewEdgeClusterTypeConnectionResolver(ctx context.Context) (EdgeClusterTypeConnectionResolverContract, error)
+
+	// NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it
+	// ctx: Mandatory. Reference to the context
+	// tenantID: Mandatory. The tenant unique identifier
+	// Returns the EdgeClusterTenatnResolverContract or error if something goes wrong
+	NewEdgeClusterTenantResolver(
+		ctx context.Context,
+		tenantID graphql.ID) (EdgeClusterTenantResolverContract, error)
 }
 
 // EdgeClusterResolverContract declares the resolver that can retrieve edge cluster information
@@ -44,6 +52,11 @@ type EdgeClusterResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster name
 	Name(ctx context.Context) string
+
+	// Name returns edge cluster tenant
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster tenant
+	Tenant(ctx context.Context) (EdgeClusterTenantResolverContract, error)
 }
 
 // EdgeClusterTypeConnectionResolverContract declares the resolver that returns edge cluster edge compatible with graphql-relay
@@ -70,6 +83,19 @@ type EdgeClusterTypeEdgeResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the cursor
 	Cursor(ctx context.Context) string
+}
+
+// EdgeClusterTenantResolverContract declares the resolver that returns edge cluster tenant
+type EdgeClusterTenantResolverContract interface {
+	// ID returns tenant unique identifier
+	// ctx: Mandatory. Reference to the context
+	// Returns the tenant  unique identifier
+	ID(ctx context.Context) graphql.ID
+
+	// Name returns tenant name
+	// ctx: Mandatory. Reference to the context
+	// Returns the tenant name
+	Name(ctx context.Context) string
 }
 
 type EdgeClusterClusterEdgeClusterInputArgument struct {

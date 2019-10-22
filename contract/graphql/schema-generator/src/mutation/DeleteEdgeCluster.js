@@ -4,7 +4,7 @@ import { mutationWithClientMutationId } from 'graphql-relay';
 export default mutationWithClientMutationId({
   name: 'DeleteEdgeCluster',
   inputFields: {
-    id: { type: new GraphQLNonNull(GraphQLID) },
+    edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
   },
   outputFields: {},
   mutateAndGetPayload: () => ({}),

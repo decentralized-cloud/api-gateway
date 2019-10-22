@@ -321,6 +321,11 @@
               "kind": "OBJECT",
               "name": "EdgeCluster",
               "ofType": null
+            },
+            {
+              "kind": "OBJECT",
+              "name": "EdgeClusterTenant",
+              "ofType": null
             }
           ]
         },
@@ -504,6 +509,71 @@
         {
           "kind": "OBJECT",
           "name": "EdgeCluster",
+          "description": null,
+          "fields": [
+            {
+              "name": "id",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "name",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "String",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            },
+            {
+              "name": "tenant",
+              "description": null,
+              "args": [],
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "EdgeClusterTenant",
+                  "ofType": null
+                }
+              },
+              "isDeprecated": false,
+              "deprecationReason": null
+            }
+          ],
+          "inputFields": null,
+          "interfaces": [
+            {
+              "kind": "INTERFACE",
+              "name": "Node",
+              "ofType": null
+            }
+          ],
+          "enumValues": null,
+          "possibleTypes": null
+        },
+        {
+          "kind": "OBJECT",
+          "name": "EdgeClusterTenant",
           "description": null,
           "fields": [
             {
@@ -1051,7 +1121,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "id",
+              "name": "tenantID",
               "description": null,
               "type": {
                 "kind": "NON_NULL",
@@ -1135,7 +1205,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "id",
+              "name": "tenantID",
               "description": null,
               "type": {
                 "kind": "NON_NULL",
@@ -1263,7 +1333,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "id",
+              "name": "edgeClusterID",
               "description": null,
               "type": {
                 "kind": "NON_NULL",
@@ -1347,7 +1417,7 @@
           "fields": null,
           "inputFields": [
             {
-              "name": "id",
+              "name": "edgeClusterID",
               "description": null,
               "type": {
                 "kind": "NON_NULL",

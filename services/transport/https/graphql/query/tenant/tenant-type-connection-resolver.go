@@ -17,8 +17,6 @@ type tenantTypeConnectionResolver struct {
 // NewTenantTypeConnectionResolver creates new instance of the tenantTypeConnectionResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
-// tenantID: Mandatory. the tenant unique identifier
-// cursor: Mandatory. the cursor
 // Returns the new instance or error if something goes wrong
 func NewTenantTypeConnectionResolver(
 	ctx context.Context,

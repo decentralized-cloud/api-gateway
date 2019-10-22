@@ -44,6 +44,7 @@ type MutationResolverCreatorContract interface {
 	// NewDeleteTenantPayloadResolver creates new instance of the DeleteTenantPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+	// tenantID: Mandatory. The tenant unique identifier
 	// Returns the new instance or error if something goes wrong
 	NewDeleteTenantPayloadResolver(
 		ctx context.Context,
@@ -152,7 +153,7 @@ type CreateTenantInputArgument struct {
 }
 
 type UpdateTenantInput struct {
-	ID               graphql.ID
+	TenantID         graphql.ID
 	Name             string
 	ClientMutationId *string
 }
@@ -162,7 +163,7 @@ type UpdateTenantInputArgument struct {
 }
 
 type DeleteTenantInput struct {
-	ID               graphql.ID
+	TenantID         graphql.ID
 	Name             string
 	ClientMutationId *string
 }
