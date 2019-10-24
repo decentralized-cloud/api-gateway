@@ -232,7 +232,8 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.Upd
 	return mutationtenant.NewUpdateTenant(
 		ctx,
 		creator,
-		creator.logger)
+		creator.logger,
+		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
 }
 
 // NewUpdateTenantPayloadResolver creates new instance of the updateTenantPayloadResolver, setting up all dependencies and returns the instance
@@ -241,11 +242,13 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.Upd
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
 	ctx context.Context,
-	clientMutationId *string) (tenant.UpdateTenantPayloadResolverContract, error) {
+	clientMutationId *string,
+	tenantID string) (tenant.UpdateTenantPayloadResolverContract, error) {
 	return mutationtenant.NewUpdateTenantPayloadResolver(
 		ctx,
 		creator,
-		clientMutationId)
+		clientMutationId,
+		tenantID)
 }
 
 // NewDeleteTenant creates new instance of the deleteTenant, setting up all dependencies and returns the instance

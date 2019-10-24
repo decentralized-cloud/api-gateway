@@ -34,7 +34,8 @@ type MutationResolverCreatorContract interface {
 	// Returns the new instance or error if something goes wrong
 	NewUpdateTenantPayloadResolver(
 		ctx context.Context,
-		clientMutationId *string) (UpdateTenantPayloadResolverContract, error)
+		clientMutationId *string,
+		tenantID string) (UpdateTenantPayloadResolverContract, error)
 
 	// NewDeleteTenant creates new instance of the DeleteTenantContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
