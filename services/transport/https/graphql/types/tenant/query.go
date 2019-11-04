@@ -6,6 +6,7 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/relay"
+	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -13,25 +14,36 @@ type QueryResolverCreatorContract interface {
 	// NewTenantResolver creates new TenantResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// tenantID: Mandatory. The tenant unique identifier
+	// tenant: Optional. The tenant details
 	// Returns the TenantResolverContract or error if something goes wrong
 	NewTenantResolver(
 		ctx context.Context,
-		tenantID graphql.ID) (TenantResolverContract, error)
+		tenantID string,
+		tenant *tenantGrpcContract.Tenant) (TenantResolverContract, error)
 
 	// NewTenantTypeEdgeResolver creates new TenantTypeEdgeResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// tenantID: Mandatory. The tenant unique identifier
+	// tenant: Optional. The tenant details
 	// cursor: Mandatory. The cursor
 	// Returns the TenantTypeEdgeResolverContract or error if something goes wrong
 	NewTenantTypeEdgeResolver(
 		ctx context.Context,
-		tenantID graphql.ID,
-		cursor string) (TenantTypeEdgeResolverContract, error)
+		tenantID string,
+		cursor string,
+		tenant *tenantGrpcContract.Tenant) (TenantTypeEdgeResolverContract, error)
 
 	// NewTenantTypeConnectionResolver creates new TenantTypeConnectionResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
+	// tenants: Mandatory. Reference the list of tenants
+	// hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
+	// hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
 	// Returns the TenantTypeConnectionResolverContract or error if something goes wrong
-	NewTenantTypeConnectionResolver(ctx context.Context) (TenantTypeConnectionResolverContract, error)
+	NewTenantTypeConnectionResolver(
+		ctx context.Context,
+		tenants []*tenantGrpcContract.TenantWithCursor,
+		hasPreviousPage bool,
+		hasNextPage bool) (TenantTypeConnectionResolverContract, error)
 }
 
 // TenantResolverContract declares the resolver that can retrieve tenant information

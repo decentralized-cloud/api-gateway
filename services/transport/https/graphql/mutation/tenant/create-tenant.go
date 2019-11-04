@@ -8,7 +8,6 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
 	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
-	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
@@ -23,6 +22,7 @@ type createTenantPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
 	tenantID         string
+	tenant           *tenantGrpcContract.Tenant
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
@@ -64,12 +64,14 @@ func NewCreateTenant(
 // resolverCreator: Mandatory. Reference to the resolver creator service that can update new instances of resolvers
 // clientMutationId: Optional. Reference to the client mutation ID
 // tenantID: Mandatory. The tenant unique identifier
+// tenant: Optional. The tenant details
 // Returns the new instance or error if something goes wrong
 func NewCreateTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	clientMutationId *string,
-	tenantID string) (tenant.CreateTenantPayloadResolverContract, error) {
+	tenantID string,
+	tenant *tenantGrpcContract.Tenant) (tenant.CreateTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -82,6 +84,7 @@ func NewCreateTenantPayloadResolver(
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
 		tenantID:         tenantID,
+		tenant:           tenant,
 	}, nil
 }
 
@@ -109,14 +112,15 @@ func (m *createTenant) MutateAndGetPayload(
 	return m.resolverCreator.NewCreateTenantPayloadResolver(
 		ctx,
 		args.Input.ClientMutationId,
-		response.TenantID)
+		response.TenantID,
+		response.Tenant)
 }
 
 // Tenant returns the new tenant inforamtion
 // ctx: Mandatory. Reference to the context
 // Returns the new tenant inforamtion
 func (r *createTenantPayloadResolver) Tenant(ctx context.Context) (tenant.TenantTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, graphql.ID(r.tenantID), "Not implemented")
+	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, r.tenantID, "Not implemented", r.tenant)
 
 	return resolver, err
 }

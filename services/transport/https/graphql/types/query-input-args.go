@@ -6,14 +6,19 @@ import (
 	"github.com/graph-gophers/graphql-go"
 )
 
+type SortingOptionPair struct {
+	Name      string
+	Direction string
+}
+
 type UserTenantInputArgument struct {
-	TenantID graphql.ID
+	TenantID string
 }
 
 type UserTenantsInputArgument struct {
 	relay.ConnectionArgument
-	TenantIDs  *[]graphql.ID
-	SortOption *string
+	SortingOptions *[]SortingOptionPair
+	TenantIDs      *[]graphql.ID
 }
 
 type UserEdgeClusterInputArgument struct {
@@ -22,6 +27,6 @@ type UserEdgeClusterInputArgument struct {
 
 type UserEdgeClustersInputArgument struct {
 	relay.ConnectionArgument
+	SortingOptions *[]SortingOptionPair
 	EdgeClusterIDs *[]graphql.ID
-	SortOption     *string
 }

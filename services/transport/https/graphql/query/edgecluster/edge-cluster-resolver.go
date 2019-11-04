@@ -16,9 +16,9 @@ import (
 type edgeClusterResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
-	edgeclusterID   graphql.ID
+	edgeclusterID   string
 	name            string
-	tenantID        graphql.ID
+	tenantID        string
 }
 
 // NewEdgeClusterResolver creates new instance of the edgeClusterResolver, setting up all dependencies and returns the instance
@@ -31,7 +31,7 @@ func NewEdgeClusterResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	edgeClusterID graphql.ID) (edgecluster.EdgeClusterResolverContract, error) {
+	edgeClusterID string) (edgecluster.EdgeClusterResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -44,7 +44,7 @@ func NewEdgeClusterResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if strings.Trim(string(edgeClusterID), " ") == "" {
+	if strings.Trim(edgeClusterID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
 	}
 
@@ -53,7 +53,7 @@ func NewEdgeClusterResolver(
 		resolverCreator: resolverCreator,
 		edgeclusterID:   edgeClusterID,
 		name:            cuid.New(),
-		tenantID:        graphql.ID(cuid.New()),
+		tenantID:        cuid.New(),
 	}, nil
 }
 
@@ -61,7 +61,7 @@ func NewEdgeClusterResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster unique identifier
 func (r *edgeClusterResolver) ID(ctx context.Context) graphql.ID {
-	return r.edgeclusterID
+	return graphql.ID(r.edgeclusterID)
 }
 
 // Name returns edge cluster name

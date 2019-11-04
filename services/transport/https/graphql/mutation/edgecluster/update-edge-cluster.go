@@ -6,7 +6,6 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
-	"github.com/graph-gophers/graphql-go"
 	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
@@ -84,7 +83,7 @@ func (m *updateEdgeCluster) MutateAndGetPayload(
 // ctx: Mandatory. Reference to the context
 // Returns the updated edge cluster inforamtion
 func (r *updateEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewEdgeClusterTypeEdgeResolver(ctx, graphql.ID(cuid.New()), "New edge cluster cursor")
+	resolver, err := r.resolverCreator.NewEdgeClusterTypeEdgeResolver(ctx, cuid.New(), "New edge cluster cursor")
 
 	return resolver, err
 }

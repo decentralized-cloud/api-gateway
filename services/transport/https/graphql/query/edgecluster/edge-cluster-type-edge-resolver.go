@@ -7,13 +7,12 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
-	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
 type edgeClusterTypeEdgeResolver struct {
 	resolverCreator types.ResolverCreatorContract
-	edgeClusterID   graphql.ID
+	edgeClusterID   string
 	cursor          string
 }
 
@@ -26,7 +25,7 @@ type edgeClusterTypeEdgeResolver struct {
 func NewEdgeClusterTypeEdgeResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	edgeClusterID graphql.ID,
+	edgeClusterID string,
 	cursor string) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -36,11 +35,11 @@ func NewEdgeClusterTypeEdgeResolver(
 		return nil, commonErrors.NewArgumentNilError("resolverCreator", "resolverCreator is required")
 	}
 
-	if strings.Trim(string(edgeClusterID), " ") == "" {
+	if strings.Trim(edgeClusterID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
 	}
 
-	if strings.Trim(string(cursor), " ") == "" {
+	if strings.Trim(cursor, " ") == "" {
 		return nil, commonErrors.NewArgumentError("cursor", "cursor is required")
 	}
 
