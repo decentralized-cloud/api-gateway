@@ -99,6 +99,16 @@ type Query {
   user: User
 }
 
+enum SortingDirection {
+  ASCENDING
+  DESCENDING
+}
+
+input SortingOptionPair {
+  name: String!
+  direction: SortingDirection!
+}
+
 type Tenant implements Node {
   id: ID!
   name: String!
@@ -149,7 +159,7 @@ type UpdateTenantPayload {
 type User implements Node {
   id: ID!
   tenant(tenantID: ID!): Tenant
-  tenants(after: String, first: Int, before: String, last: Int, tenantIDs: [ID!], sortOption: String): TenantTypeConnection
+  tenants(after: String, first: Int, before: String, last: Int, tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): TenantTypeConnection
   edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortOption: String): EdgeClusterTypeConnection
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
 }

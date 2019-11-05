@@ -1,4 +1,4 @@
-FROM decentralizedcloud/k8s-toolset:v0.0.5
+FROM decentralizedcloud/k8s-toolset:v0.0.6
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
 ARG VERSION

@@ -16,7 +16,7 @@ import (
 type edgeClusterTenantResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
-	tenantID        graphql.ID
+	tenantID        string
 	name            string
 }
 
@@ -29,7 +29,7 @@ func NewEdgeClusterTenantResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	tenantID graphql.ID) (edgecluster.EdgeClusterTenantResolverContract, error) {
+	tenantID string) (edgecluster.EdgeClusterTenantResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -42,7 +42,7 @@ func NewEdgeClusterTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if strings.Trim(string(tenantID), " ") == "" {
+	if strings.Trim(tenantID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
 	}
 
@@ -58,7 +58,7 @@ func NewEdgeClusterTenantResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the tenant unique identifier
 func (r *edgeClusterTenantResolver) ID(ctx context.Context) graphql.ID {
-	return r.tenantID
+	return graphql.ID(r.tenantID)
 }
 
 // Name returns tenant name

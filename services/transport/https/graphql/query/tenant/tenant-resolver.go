@@ -18,8 +18,8 @@ import (
 type tenantResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
-	tenantID        graphql.ID
-	name            string
+	tenantID        string
+	tenant          *tenantGrpcContract.Tenant
 }
 
 // NewTenantResolver creates new instance of the tenantResolver, setting up all dependencies and returns the instance
@@ -28,13 +28,15 @@ type tenantResolver struct {
 // logger: Mandatory. Reference to the logger service
 // tenantServiceClient: Mandatory. Reference to the tenant service gRPC client that will be used to contact the tenant service
 // tenantID: Mandatory. the tenant unique identifier
+// tenant: Optional. The tenant details
 // Returns the new instance or error if something goes wrong
 func NewTenantResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
 	tenantServiceClient tenantGrpcContract.TenantServiceClient,
-	tenantID graphql.ID) (tenant.TenantResolverContract, error) {
+	tenantID string,
+	tenant *tenantGrpcContract.Tenant) (tenant.TenantResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -51,43 +53,50 @@ func NewTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
 	}
 
-	if strings.Trim(string(tenantID), " ") == "" {
+	if strings.Trim(tenantID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
 	}
 
-	response, err := tenantServiceClient.ReadTenant(
-		ctx,
-		&tenantGrpcContract.ReadTenantRequest{
-			TenantID: string(tenantID),
-		})
-	if err != nil {
-		return nil, err
-	}
-
-	if response.Error != tenantGrpcContract.Error_NO_ERROR {
-		return nil, errors.New(response.ErrorMessage)
-	}
-
-	return &tenantResolver{
+	resolver := tenantResolver{
 		logger:          logger,
 		resolverCreator: resolverCreator,
 		tenantID:        tenantID,
-		name:            response.Tenant.Name,
-	}, nil
+	}
+
+	if tenant == nil {
+		response, err := tenantServiceClient.ReadTenant(
+			ctx,
+			&tenantGrpcContract.ReadTenantRequest{
+				TenantID: tenantID,
+			})
+		if err != nil {
+			return nil, err
+		}
+
+		if response.Error != tenantGrpcContract.Error_NO_ERROR {
+			return nil, errors.New(response.ErrorMessage)
+		}
+
+		resolver.tenant = response.Tenant
+	} else {
+		resolver.tenant = tenant
+	}
+
+	return &resolver, nil
 }
 
 // ID returns tenant unique identifier
 // ctx: Mandatory. Reference to the context
 // Returns the tenant unique identifier
 func (r *tenantResolver) ID(ctx context.Context) graphql.ID {
-	return r.tenantID
+	return graphql.ID(r.tenantID)
 }
 
 // Name returns tenant name
 // ctx: Mandatory. Reference to the context
 // Returns the tenant name or error
 func (r *tenantResolver) Name(ctx context.Context) string {
-	return r.name
+	return r.tenant.Name
 }
 
 // EdgeCluster returns tenant resolver
@@ -99,7 +108,7 @@ func (r *tenantResolver) EdgeCluster(
 	args tenant.TenantClusterEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
-		args.EdgeClusterID)
+		string(args.EdgeClusterID))
 }
 
 // EdgeClusters returns tenant connection compatible with graphql-relay

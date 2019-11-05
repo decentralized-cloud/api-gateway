@@ -1,5 +1,5 @@
 import {
-  GraphQLID, GraphQLObjectType, GraphQLString, GraphQLNonNull, GraphQLList,
+  GraphQLID, GraphQLObjectType, GraphQLNonNull, GraphQLList,
 } from 'graphql';
 import { connectionArgs } from 'graphql-relay';
 import { NodeInterface } from '../interface';
@@ -7,6 +7,7 @@ import Tenant from './Tenant';
 import TenantConnection from './TenantConnection';
 import EdgeCluster from './EdgeCluster';
 import EdgeClusterConnection from './EdgeClusterConnection';
+import SortingOptionPair from './SortingOptionPair';
 
 export default new GraphQLObjectType({
   name: 'User',
@@ -23,7 +24,7 @@ export default new GraphQLObjectType({
       args: {
         ...connectionArgs,
         tenantIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
-        sortOption: { type: GraphQLString },
+        sortingOptions: { type: new GraphQLList(new GraphQLNonNull(SortingOptionPair)) },
       },
     },
     edgeCluster: {
@@ -37,7 +38,7 @@ export default new GraphQLObjectType({
       args: {
         ...connectionArgs,
         edgeClusterIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
-        sortOption: { type: GraphQLString },
+        sortingOptions: { type: new GraphQLList(new GraphQLNonNull(SortingOptionPair)) },
       },
     },
   },

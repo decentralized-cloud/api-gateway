@@ -15,7 +15,7 @@ type QueryResolverCreatorContract interface {
 	// Returns the EdgeClusterResolverContract or error if something goes wrong
 	NewEdgeClusterResolver(
 		ctx context.Context,
-		edgeClusterID graphql.ID) (EdgeClusterResolverContract, error)
+		edgeClusterID string) (EdgeClusterResolverContract, error)
 
 	// NewEdgeClusterTypeEdgeResolver creates new EdgeClusterTypeEdgeResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -24,7 +24,7 @@ type QueryResolverCreatorContract interface {
 	// Returns the EdgeClusterTypeEdgeResolverContract or error if something goes wrong
 	NewEdgeClusterTypeEdgeResolver(
 		ctx context.Context,
-		edgeClusterID graphql.ID,
+		edgeClusterID string,
 		cursor string) (EdgeClusterTypeEdgeResolverContract, error)
 
 	// NewEdgeClusterTypeConnectionResolver creates new EdgeClusterTypeConnectionResolverContract and returns it
@@ -38,7 +38,7 @@ type QueryResolverCreatorContract interface {
 	// Returns the EdgeClusterTenatnResolverContract or error if something goes wrong
 	NewEdgeClusterTenantResolver(
 		ctx context.Context,
-		tenantID graphql.ID) (EdgeClusterTenantResolverContract, error)
+		tenantID string) (EdgeClusterTenantResolverContract, error)
 }
 
 // EdgeClusterResolverContract declares the resolver that can retrieve edge cluster information

@@ -3,20 +3,24 @@ package query
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
+	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
+	"github.com/thoas/go-funk"
 	"go.uber.org/zap"
 )
 
 type userResolver struct {
-	logger          *zap.Logger
-	resolverCreator types.ResolverCreatorContract
-	userID          graphql.ID
+	logger              *zap.Logger
+	resolverCreator     types.ResolverCreatorContract
+	userID              string
+	tenantServiceClient tenantGrpcContract.TenantServiceClient
 }
 
 // NewUserResolver creates new instance of the userResolver, setting up all dependencies and returns the instance
@@ -29,7 +33,8 @@ func NewUserResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	userID graphql.ID) (types.UserResolverContract, error) {
+	userID string,
+	tenantServiceClient tenantGrpcContract.TenantServiceClient) (types.UserResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -42,14 +47,19 @@ func NewUserResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if strings.Trim(string(userID), " ") == "" {
+	if strings.Trim(userID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("userID", "userID is required")
 	}
 
+	if tenantServiceClient == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
+	}
+
 	return &userResolver{
-		logger:          logger,
-		resolverCreator: resolverCreator,
-		userID:          userID,
+		logger:              logger,
+		resolverCreator:     resolverCreator,
+		userID:              userID,
+		tenantServiceClient: tenantServiceClient,
 	}, nil
 }
 
@@ -57,7 +67,7 @@ func NewUserResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the user unique identifier
 func (r *userResolver) ID(ctx context.Context) graphql.ID {
-	return r.userID
+	return graphql.ID(r.userID)
 }
 
 // Tenant returns tenant resolver
@@ -69,7 +79,8 @@ func (r *userResolver) Tenant(
 	args types.UserTenantInputArgument) (tenant.TenantResolverContract, error) {
 	return r.resolverCreator.NewTenantResolver(
 		ctx,
-		args.TenantID)
+		string(args.TenantID),
+		nil)
 }
 
 // Tenants returns tenant connection compatible with graphql-relay
@@ -79,7 +90,75 @@ func (r *userResolver) Tenant(
 func (r *userResolver) Tenants(
 	ctx context.Context,
 	args types.UserTenantsInputArgument) (tenant.TenantTypeConnectionResolverContract, error) {
-	return r.resolverCreator.NewTenantTypeConnectionResolver(ctx)
+	after := ""
+	if args.After != nil {
+		after = *args.After
+	}
+
+	first := 0
+	if args.First != nil {
+		first = *args.First
+	}
+
+	before := ""
+	if args.Before != nil {
+		before = *args.Before
+	}
+
+	last := 0
+	if args.Last != nil {
+		last = *args.Last
+	}
+
+	sortingOptions := []*tenantGrpcContract.SortingOptionPair{}
+
+	if args.SortingOptions != nil {
+		sortingOptions = funk.Map(*args.SortingOptions, func(sortingOption types.SortingOptionPair) *tenantGrpcContract.SortingOptionPair {
+			direction := tenantGrpcContract.SortingDirection_ASCENDING
+
+			if sortingOption.Direction == "DESCENDING" {
+				direction = tenantGrpcContract.SortingDirection_DESCENDING
+			}
+
+			return &tenantGrpcContract.SortingOptionPair{
+				Name:      sortingOption.Name,
+				Direction: direction,
+			}
+		}).([]*tenantGrpcContract.SortingOptionPair)
+	}
+
+	tenantIDs := []string{}
+	if args.TenantIDs != nil {
+		tenantIDs = funk.Map(*args.TenantIDs, func(tenantID graphql.ID) string {
+			return string(tenantID)
+		}).([]string)
+	}
+
+	response, err := r.tenantServiceClient.Search(
+		ctx,
+		&tenantGrpcContract.SearchRequest{
+			Pagination: &tenantGrpcContract.Pagination{
+				After:  after,
+				First:  int32(first),
+				Before: before,
+				Last:   int32(last),
+			},
+			SortingOptions: sortingOptions,
+			TenantIDs:      tenantIDs,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error != tenantGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(response.ErrorMessage)
+	}
+
+	return r.resolverCreator.NewTenantTypeConnectionResolver(
+		ctx,
+		response.Tenants,
+		response.HasPreviousPage,
+		response.HasNextPage)
 }
 
 // EdgeCluster returns tenant resolver
@@ -91,7 +170,7 @@ func (r *userResolver) EdgeCluster(
 	args types.UserEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
-		args.EdgeClusterID)
+		string(args.EdgeClusterID))
 }
 
 // EdgeClusters returns tenant connection compatible with graphql-relay

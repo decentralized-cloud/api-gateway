@@ -17,7 +17,6 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/relay"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
 	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
-	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -97,52 +96,69 @@ func (creator *resolverCreator) NewRootResolver(ctx context.Context) (types.Root
 // Returns the UserResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewUserResolver(
 	ctx context.Context,
-	userID graphql.ID) (types.UserResolverContract, error) {
+	userID string) (types.UserResolverContract, error) {
 	return query.NewUserResolver(
 		ctx,
 		creator,
 		creator.logger,
-		userID)
+		userID,
+		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
 }
 
 // NewTenantResolver creates new TenantResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // tenantID: Mandatory. The tenant unique identifier
+// tenant: Optional. The tenant details
 // Returns the TenantResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewTenantResolver(
 	ctx context.Context,
-	tenantID graphql.ID) (tenant.TenantResolverContract, error) {
+	tenantID string,
+	tenant *tenantGrpcContract.Tenant) (tenant.TenantResolverContract, error) {
 	return querytenant.NewTenantResolver(
 		ctx,
 		creator,
 		creator.logger,
 		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection),
-		tenantID)
+		tenantID,
+		tenant)
 }
 
 // NewTenantTypeEdgeResolver creates new TenantTypeEdgeResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // tenantID: Mandatory. The tenant unique identifier
+// tenant: Optional. The tenant details
 // cursor: Mandatory. The cursor
 // Returns the TenantTypeEdgeResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewTenantTypeEdgeResolver(
 	ctx context.Context,
-	tenantID graphql.ID,
-	cursor string) (tenant.TenantTypeEdgeResolverContract, error) {
+	tenantID string,
+	cursor string,
+	tenant *tenantGrpcContract.Tenant) (tenant.TenantTypeEdgeResolverContract, error) {
 	return querytenant.NewTenantTypeEdgeResolver(
 		ctx,
 		creator,
 		tenantID,
+		tenant,
 		cursor)
 }
 
 // NewTenantTypeConnectionResolver creates new TenantTypeConnectionResolverContract and returns it
 // ctx: Mandatory. Reference to the context
+// tenants: Mandatory. Reference the list of tenants
+// hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
+// hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
 // Returns the TenantTypeConnectionResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewTenantTypeConnectionResolver(ctx context.Context) (tenant.TenantTypeConnectionResolverContract, error) {
+func (creator *resolverCreator) NewTenantTypeConnectionResolver(
+	ctx context.Context,
+	tenants []*tenantGrpcContract.TenantWithCursor,
+	hasPreviousPage bool,
+	hasNextPage bool) (tenant.TenantTypeConnectionResolverContract, error) {
 	return querytenant.NewTenantTypeConnectionResolver(
 		ctx,
-		creator)
+		creator,
+		tenants,
+		hasPreviousPage,
+		hasNextPage)
 }
 
 // NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
@@ -151,7 +167,7 @@ func (creator *resolverCreator) NewTenantTypeConnectionResolver(ctx context.Cont
 // Returns the EdgeClusterResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterResolver(
 	ctx context.Context,
-	tenantID graphql.ID) (edgecluster.EdgeClusterResolverContract, error) {
+	tenantID string) (edgecluster.EdgeClusterResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterResolver(
 		ctx,
 		creator,
@@ -166,7 +182,7 @@ func (creator *resolverCreator) NewEdgeClusterResolver(
 // Returns the EdgeClusterTypeEdgeResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterTypeEdgeResolver(
 	ctx context.Context,
-	tenantID graphql.ID,
+	tenantID string,
 	cursor string) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterTypeEdgeResolver(
 		ctx,
@@ -190,7 +206,7 @@ func (creator *resolverCreator) NewEdgeClusterTypeConnectionResolver(ctx context
 // Returns the EdgeClusterTenatnResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterTenantResolver(
 	ctx context.Context,
-	tenantID graphql.ID) (edgecluster.EdgeClusterTenantResolverContract, error) {
+	tenantID string) (edgecluster.EdgeClusterTenantResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterTenantResolver(
 		ctx,
 		creator,
@@ -213,16 +229,19 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.Cre
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // tenantID: Mandatory. The tenant unique identifier
+// tenant: Optional. The tenant details
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateTenantPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
-	tenantID string) (tenant.CreateTenantPayloadResolverContract, error) {
+	tenantID string,
+	tenant *tenantGrpcContract.Tenant) (tenant.CreateTenantPayloadResolverContract, error) {
 	return mutationtenant.NewCreateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
-		tenantID)
+		tenantID,
+		tenant)
 }
 
 // NewUpdateTenant creates new instance of the updateTenant, setting up all dependencies and returns the instance
@@ -239,16 +258,20 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.Upd
 // NewUpdateTenantPayloadResolver creates new instance of the updateTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+// tenantID: Mandatory. The tenant unique identifier
+// tenant: Optional. The tenant details
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
-	tenantID string) (tenant.UpdateTenantPayloadResolverContract, error) {
+	tenantID string,
+	tenant *tenantGrpcContract.Tenant) (tenant.UpdateTenantPayloadResolverContract, error) {
 	return mutationtenant.NewUpdateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
-		tenantID)
+		tenantID,
+		tenant)
 }
 
 // NewDeleteTenant creates new instance of the deleteTenant, setting up all dependencies and returns the instance
