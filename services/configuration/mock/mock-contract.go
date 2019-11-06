@@ -76,3 +76,18 @@ func (mr *MockConfigurationContractMockRecorder) GetTenantServiceAddress() *gomo
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetTenantServiceAddress", reflect.TypeOf((*MockConfigurationContract)(nil).GetTenantServiceAddress))
 }
+
+// GetEdgeClusterServiceAddress mocks base method
+func (m *MockConfigurationContract) GetEdgeClusterServiceAddress() (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetEdgeClusterServiceAddress")
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetEdgeClusterServiceAddress indicates an expected call of GetEdgeClusterServiceAddress
+func (mr *MockConfigurationContractMockRecorder) GetEdgeClusterServiceAddress() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetEdgeClusterServiceAddress", reflect.TypeOf((*MockConfigurationContract)(nil).GetEdgeClusterServiceAddress))
+}

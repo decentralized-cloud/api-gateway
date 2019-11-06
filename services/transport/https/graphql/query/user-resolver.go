@@ -20,7 +20,7 @@ type userResolver struct {
 	logger              *zap.Logger
 	resolverCreator     types.ResolverCreatorContract
 	userID              string
-	tenantServiceClient tenantGrpcContract.TenantServiceClient
+	tenantClientService tenant.TenantClientContract
 }
 
 // NewUserResolver creates new instance of the userResolver, setting up all dependencies and returns the instance
@@ -28,13 +28,14 @@ type userResolver struct {
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
 // userID: Mandatory. the tenant unique identifier
+// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
 // Returns the new instance or error if something goes wrong
 func NewUserResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
 	userID string,
-	tenantServiceClient tenantGrpcContract.TenantServiceClient) (types.UserResolverContract, error) {
+	tenantClientService tenant.TenantClientContract) (types.UserResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -51,15 +52,15 @@ func NewUserResolver(
 		return nil, commonErrors.NewArgumentError("userID", "userID is required")
 	}
 
-	if tenantServiceClient == nil {
-		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
+	if tenantClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
 	}
 
 	return &userResolver{
 		logger:              logger,
 		resolverCreator:     resolverCreator,
 		userID:              userID,
-		tenantServiceClient: tenantServiceClient,
+		tenantClientService: tenantClientService,
 	}, nil
 }
 
@@ -134,7 +135,16 @@ func (r *userResolver) Tenants(
 		}).([]string)
 	}
 
-	response, err := r.tenantServiceClient.Search(
+	connection, tenantServiceClient, err := r.tenantClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	response, err := tenantServiceClient.Search(
 		ctx,
 		&tenantGrpcContract.SearchRequest{
 			Pagination: &tenantGrpcContract.Pagination{

@@ -29,4 +29,5 @@ type UserEdgeClustersInputArgument struct {
 	relay.ConnectionArgument
 	SortingOptions *[]SortingOptionPair
 	EdgeClusterIDs *[]graphql.ID
+	TenantIDs      *[]graphql.ID
 }

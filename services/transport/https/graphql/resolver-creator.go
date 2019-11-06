@@ -4,7 +4,6 @@ package graphql
 import (
 	"context"
 
-	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	mutationedgecluster "github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/mutation/edgecluster"
 	mutationtenant "github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/mutation/tenant"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/query"
@@ -19,44 +18,39 @@ import (
 	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 type resolverCreator struct {
-	logger                 *zap.Logger
-	tenantClientConnection *grpc.ClientConn
+	logger                   *zap.Logger
+	tenantClientService      tenant.TenantClientContract
+	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
 // NewResolverCreator creates new instance of the resolverCreator, setting up all dependencies and returns the instance
 // logger: Mandatory. Reference to the logger service
 // configurationService: Mandatory. Reference to the configuration service
+// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
 // Returns the new instance or error if something goes wrong
 func NewResolverCreator(
 	logger *zap.Logger,
-	configurationService configuration.ConfigurationContract) (types.ResolverCreatorContract, error) {
+	tenantClientService tenant.TenantClientContract,
+	edgeClusterClientService edgecluster.EdgeClusterClientContract) (types.ResolverCreatorContract, error) {
 	if logger == nil {
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if configurationService == nil {
-		return nil, commonErrors.NewArgumentNilError("configurationService", "configurationService is required")
+	if tenantClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
 	}
 
-	tenantServiceAddress, err := configurationService.GetTenantServiceAddress()
-	if err != nil {
-		return nil, err
-	}
-
-	// TODO: 20/10/2019 - Morteza, two things here, first we need to find out whether the below created connection can recover from failure
-	// and second when to call connection.Close function.
-	tenantClientConnection, err := grpc.Dial(tenantServiceAddress, grpc.WithInsecure())
-	if err != nil {
-		return nil, err
+	if edgeClusterClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterClientService", "edgeClusterClientService is required")
 	}
 
 	return &resolverCreator{
-		logger:                 logger,
-		tenantClientConnection: tenantClientConnection,
+		logger:                   logger,
+		tenantClientService:      tenantClientService,
+		edgeClusterClientService: edgeClusterClientService,
 	}, nil
 }
 
@@ -102,7 +96,7 @@ func (creator *resolverCreator) NewUserResolver(
 		creator,
 		creator.logger,
 		userID,
-		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
+		creator.tenantClientService)
 }
 
 // NewTenantResolver creates new TenantResolverContract and returns it
@@ -118,7 +112,7 @@ func (creator *resolverCreator) NewTenantResolver(
 		ctx,
 		creator,
 		creator.logger,
-		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection),
+		creator.tenantClientService,
 		tenantID,
 		tenant)
 }
@@ -222,7 +216,7 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.Cre
 		ctx,
 		creator,
 		creator.logger,
-		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
+		creator.tenantClientService)
 }
 
 // NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolver, setting up all dependencies and returns the instance
@@ -252,7 +246,7 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.Upd
 		ctx,
 		creator,
 		creator.logger,
-		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
+		creator.tenantClientService)
 }
 
 // NewUpdateTenantPayloadResolver creates new instance of the updateTenantPayloadResolver, setting up all dependencies and returns the instance
@@ -282,7 +276,7 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.Del
 		ctx,
 		creator,
 		creator.logger,
-		tenantGrpcContract.NewTenantServiceClient(creator.tenantClientConnection))
+		creator.tenantClientService)
 }
 
 // NewDeleteTenantPayloadResolver creates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance

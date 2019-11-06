@@ -13,9 +13,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var configurationService configuration.ConfigurationContract
-var resolverCreator types.ResolverCreatorContract
-
 // StartService setups all dependecies required to start the API Gateway service and
 // start the service
 func StartService() {
@@ -26,7 +23,8 @@ func StartService() {
 
 	defer logger.Sync()
 
-	if err = setupDependencies(logger); err != nil {
+	configurationService, resolverCreator, err := setupDependencies(logger)
+	if err != nil {
 		logger.Fatal("Failed to setup dependecies", zap.Error(err))
 	}
 
@@ -61,16 +59,29 @@ func StartService() {
 	<-cleanupDone
 }
 
-func setupDependencies(logger *zap.Logger) (err error) {
-	if configurationService, err = configuration.NewEnvConfigurationService(); err != nil {
-		return
+func setupDependencies(logger *zap.Logger) (configuration.ConfigurationContract, types.ResolverCreatorContract, error) {
+	configurationService, err := configuration.NewEnvConfigurationService()
+	if err != nil {
+		return nil, nil, err
 	}
 
-	if resolverCreator, err = graphql.NewResolverCreator(
+	tenantClientService, err := graphql.NewTenantClientService(configurationService)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	edgeClusterClientService, err := graphql.NewEdgeClusterClientService(configurationService)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	resolverCreator, err := graphql.NewResolverCreator(
 		logger,
-		configurationService); err != nil {
-		return
+		tenantClientService,
+		edgeClusterClientService)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	return
+	return configurationService, resolverCreator, err
 }

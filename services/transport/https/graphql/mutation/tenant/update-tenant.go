@@ -15,7 +15,7 @@ import (
 type updateTenant struct {
 	logger              *zap.Logger
 	resolverCreator     types.ResolverCreatorContract
-	tenantServiceClient tenantGrpcContract.TenantServiceClient
+	tenantClientService tenant.TenantClientContract
 }
 
 type updateTenantPayloadResolver struct {
@@ -29,12 +29,13 @@ type updateTenantPayloadResolver struct {
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can update new instances of resolvers
 // logger: Mandatory. Reference to the logger service
+// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
 // Returns the new instance or error if something goes wrong
 func NewUpdateTenant(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	tenantServiceClient tenantGrpcContract.TenantServiceClient) (tenant.UpdateTenantContract, error) {
+	tenantClientService tenant.TenantClientContract) (tenant.UpdateTenantContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -47,14 +48,14 @@ func NewUpdateTenant(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if tenantServiceClient == nil {
-		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
+	if tenantClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
 	}
 
 	return &updateTenant{
 		logger:              logger,
 		resolverCreator:     resolverCreator,
-		tenantServiceClient: tenantServiceClient,
+		tenantClientService: tenantClientService,
 	}, nil
 }
 
@@ -96,7 +97,16 @@ func (m *updateTenant) MutateAndGetPayload(
 	args tenant.UpdateTenantInputArgument) (tenant.UpdateTenantPayloadResolverContract, error) {
 	tenantID := string(args.Input.TenantID)
 
-	response, err := m.tenantServiceClient.UpdateTenant(
+	connection, tenantServiceClient, err := m.tenantClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	response, err := tenantServiceClient.UpdateTenant(
 		ctx,
 		&tenantGrpcContract.UpdateTenantRequest{
 			TenantID: tenantID,

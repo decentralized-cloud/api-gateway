@@ -38,6 +38,7 @@ export default new GraphQLObjectType({
       args: {
         ...connectionArgs,
         edgeClusterIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+        tenantIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
         sortingOptions: { type: new GraphQLList(new GraphQLNonNull(SortingOptionPair)) },
       },
     },

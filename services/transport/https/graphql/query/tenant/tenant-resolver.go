@@ -26,7 +26,7 @@ type tenantResolver struct {
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
-// tenantServiceClient: Mandatory. Reference to the tenant service gRPC client that will be used to contact the tenant service
+// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
 // tenantID: Mandatory. the tenant unique identifier
 // tenant: Optional. The tenant details
 // Returns the new instance or error if something goes wrong
@@ -34,7 +34,7 @@ func NewTenantResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	tenantServiceClient tenantGrpcContract.TenantServiceClient,
+	tenantClientService tenant.TenantClientContract,
 	tenantID string,
 	tenant *tenantGrpcContract.Tenant) (tenant.TenantResolverContract, error) {
 	if ctx == nil {
@@ -49,8 +49,8 @@ func NewTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if tenantServiceClient == nil {
-		return nil, commonErrors.NewArgumentNilError("tenantServiceClient", "tenantServiceClient is required")
+	if tenantClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
 	}
 
 	if strings.Trim(tenantID, " ") == "" {
@@ -64,6 +64,15 @@ func NewTenantResolver(
 	}
 
 	if tenant == nil {
+		connection, tenantServiceClient, err := tenantClientService.CreateClient()
+		if err != nil {
+			return nil, err
+		}
+
+		defer func() {
+			_ = connection.Close()
+		}()
+
 		response, err := tenantServiceClient.ReadTenant(
 			ctx,
 			&tenantGrpcContract.ReadTenantRequest{
