@@ -11,6 +11,7 @@ trigger:
   paths:
     exclude:
       - README.md
+      - helm-charts/*
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -70,14 +71,3 @@ steps:
   inputs:
     containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
     command: 'logout'
-
-- task: Docker@2
-  displayName: "Build and Push Helm Chart"
-  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/tags'))
-  inputs:
-    repository: $(DOCKER_REPOSITORY_NAME)
-    command: 'build'
-    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart'
-    buildContext: '$(system.defaultWorkingDirectory)'
-    arguments: '--build-arg VERSION=$(VERSION) --build-arg GITHUB_ACCESS_CREDENTIAL=$(GITHUB_ACCESS_CREDENTIAL)'
-
