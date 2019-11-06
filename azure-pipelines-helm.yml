@@ -1,0 +1,26 @@
+trigger:
+  tags:
+    include:
+      - v*
+  branches:
+    include:
+      - master
+      - release/*
+      - feature/*
+      - bug/*
+  paths:
+    include:
+      - helm-charts/*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  displayName: "Build and Push Helm Chart"
+  inputs:
+    command: 'build'
+    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart'
+    buildContext: '$(system.defaultWorkingDirectory)'
+    arguments: '--build-arg GITHUB_ACCESS_CREDENTIAL=$(GITHUB_ACCESS_CREDENTIAL)'
+

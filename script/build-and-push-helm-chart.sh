@@ -11,5 +11,5 @@ fi
 
 cd "$current_directory"/..
 
-docker build --build-arg VERSION=$VERSION --build-arg GITHUB_ACCESS_CREDENTIAL=$GITHUB_ACCESS_CREDENTIAL -f docker/Dockerfile.buildAndPushHelmChart .
+docker build --build-arg GITHUB_ACCESS_CREDENTIAL=$GITHUB_ACCESS_CREDENTIAL -f docker/Dockerfile.buildAndPushHelmChart .
 
