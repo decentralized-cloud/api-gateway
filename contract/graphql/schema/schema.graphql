@@ -161,5 +161,5 @@ type User implements Node {
   tenant(tenantID: ID!): Tenant
   tenants(after: String, first: Int, before: String, last: Int, tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): TenantTypeConnection
   edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
 }

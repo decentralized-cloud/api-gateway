@@ -15,4 +15,9 @@ type ConfigurationContract interface {
 	// The address will be used to dial the gRPC client to connect to the tenant service.
 	// Returns the tenant service address or error if something goes wrong
 	GetTenantServiceAddress() (string, error)
+
+	// GetEdgeClusterServiceAddress retrieves edge cluster service full gRPC address and returns it.
+	// The address will be used to dial the gRPC client to connect to the edge cluster service.
+	// Returns the edge cluster service address or error if something goes wrong
+	GetEdgeClusterServiceAddress() (string, error)
 }

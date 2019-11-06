@@ -49,3 +49,15 @@ func (service *envConfigurationService) GetTenantServiceAddress() (string, error
 
 	return address, nil
 }
+
+// GetEdgeClusterServiceAddress retrieves edge cluster service full gRPC address and returns it.
+// The address will be used to dial the gRPC client to connect to the edge cluster service.
+// Returns the edge cluster service address or error if something goes wrong
+func (service *envConfigurationService) GetEdgeClusterServiceAddress() (string, error) {
+	address := os.Getenv("EDGE_CLUSTER_ADDRESS")
+	if strings.Trim(address, " ") == "" {
+		return "", NewUnknownError("EDGE_CLUSTER_ADDRESS is required")
+	}
+
+	return address, nil
+}
