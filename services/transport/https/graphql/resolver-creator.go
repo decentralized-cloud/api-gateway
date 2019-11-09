@@ -97,7 +97,8 @@ func (creator *resolverCreator) NewUserResolver(
 		creator,
 		creator.logger,
 		userID,
-		creator.tenantClientService)
+		creator.tenantClientService,
+		creator.edgeClusterClientService)
 }
 
 // NewTenantResolver creates new TenantResolverContract and returns it

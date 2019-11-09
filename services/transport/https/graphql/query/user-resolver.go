@@ -37,7 +37,8 @@ func NewUserResolver(
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
 	userID string,
-	tenantClientService tenant.TenantClientContract) (types.UserResolverContract, error) {
+	tenantClientService tenant.TenantClientContract,
+	edgeClusterClientService edgecluster.EdgeClusterClientContract) (types.UserResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -58,11 +59,16 @@ func NewUserResolver(
 		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
 	}
 
+	if edgeClusterClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterClientService", "edgeClusterClientService is required")
+	}
+
 	return &userResolver{
-		logger:              logger,
-		resolverCreator:     resolverCreator,
-		userID:              userID,
-		tenantClientService: tenantClientService,
+		logger:                   logger,
+		resolverCreator:          resolverCreator,
+		userID:                   userID,
+		tenantClientService:      tenantClientService,
+		edgeClusterClientService: edgeClusterClientService,
 	}, nil
 }
 
