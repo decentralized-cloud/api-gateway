@@ -96,7 +96,7 @@ func (r *userResolver) Tenants(
 		after = *args.After
 	}
 
-	first := 0
+	var first int32 = 0
 	if args.First != nil {
 		first = *args.First
 	}
@@ -106,7 +106,7 @@ func (r *userResolver) Tenants(
 		before = *args.Before
 	}
 
-	last := 0
+	var last int32 = 0
 	if args.Last != nil {
 		last = *args.Last
 	}
@@ -149,9 +149,9 @@ func (r *userResolver) Tenants(
 		&tenantGrpcContract.SearchRequest{
 			Pagination: &tenantGrpcContract.Pagination{
 				After:  after,
-				First:  int32(first),
+				First:  first,
 				Before: before,
-				Last:   int32(last),
+				Last:   last,
 			},
 			SortingOptions: sortingOptions,
 			TenantIDs:      tenantIDs,

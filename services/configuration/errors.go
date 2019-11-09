@@ -16,7 +16,7 @@ func (e UnknownError) Error() string {
 		return fmt.Sprintf("Unknown error occurred. Error message: %s.", e.Message)
 	}
 
-	return fmt.Sprintf("Unknown error occurred. Error message: %s. Error: %s", e.Message, e.Err.Error())
+	return fmt.Sprintf("Unknown error occurred. Error message: %s. Error: %v", e.Message, e.Err)
 }
 
 // Unwrap returns the err if provided through NewUnknownErrorWithError function, otherwise returns nil
