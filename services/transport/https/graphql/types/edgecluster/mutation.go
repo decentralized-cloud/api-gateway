@@ -4,6 +4,7 @@ package edgecluster
 import (
 	"context"
 
+	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -15,10 +16,15 @@ type MutationResolverCreatorContract interface {
 
 	// NewCreateEdgeClusterPayloadResolver creates new instance of the CreateEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+	// edgeClusterID: Mandatory. The edge cluster unique identifier
+	// edgeCluster: Optional. The edge cluster details
 	// Returns the new instance or error if something goes wrong
 	NewCreateEdgeClusterPayloadResolver(
 		ctx context.Context,
-		clientMutationId *string) (CreateEdgeClusterPayloadResolverContract, error)
+		clientMutationId *string,
+		edgeClusterID string,
+		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (CreateEdgeClusterPayloadResolverContract, error)
 
 	// NewUpdateEdgeCluster creates new instance of the UpdateEdgeClusterContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
@@ -27,10 +33,15 @@ type MutationResolverCreatorContract interface {
 
 	// NewUpdateEdgeClusterPayloadResolver creates new instance of the UpdateEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+	// edgeClusterID: Mandatory. The edge cluster unique identifier
+	// edgeCluster: Optional. The edge cluster details
 	// Returns the new instance or error if something goes wrong
 	NewUpdateEdgeClusterPayloadResolver(
 		ctx context.Context,
-		clientMutationId *string) (UpdateEdgeClusterPayloadResolverContract, error)
+		clientMutationId *string,
+		edgeClusterID string,
+		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (UpdateEdgeClusterPayloadResolverContract, error)
 
 	// NewDeleteEdgeCluster creates new instance of the DeleteEdgeClusterContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
@@ -39,6 +50,7 @@ type MutationResolverCreatorContract interface {
 
 	// NewDeleteEdgeClusterPayloadResolver creates new instance of the DeleteEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// Returns the new instance or error if something goes wrong
 	NewDeleteEdgeClusterPayloadResolver(
 		ctx context.Context,
@@ -137,6 +149,7 @@ type DeleteEdgeClusterContract interface {
 }
 
 type CreateEdgeClusterInput struct {
+	TenantID         graphql.ID
 	Name             string
 	ClientMutationId *string
 }
@@ -147,6 +160,7 @@ type CreateEdgeClusterInputArgument struct {
 
 type UpdateEdgeClusterInput struct {
 	EdgeClusterID    graphql.ID
+	TenantID         graphql.ID
 	Name             string
 	ClientMutationId *string
 }

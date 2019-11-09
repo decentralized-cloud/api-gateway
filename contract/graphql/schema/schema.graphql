@@ -1,4 +1,5 @@
 input CreateEdgeClusterInput {
+  tenantID: ID!
   name: String!
   clientMutationId: String
 }
@@ -136,6 +137,7 @@ type TenantTypeEdge {
 
 input UpdateEdgeClusterInput {
   edgeClusterID: ID!
+  tenantID: ID!
   name: String!
   clientMutationId: String
 }

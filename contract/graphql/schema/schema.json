@@ -1359,6 +1359,20 @@
           "fields": null,
           "inputFields": [
             {
+              "name": "tenantID",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
               "name": "name",
               "description": null,
               "type": {
@@ -1430,6 +1444,20 @@
           "inputFields": [
             {
               "name": "edgeClusterID",
+              "description": null,
+              "type": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
+                }
+              },
+              "defaultValue": null
+            },
+            {
+              "name": "tenantID",
               "description": null,
               "type": {
                 "kind": "NON_NULL",

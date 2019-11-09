@@ -9,6 +9,7 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
+	edgeClusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -17,10 +18,11 @@ import (
 )
 
 type userResolver struct {
-	logger              *zap.Logger
-	resolverCreator     types.ResolverCreatorContract
-	userID              string
-	tenantClientService tenant.TenantClientContract
+	logger                   *zap.Logger
+	resolverCreator          types.ResolverCreatorContract
+	userID                   string
+	tenantClientService      tenant.TenantClientContract
+	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
 // NewUserResolver creates new instance of the userResolver, setting up all dependencies and returns the instance
@@ -180,7 +182,8 @@ func (r *userResolver) EdgeCluster(
 	args types.UserEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
-		string(args.EdgeClusterID))
+		string(args.EdgeClusterID),
+		nil)
 }
 
 // EdgeClusters returns tenant connection compatible with graphql-relay
@@ -190,5 +193,90 @@ func (r *userResolver) EdgeCluster(
 func (r *userResolver) EdgeClusters(
 	ctx context.Context,
 	args types.UserEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(ctx)
+	after := ""
+	if args.After != nil {
+		after = *args.After
+	}
+
+	var first int32 = 0
+	if args.First != nil {
+		first = *args.First
+	}
+
+	before := ""
+	if args.Before != nil {
+		before = *args.Before
+	}
+
+	var last int32 = 0
+	if args.Last != nil {
+		last = *args.Last
+	}
+
+	sortingOptions := []*edgeClusterGrpcContract.SortingOptionPair{}
+
+	if args.SortingOptions != nil {
+		sortingOptions = funk.Map(*args.SortingOptions, func(sortingOption types.SortingOptionPair) *edgeClusterGrpcContract.SortingOptionPair {
+			direction := edgeClusterGrpcContract.SortingDirection_ASCENDING
+
+			if sortingOption.Direction == "DESCENDING" {
+				direction = edgeClusterGrpcContract.SortingDirection_DESCENDING
+			}
+
+			return &edgeClusterGrpcContract.SortingOptionPair{
+				Name:      sortingOption.Name,
+				Direction: direction,
+			}
+		}).([]*edgeClusterGrpcContract.SortingOptionPair)
+	}
+
+	tenantIDs := []string{}
+	if args.TenantIDs != nil {
+		tenantIDs = funk.Map(*args.TenantIDs, func(tenantID graphql.ID) string {
+			return string(tenantID)
+		}).([]string)
+	}
+
+	edgeClusterIDs := []string{}
+	if args.EdgeClusterIDs != nil {
+		edgeClusterIDs = funk.Map(*args.EdgeClusterIDs, func(edgeClusterIDs graphql.ID) string {
+			return string(edgeClusterIDs)
+		}).([]string)
+	}
+
+	connection, edgeClusterServiceClient, err := r.edgeClusterClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	response, err := edgeClusterServiceClient.Search(
+		ctx,
+		&edgeClusterGrpcContract.SearchRequest{
+			Pagination: &edgeClusterGrpcContract.Pagination{
+				After:  after,
+				First:  first,
+				Before: before,
+				Last:   last,
+			},
+			SortingOptions: sortingOptions,
+			EdgeClusterIDs: edgeClusterIDs,
+			TenantIDs:      tenantIDs,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error != edgeClusterGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(response.ErrorMessage)
+	}
+
+	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(
+		ctx,
+		response.EdgeClusters,
+		response.HasPreviousPage,
+		response.HasNextPage)
 }

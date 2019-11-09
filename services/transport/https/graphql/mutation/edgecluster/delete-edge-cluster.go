@@ -3,16 +3,19 @@ package edgeclster
 
 import (
 	"context"
+	"errors"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
+	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
 type deleteEdgeCluster struct {
-	logger          *zap.Logger
-	resolverCreator types.ResolverCreatorContract
+	logger                   *zap.Logger
+	resolverCreator          types.ResolverCreatorContract
+	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
 type deleteEdgeClusterPayloadResolver struct {
@@ -28,7 +31,9 @@ type deleteEdgeClusterPayloadResolver struct {
 func NewDeleteEdgeCluster(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	logger *zap.Logger) (edgecluster.DeleteEdgeClusterContract, error) {
+	logger *zap.Logger,
+	edgeClusterClientService edgecluster.EdgeClusterClientContract) (edgecluster.DeleteEdgeClusterContract, error) {
+
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -41,9 +46,14 @@ func NewDeleteEdgeCluster(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
+	if edgeClusterClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterClientService", "edgeClusterClientService is required")
+	}
+
 	return &deleteEdgeCluster{
-		logger:          logger,
-		resolverCreator: resolverCreator,
+		logger:                   logger,
+		resolverCreator:          resolverCreator,
+		edgeClusterClientService: edgeClusterClientService,
 	}, nil
 }
 
@@ -75,7 +85,33 @@ func NewDeleteEdgeClusterPayloadResolver(
 func (m *deleteEdgeCluster) MutateAndGetPayload(
 	ctx context.Context,
 	args edgecluster.DeleteEdgeClusterInputArgument) (edgecluster.DeleteEdgeClusterPayloadResolverContract, error) {
-	return m.resolverCreator.NewDeleteEdgeClusterPayloadResolver(ctx, args.Input.ClientMutationId)
+	edgeClusterID := string(args.Input.EdgeClusterID)
+	connection, edgeClusterServiceClient, err := m.edgeClusterClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	response, err := edgeClusterServiceClient.DeleteEdgeCluster(
+		ctx,
+		&edgeclusterGrpcContract.DeleteEdgeClusterRequest{
+			EdgeClusterID: edgeClusterID,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error != edgeclusterGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(response.ErrorMessage)
+	}
+
+	return m.resolverCreator.NewDeleteEdgeClusterPayloadResolver(
+		ctx,
+		args.Input.ClientMutationId,
+	)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request
