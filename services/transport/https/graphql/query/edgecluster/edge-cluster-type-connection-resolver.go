@@ -7,11 +7,15 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/relay"
+	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
 type edgeClusterTypeConnectionResolver struct {
 	resolverCreator types.ResolverCreatorContract
+	edgeclusters    []*edgeclusterGrpcContract.EdgeClusterWithCursor
+	hasPreviousPage bool
+	hasNextPage     bool
 }
 
 // NewEdgeClusterTypeConnectionResolver creates new instance of the edgeClusterTypeConnectionResolver, setting up all dependencies and returns the instance
@@ -20,7 +24,10 @@ type edgeClusterTypeConnectionResolver struct {
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterTypeConnectionResolver(
 	ctx context.Context,
-	resolverCreator types.ResolverCreatorContract) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
+	resolverCreator types.ResolverCreatorContract,
+	edgeclusters []*edgeclusterGrpcContract.EdgeClusterWithCursor,
+	hasPreviousPage bool,
+	hasNextPage bool) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -31,6 +38,9 @@ func NewEdgeClusterTypeConnectionResolver(
 
 	return &edgeClusterTypeConnectionResolver{
 		resolverCreator: resolverCreator,
+		edgeclusters:    edgeclusters,
+		hasPreviousPage: hasPreviousPage,
+		hasNextPage:     hasNextPage,
 	}, nil
 }
 

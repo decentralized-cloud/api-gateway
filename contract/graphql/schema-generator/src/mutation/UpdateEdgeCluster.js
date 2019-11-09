@@ -6,6 +6,7 @@ export default mutationWithClientMutationId({
   name: 'UpdateEdgeCluster',
   inputFields: {
     edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
+    tenantID: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: new GraphQLNonNull(GraphQLString) },
   },
   outputFields: {

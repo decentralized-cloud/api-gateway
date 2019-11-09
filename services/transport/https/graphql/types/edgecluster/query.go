@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/relay"
+	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -12,25 +13,36 @@ type QueryResolverCreatorContract interface {
 	// NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
+	// edgeCluster: Optional. The edge clusterdetails
 	// Returns the EdgeClusterResolverContract or error if something goes wrong
 	NewEdgeClusterResolver(
 		ctx context.Context,
-		edgeClusterID string) (EdgeClusterResolverContract, error)
+		edgeClusterID string,
+		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (EdgeClusterResolverContract, error)
 
 	// NewEdgeClusterTypeEdgeResolver creates new EdgeClusterTypeEdgeResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
+	// edgeCluster: Optional. The edge cluster details
 	// cursor: Mandatory. The cursor
 	// Returns the EdgeClusterTypeEdgeResolverContract or error if something goes wrong
 	NewEdgeClusterTypeEdgeResolver(
 		ctx context.Context,
 		edgeClusterID string,
-		cursor string) (EdgeClusterTypeEdgeResolverContract, error)
+		cursor string,
+		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (EdgeClusterTypeEdgeResolverContract, error)
 
 	// NewEdgeClusterTypeConnectionResolver creates new EdgeClusterTypeConnectionResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
+	// edgeClusters: Mandatory. Reference the list of edge clusters
+	// hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
+	// hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
 	// Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
-	NewEdgeClusterTypeConnectionResolver(ctx context.Context) (EdgeClusterTypeConnectionResolverContract, error)
+	NewEdgeClusterTypeConnectionResolver(
+		ctx context.Context,
+		edgeClusters []*edgeclusterGrpcContract.EdgeClusterWithCursor,
+		hasPreviousPage bool,
+		hasNextPage bool) (EdgeClusterTypeConnectionResolverContract, error)
 
 	// NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -53,7 +65,7 @@ type EdgeClusterResolverContract interface {
 	// Returns the edge cluster name
 	Name(ctx context.Context) string
 
-	// Name returns edge cluster tenant
+	// Tenant returns edge cluster tenant
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster tenant
 	Tenant(ctx context.Context) (EdgeClusterTenantResolverContract, error)

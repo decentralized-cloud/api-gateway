@@ -9,6 +9,7 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
+	edgeClusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
@@ -16,10 +17,11 @@ import (
 )
 
 type tenantResolver struct {
-	logger          *zap.Logger
-	resolverCreator types.ResolverCreatorContract
-	tenantID        string
-	tenant          *tenantGrpcContract.Tenant
+	logger                   *zap.Logger
+	resolverCreator          types.ResolverCreatorContract
+	tenantID                 string
+	tenant                   *tenantGrpcContract.Tenant
+	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
 // NewTenantResolver creates new instance of the tenantResolver, setting up all dependencies and returns the instance
@@ -35,6 +37,7 @@ func NewTenantResolver(
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
 	tenantClientService tenant.TenantClientContract,
+	edgeClusterClientService edgecluster.EdgeClusterClientContract,
 	tenantID string,
 	tenant *tenantGrpcContract.Tenant) (tenant.TenantResolverContract, error) {
 	if ctx == nil {
@@ -53,14 +56,19 @@ func NewTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
 	}
 
+	if edgeClusterClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterClientService", "edgeClusterClientService is required")
+	}
+
 	if strings.Trim(tenantID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
 	}
 
 	resolver := tenantResolver{
-		logger:          logger,
-		resolverCreator: resolverCreator,
-		tenantID:        tenantID,
+		logger:                   logger,
+		resolverCreator:          resolverCreator,
+		edgeClusterClientService: edgeClusterClientService,
+		tenantID:                 tenantID,
 	}
 
 	if tenant == nil {
@@ -117,7 +125,8 @@ func (r *tenantResolver) EdgeCluster(
 	args tenant.TenantClusterEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
-		string(args.EdgeClusterID))
+		string(args.EdgeClusterID),
+		nil)
 }
 
 // EdgeClusters returns tenant connection compatible with graphql-relay
@@ -127,5 +136,42 @@ func (r *tenantResolver) EdgeCluster(
 func (r *tenantResolver) EdgeClusters(
 	ctx context.Context,
 	args tenant.TenantEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(ctx)
+	tenantIDs := []string{r.tenantID}
+	sortingOptions := []*edgeClusterGrpcContract.SortingOptionPair{}
+
+	connection, edgeClusterServiceClient, err := r.edgeClusterClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	response, err := edgeClusterServiceClient.Search(
+		ctx,
+		&edgeClusterGrpcContract.SearchRequest{
+			Pagination: &edgeClusterGrpcContract.Pagination{
+				After:  "",
+				First:  1000,
+				Before: "",
+				Last:   0,
+			},
+			SortingOptions: sortingOptions,
+			TenantIDs:      tenantIDs,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	if response.Error != edgeClusterGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(response.ErrorMessage)
+	}
+
+	return r.resolverCreator.NewEdgeClusterTypeConnectionResolver(
+		ctx,
+		response.EdgeClusters,
+		response.HasPreviousPage,
+		response.HasNextPage,
+	)
 }

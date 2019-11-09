@@ -21,7 +21,6 @@ type deleteTenant struct {
 type deleteTenantPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
-	tenantID         string
 }
 
 // NewDeleteTenant deletes new instance of the deleteTenant, setting up all dependencies and returns the instance
@@ -66,8 +65,7 @@ func NewDeleteTenant(
 func NewDeleteTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
-	clientMutationId *string,
-	tenantID string) (tenant.DeleteTenantPayloadResolverContract, error) {
+	clientMutationId *string) (tenant.DeleteTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -79,7 +77,6 @@ func NewDeleteTenantPayloadResolver(
 	return &deleteTenantPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
-		tenantID:         tenantID,
 	}, nil
 }
 
@@ -116,7 +113,6 @@ func (m *deleteTenant) MutateAndGetPayload(
 	return m.resolverCreator.NewDeleteTenantPayloadResolver(
 		ctx,
 		args.Input.ClientMutationId,
-		tenantID,
 	)
 }
 

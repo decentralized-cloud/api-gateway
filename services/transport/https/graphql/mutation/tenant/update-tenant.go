@@ -96,7 +96,6 @@ func (m *updateTenant) MutateAndGetPayload(
 	ctx context.Context,
 	args tenant.UpdateTenantInputArgument) (tenant.UpdateTenantPayloadResolverContract, error) {
 	tenantID := string(args.Input.TenantID)
-
 	connection, tenantServiceClient, err := m.tenantClientService.CreateClient()
 	if err != nil {
 		return nil, err

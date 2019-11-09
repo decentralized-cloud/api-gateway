@@ -3,12 +3,13 @@ package edgeclster
 
 import (
 	"context"
+	"errors"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
+	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
-	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
@@ -18,7 +19,7 @@ type edgeClusterResolver struct {
 	resolverCreator types.ResolverCreatorContract
 	edgeclusterID   string
 	name            string
-	tenantID        string
+	edgeCluster     *edgeclusterGrpcContract.EdgeCluster
 }
 
 // NewEdgeClusterResolver creates new instance of the edgeClusterResolver, setting up all dependencies and returns the instance
@@ -31,7 +32,9 @@ func NewEdgeClusterResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	edgeClusterID string) (edgecluster.EdgeClusterResolverContract, error) {
+	edgeClusterClientService edgecluster.EdgeClusterClientContract,
+	edgeClusterID string,
+	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.EdgeClusterResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -44,17 +47,49 @@ func NewEdgeClusterResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
+	if edgeClusterClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterClientService", "edgeClusterClientService is required")
+	}
+
 	if strings.Trim(edgeClusterID, " ") == "" {
 		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
 	}
 
-	return &edgeClusterResolver{
+	resolver := edgeClusterResolver{
 		logger:          logger,
 		resolverCreator: resolverCreator,
 		edgeclusterID:   edgeClusterID,
-		name:            cuid.New(),
-		tenantID:        cuid.New(),
-	}, nil
+	}
+
+	if edgeCluster == nil {
+		connection, edgeClusterServiceClient, err := edgeClusterClientService.CreateClient()
+		if err != nil {
+			return nil, err
+		}
+
+		defer func() {
+			_ = connection.Close()
+		}()
+
+		response, err := edgeClusterServiceClient.ReadEdgeCluster(
+			ctx,
+			&edgeclusterGrpcContract.ReadEdgeClusterRequest{
+				EdgeClusterID: edgeClusterID,
+			})
+		if err != nil {
+			return nil, err
+		}
+
+		if response.Error != edgeclusterGrpcContract.Error_NO_ERROR {
+			return nil, errors.New(response.ErrorMessage)
+		}
+
+		resolver.edgeCluster = response.EdgeCluster
+	} else {
+		resolver.edgeCluster = edgeCluster
+	}
+
+	return &resolver, nil
 }
 
 // ID returns edge cluster unique identifier
@@ -68,12 +103,12 @@ func (r *edgeClusterResolver) ID(ctx context.Context) graphql.ID {
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster name or error
 func (r *edgeClusterResolver) Name(ctx context.Context) string {
-	return r.name
+	return r.edgeCluster.Name
 }
 
-// Name returns edge cluster tenant
+// Tenant returns edge cluster tenant
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster tenant
 func (r *edgeClusterResolver) Tenant(ctx context.Context) (edgecluster.EdgeClusterTenantResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.tenantID)
+	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.edgeCluster.TenantID)
 }

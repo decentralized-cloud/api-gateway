@@ -23,8 +23,10 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/decentralized-cloud/edge-cluster v0.0.11 h1:VlBBIL5fASuN+AG1LimnFMiEuWa5IibS4anr/EgSpAs=
 github.com/decentralized-cloud/edge-cluster v0.0.11/go.mod h1:TChpF7VJ43ddChX56jQeQtteaZAPV6ePL+4HEemip8w=
+github.com/decentralized-cloud/edge-cluster v0.0.12 h1:VK0bbKUtQQgPzTrvbya+njaRa19C0ELChLXRdsusu3g=
 github.com/decentralized-cloud/tenant v0.0.19 h1:P0twEmO8t1kn31A1nv5kp8KBsjVfcG/3oRkbCFcyh/g=
 github.com/decentralized-cloud/tenant v0.0.19/go.mod h1:pDbr9nc2LegEcyMNZy2N/AQhT955wiGTSTNWt2j+hSo=
+github.com/decentralized-cloud/tenant v0.0.20 h1:uMh+zoO80O7rUL1MPK7ZmvxSNmzkBMaFbtf0vCYR1hg=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
 github.com/fasthttp/router v0.5.1 h1:lhSrPIQ1pUpmd/pTiTHWKKVy+WN7pQkPWqaFpDPBEw0=
 github.com/fasthttp/router v0.5.1/go.mod h1://z/k16TXnT5elpR17Q08AO8Kv5Hk2ROHeWRAAUza78=
