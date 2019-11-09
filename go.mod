@@ -11,7 +11,7 @@ require (
 	github.com/golang/mock v1.3.1
 	github.com/graph-gophers/graphql-go v0.0.0-20190917030536-38a077bc812d
 	github.com/lucsky/cuid v1.0.2
-	github.com/micro-business/go-core v0.0.11
+	github.com/micro-business/go-core v0.0.12
 	github.com/prometheus/client_golang v1.2.1
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
 	github.com/savsgio/atreugo/v9 v9.0.0
@@ -19,5 +19,6 @@ require (
 	github.com/thoas/go-funk v0.4.0
 	go.uber.org/zap v1.10.0
 	golang.org/x/sys v0.0.0-20191105231009-c1f44814a5cd // indirect
+	golang.org/x/tools v0.0.0-20191108193012-7d206e10da11 // indirect
 	google.golang.org/grpc v1.24.0
 )

@@ -3,7 +3,7 @@ package relay
 
 type ConnectionArgument struct {
 	After  *string
-	First  *int
+	First  *int32
 	Before *string
-	Last   *int
+	Last   *int32
 }
