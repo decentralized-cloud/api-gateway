@@ -7,6 +7,7 @@ export default mutationWithClientMutationId({
   inputFields: {
     tenantID: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: new GraphQLNonNull(GraphQLString) },
+    clusterPublicIPAddress: { type: new GraphQLNonNull(GraphQLString) },
   },
   outputFields: {
     edgeCluster: { type: EdgeClusterConnection.edgeType },

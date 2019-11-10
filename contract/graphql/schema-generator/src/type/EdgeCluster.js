@@ -9,6 +9,7 @@ export default new GraphQLObjectType({
   fields: {
     id: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: new GraphQLNonNull(GraphQLString) },
+    clusterPublicIPAddress: { type: new GraphQLNonNull(GraphQLString) },
     tenant: { type: new GraphQLNonNull(Tenant) },
   },
   interfaces: [NodeInterface],

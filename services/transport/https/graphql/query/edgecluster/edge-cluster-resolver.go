@@ -18,7 +18,6 @@ type edgeClusterResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
 	edgeclusterID   string
-	name            string
 	edgeCluster     *edgeclusterGrpcContract.EdgeCluster
 }
 
@@ -104,6 +103,13 @@ func (r *edgeClusterResolver) ID(ctx context.Context) graphql.ID {
 // Returns the edge cluster name or error
 func (r *edgeClusterResolver) Name(ctx context.Context) string {
 	return r.edgeCluster.Name
+}
+
+// ClusterPublicIPAddress returns edge cluster public IP address
+// ctx: Mandatory. Reference to the context
+// Returns the edge cluster public IP address
+func (r *edgeClusterResolver) ClusterPublicIPAddress(ctx context.Context) string {
+	return r.edgeCluster.ClusterPublicIPAddress
 }
 
 // Tenant returns edge cluster tenant
