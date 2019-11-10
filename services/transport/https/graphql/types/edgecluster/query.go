@@ -65,6 +65,11 @@ type EdgeClusterResolverContract interface {
 	// Returns the edge cluster name
 	Name(ctx context.Context) string
 
+	// ClusterPublicIPAddress returns edge cluster public IP address
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster public IP address
+	ClusterPublicIPAddress(ctx context.Context) string
+
 	// Tenant returns edge cluster tenant
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster tenant

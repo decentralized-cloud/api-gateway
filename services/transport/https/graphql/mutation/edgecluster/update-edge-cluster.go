@@ -105,8 +105,9 @@ func (m *updateEdgeCluster) MutateAndGetPayload(
 		&edgeclusterGrpcContract.UpdateEdgeClusterRequest{
 			EdgeClusterID: edgeClusterID,
 			EdgeCluster: &edgeclusterGrpcContract.EdgeCluster{
-				TenantID: string(args.Input.TenantID),
-				Name:     args.Input.Name,
+				TenantID:               string(args.Input.TenantID),
+				Name:                   args.Input.Name,
+				ClusterPublicIPAddress: args.Input.ClusterPublicIPAddress,
 			}})
 	if err != nil {
 		return nil, err

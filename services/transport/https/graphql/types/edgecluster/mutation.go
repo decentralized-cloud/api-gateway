@@ -149,9 +149,10 @@ type DeleteEdgeClusterContract interface {
 }
 
 type CreateEdgeClusterInput struct {
-	TenantID         graphql.ID
-	Name             string
-	ClientMutationId *string
+	TenantID               graphql.ID
+	Name                   string
+	ClusterPublicIPAddress string
+	ClientMutationId       *string
 }
 
 type CreateEdgeClusterInputArgument struct {
@@ -159,10 +160,11 @@ type CreateEdgeClusterInputArgument struct {
 }
 
 type UpdateEdgeClusterInput struct {
-	EdgeClusterID    graphql.ID
-	TenantID         graphql.ID
-	Name             string
-	ClientMutationId *string
+	EdgeClusterID          graphql.ID
+	TenantID               graphql.ID
+	Name                   string
+	ClusterPublicIPAddress string
+	ClientMutationId       *string
 }
 
 type UpdateEdgeClusterInputArgument struct {
