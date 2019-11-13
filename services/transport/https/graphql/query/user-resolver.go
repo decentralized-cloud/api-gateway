@@ -99,24 +99,27 @@ func (r *userResolver) Tenant(
 func (r *userResolver) Tenants(
 	ctx context.Context,
 	args types.UserTenantsInputArgument) (tenant.TenantTypeConnectionResolverContract, error) {
-	after := ""
+
+	pagination := tenantGrpcContract.Pagination{}
+
 	if args.After != nil {
-		after = *args.After
+		pagination.HasAfter = true
+		pagination.After = *args.After
 	}
 
-	var first int32 = 0
 	if args.First != nil {
-		first = *args.First
+		pagination.HasFirst = true
+		pagination.First = *args.First
 	}
 
-	before := ""
 	if args.Before != nil {
-		before = *args.Before
+		pagination.HasBefore = true
+		pagination.Before = *args.Before
 	}
 
-	var last int32 = 0
 	if args.Last != nil {
-		last = *args.Last
+		pagination.HasLast = true
+		pagination.Last = *args.Last
 	}
 
 	sortingOptions := []*tenantGrpcContract.SortingOptionPair{}
@@ -155,12 +158,7 @@ func (r *userResolver) Tenants(
 	response, err := tenantServiceClient.Search(
 		ctx,
 		&tenantGrpcContract.SearchRequest{
-			Pagination: &tenantGrpcContract.Pagination{
-				After:  after,
-				First:  first,
-				Before: before,
-				Last:   last,
-			},
+			Pagination:     &pagination,
 			SortingOptions: sortingOptions,
 			TenantIDs:      tenantIDs,
 		})
@@ -199,24 +197,27 @@ func (r *userResolver) EdgeCluster(
 func (r *userResolver) EdgeClusters(
 	ctx context.Context,
 	args types.UserEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
-	after := ""
+
+	pagination := edgeClusterGrpcContract.Pagination{}
+
 	if args.After != nil {
-		after = *args.After
+		pagination.HasAfter = true
+		pagination.After = *args.After
 	}
 
-	var first int32 = 0
 	if args.First != nil {
-		first = *args.First
+		pagination.HasFirst = true
+		pagination.First = *args.First
 	}
 
-	before := ""
 	if args.Before != nil {
-		before = *args.Before
+		pagination.HasBefore = true
+		pagination.Before = *args.Before
 	}
 
-	var last int32 = 0
 	if args.Last != nil {
-		last = *args.Last
+		pagination.HasLast = true
+		pagination.Last = *args.Last
 	}
 
 	sortingOptions := []*edgeClusterGrpcContract.SortingOptionPair{}
@@ -262,12 +263,7 @@ func (r *userResolver) EdgeClusters(
 	response, err := edgeClusterServiceClient.Search(
 		ctx,
 		&edgeClusterGrpcContract.SearchRequest{
-			Pagination: &edgeClusterGrpcContract.Pagination{
-				After:  after,
-				First:  first,
-				Before: before,
-				Last:   last,
-			},
+			Pagination:     &pagination,
 			SortingOptions: sortingOptions,
 			EdgeClusterIDs: edgeClusterIDs,
 			TenantIDs:      tenantIDs,
