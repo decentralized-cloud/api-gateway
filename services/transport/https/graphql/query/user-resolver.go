@@ -174,7 +174,9 @@ func (r *userResolver) Tenants(
 		ctx,
 		response.Tenants,
 		response.HasPreviousPage,
-		response.HasNextPage)
+		response.HasNextPage,
+		int32(response.TotalCount),
+	)
 }
 
 // EdgeCluster returns tenant resolver
@@ -280,5 +282,7 @@ func (r *userResolver) EdgeClusters(
 		ctx,
 		response.EdgeClusters,
 		response.HasPreviousPage,
-		response.HasNextPage)
+		response.HasNextPage,
+		int32(response.TotalCount),
+	)
 }
