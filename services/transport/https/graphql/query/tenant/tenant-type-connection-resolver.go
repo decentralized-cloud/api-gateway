@@ -17,6 +17,7 @@ type tenantTypeConnectionResolver struct {
 	tenants         []*tenantGrpcContract.TenantWithCursor
 	hasPreviousPage bool
 	hasNextPage     bool
+	totalCount      int32
 }
 
 // NewTenantTypeConnectionResolver creates new instance of the tenantTypeConnectionResolver, setting up all dependencies and returns the instance
@@ -25,13 +26,15 @@ type tenantTypeConnectionResolver struct {
 // tenants: Mandatory. Reference the list of tenants
 // hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
 // hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
+// totalCount: Mandatory. The total count of matched tenants
 // Returns the new instance or error if something goes wrong
 func NewTenantTypeConnectionResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	tenants []*tenantGrpcContract.TenantWithCursor,
 	hasPreviousPage bool,
-	hasNextPage bool) (tenant.TenantTypeConnectionResolverContract, error) {
+	hasNextPage bool,
+	totalCount int32) (tenant.TenantTypeConnectionResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -45,6 +48,7 @@ func NewTenantTypeConnectionResolver(
 		tenants:         tenants,
 		hasPreviousPage: hasPreviousPage,
 		hasNextPage:     hasNextPage,
+		totalCount:      totalCount,
 	}, nil
 }
 
@@ -92,4 +96,11 @@ func (r *tenantTypeConnectionResolver) Edges(ctx context.Context) (*[]tenant.Ten
 	}
 
 	return &edges, nil
+}
+
+// TotalCount returns total count of the matched tenants
+// ctx: Mandatory. Reference to the context
+// Returns the total count of the matched tenants
+func (r *tenantTypeConnectionResolver) TotalCount(ctx context.Context) *int32 {
+	return &r.totalCount
 }

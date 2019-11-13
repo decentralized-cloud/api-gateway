@@ -37,12 +37,14 @@ type QueryResolverCreatorContract interface {
 	// edgeClusters: Mandatory. Reference the list of edge clusters
 	// hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
 	// hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
+	// totalCount: Mandatory. The total count of matched edge clusters
 	// Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
 	NewEdgeClusterTypeConnectionResolver(
 		ctx context.Context,
 		edgeClusters []*edgeclusterGrpcContract.EdgeClusterWithCursor,
 		hasPreviousPage bool,
-		hasNextPage bool) (EdgeClusterTypeConnectionResolverContract, error)
+		hasNextPage bool,
+		totalCount int32) (EdgeClusterTypeConnectionResolverContract, error)
 
 	// NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -87,6 +89,11 @@ type EdgeClusterTypeConnectionResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster edges
 	Edges(ctx context.Context) (*[]EdgeClusterTypeEdgeResolverContract, error)
+
+	// TotalCount returns total count of the matched edge clusters
+	// ctx: Mandatory. Reference to the context
+	// Returns the total count of the matched edge cluster
+	TotalCount(ctx context.Context) *int32
 }
 
 // EdgeClusterTypeEdgeResolverContract declares the resolver that returns edge cluster edge compatible with graphql-relay

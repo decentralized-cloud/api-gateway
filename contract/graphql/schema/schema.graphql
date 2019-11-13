@@ -57,6 +57,9 @@ type EdgeClusterTypeConnection {
 
   """A list of edges."""
   edges: [EdgeClusterTypeEdge]
+
+  """Total number of edge clusters"""
+  totalCount: Int
 }
 
 """An edge in a connection."""
@@ -126,6 +129,9 @@ type TenantTypeConnection {
 
   """A list of edges."""
   edges: [TenantTypeEdge]
+
+  """Total number of tenants"""
+  totalCount: Int
 }
 
 """An edge in a connection."""

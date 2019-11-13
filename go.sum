@@ -34,8 +34,8 @@ github.com/davecgh/go-spew v0.0.0-20151105211317-5215b55f46b2/go.mod h1:J7Y8YcW2
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/decentralized-cloud/edge-cluster v0.0.14 h1:fB3djPrthR0rc+W9b4CCH6gCw+daAYZW4OKWCiJ0aBs=
-github.com/decentralized-cloud/edge-cluster v0.0.14/go.mod h1:htBHDFo2URhi92+C6L3Ydv/hhk9vPa6Npq703Aai2eA=
+github.com/decentralized-cloud/edge-cluster v0.0.15 h1:V7IRz+4reFINYTvxN/GCjadtfKHVrCma3fMRJTp7lWI=
+github.com/decentralized-cloud/edge-cluster v0.0.15/go.mod h1:htBHDFo2URhi92+C6L3Ydv/hhk9vPa6Npq703Aai2eA=
 github.com/decentralized-cloud/tenant v0.0.21 h1:bTuBcBRWCstxCds2T0xLFWLl35ATUf2tuoM8cKGtIGs=
 github.com/decentralized-cloud/tenant v0.0.21/go.mod h1:P+VunxXTn32HGjQ1yb85DS581FMa0oOM68EACQQTV+Q=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
@@ -325,7 +325,6 @@ golang.org/x/tools v0.0.0-20190621195816-6e04913cbbac/go.mod h1:/rFqwRUd4F7ZHNgw
 golang.org/x/tools v0.0.0-20190624180213-70d37148ca0c/go.mod h1:/rFqwRUd4F7ZHNgwSSTFct+R/Kf4OFW1sUzUTQQTgfc=
 golang.org/x/tools v0.0.0-20191029041327-9cc4af7d6b2c/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
 golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
-golang.org/x/tools v0.0.0-20191112005509-a3f652f18032 h1:Hp/Ke3YMUvqiVTvaoElioq98ROVmHsouhctlE8sVGpo=
 golang.org/x/tools v0.0.0-20191112005509-a3f652f18032/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
 golang.org/x/tools v0.0.0-20191113055240-e33b02e76616 h1:ZWRqtkwG40JP3u51g3qbIpxQuZICFL5shyGxgnxUhF0=
 golang.org/x/tools v0.0.0-20191113055240-e33b02e76616/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=

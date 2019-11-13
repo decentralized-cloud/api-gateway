@@ -144,18 +144,21 @@ func (creator *resolverCreator) NewTenantTypeEdgeResolver(
 // tenants: Mandatory. Reference the list of tenants
 // hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
 // hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
+// totalCount: Mandatory. The total count of matched tenants
 // Returns the TenantTypeConnectionResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewTenantTypeConnectionResolver(
 	ctx context.Context,
 	tenants []*tenantGrpcContract.TenantWithCursor,
 	hasPreviousPage bool,
-	hasNextPage bool) (tenant.TenantTypeConnectionResolverContract, error) {
+	hasNextPage bool,
+	totalCount int32) (tenant.TenantTypeConnectionResolverContract, error) {
 	return querytenant.NewTenantTypeConnectionResolver(
 		ctx,
 		creator,
 		tenants,
 		hasPreviousPage,
-		hasNextPage)
+		hasNextPage,
+		totalCount)
 }
 
 // NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
@@ -200,18 +203,21 @@ func (creator *resolverCreator) NewEdgeClusterTypeEdgeResolver(
 // edgeClusters: Mandatory. Reference the list of edge clusters
 // hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
 // hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
+// totalCount: Mandatory. The total count of matched edge clusters
 // Returns the EdgeClusterTypeConnectionResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterTypeConnectionResolver(
 	ctx context.Context,
 	edgeclusters []*edgeclusterGrpcContract.EdgeClusterWithCursor,
 	hasPreviousPage bool,
-	hasNextPage bool) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
+	hasNextPage bool,
+	totalCount int32) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterTypeConnectionResolver(
 		ctx,
 		creator,
 		edgeclusters,
 		hasPreviousPage,
-		hasNextPage)
+		hasNextPage,
+		totalCount)
 }
 
 // NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it

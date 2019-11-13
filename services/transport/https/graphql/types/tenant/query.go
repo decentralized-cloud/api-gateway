@@ -38,12 +38,14 @@ type QueryResolverCreatorContract interface {
 	// tenants: Mandatory. Reference the list of tenants
 	// hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
 	// hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
+	// totalCount: Mandatory. The total count of matched tenants
 	// Returns the TenantTypeConnectionResolverContract or error if something goes wrong
 	NewTenantTypeConnectionResolver(
 		ctx context.Context,
 		tenants []*tenantGrpcContract.TenantWithCursor,
 		hasPreviousPage bool,
-		hasNextPage bool) (TenantTypeConnectionResolverContract, error)
+		hasNextPage bool,
+		totalCount int32) (TenantTypeConnectionResolverContract, error)
 }
 
 // TenantResolverContract declares the resolver that can retrieve tenant information
@@ -86,6 +88,11 @@ type TenantTypeConnectionResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the tenant edges
 	Edges(ctx context.Context) (*[]TenantTypeEdgeResolverContract, error)
+
+	// TotalCount returns total count of the matched tenants
+	// ctx: Mandatory. Reference to the context
+	// Returns the total count of the matched tenants
+	TotalCount(ctx context.Context) *int32
 }
 
 // TenantTypeEdgeResolverContract declares the resolver that returns tenant edge compatible with graphql-relay

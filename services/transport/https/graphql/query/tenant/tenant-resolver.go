@@ -173,5 +173,6 @@ func (r *tenantResolver) EdgeClusters(
 		response.EdgeClusters,
 		response.HasPreviousPage,
 		response.HasNextPage,
+		int32(response.TotalCount),
 	)
 }
