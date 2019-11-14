@@ -19,12 +19,14 @@ type MutationResolverCreatorContract interface {
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
 	// edgeCluster: Optional. The edge cluster details
+	// cursor: Mandatory. The edge cluster cursor
 	// Returns the new instance or error if something goes wrong
 	NewCreateEdgeClusterPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string,
 		edgeClusterID string,
-		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (CreateEdgeClusterPayloadResolverContract, error)
+		edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+		cursor string) (CreateEdgeClusterPayloadResolverContract, error)
 
 	// NewUpdateEdgeCluster creates new instance of the UpdateEdgeClusterContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
@@ -36,12 +38,14 @@ type MutationResolverCreatorContract interface {
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
 	// edgeCluster: Optional. The edge cluster details
+	// cursor: Mandatory. The edge cluster cursor
 	// Returns the new instance or error if something goes wrong
 	NewUpdateEdgeClusterPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string,
 		edgeClusterID string,
-		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (UpdateEdgeClusterPayloadResolverContract, error)
+		edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+		cursor string) (UpdateEdgeClusterPayloadResolverContract, error)
 
 	// NewDeleteEdgeCluster creates new instance of the DeleteEdgeClusterContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context

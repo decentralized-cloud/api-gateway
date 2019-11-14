@@ -250,18 +250,21 @@ func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.Cre
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // tenantID: Mandatory. The tenant unique identifier
 // tenant: Optional. The tenant details
+// cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateTenantPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
 	tenantID string,
-	tenant *tenantGrpcContract.Tenant) (tenant.CreateTenantPayloadResolverContract, error) {
+	tenant *tenantGrpcContract.Tenant,
+	cursor string) (tenant.CreateTenantPayloadResolverContract, error) {
 	return mutationtenant.NewCreateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
 		tenantID,
-		tenant)
+		tenant,
+		cursor)
 }
 
 // NewUpdateTenant creates new instance of the updateTenant, setting up all dependencies and returns the instance
@@ -280,18 +283,21 @@ func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.Upd
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // tenantID: Mandatory. The tenant unique identifier
 // tenant: Optional. The tenant details
+// cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
 	tenantID string,
-	tenant *tenantGrpcContract.Tenant) (tenant.UpdateTenantPayloadResolverContract, error) {
+	tenant *tenantGrpcContract.Tenant,
+	cursor string) (tenant.UpdateTenantPayloadResolverContract, error) {
 	return mutationtenant.NewUpdateTenantPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
 		tenantID,
-		tenant)
+		tenant,
+		cursor)
 }
 
 // NewDeleteTenant creates new instance of the deleteTenant, setting up all dependencies and returns the instance
@@ -335,18 +341,21 @@ func (creator *resolverCreator) NewCreateEdgeCluster(ctx context.Context) (edgec
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // edgeClusterID: Mandatory. The edge cluster unique identifier
 // edgeCluster: Optional. The edge cluster details
+// cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
+	edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+	cursor string) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
 	return mutationedgecluster.NewCreateEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
 		edgeClusterID,
-		edgeCluster)
+		edgeCluster,
+		cursor)
 }
 
 // NewUpdateEdgeCluster creates new instance of the updateEdgeCluster, setting up all dependencies and returns the instance
@@ -365,18 +374,21 @@ func (creator *resolverCreator) NewUpdateEdgeCluster(ctx context.Context) (edgec
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // edgeClusterID: Mandatory. The edge cluster unique identifier
 // edgeCluster: Optional. The edge cluster details
+// cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
+	edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+	cursor string) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
 	return mutationedgecluster.NewUpdateEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
 		edgeClusterID,
-		edgeCluster)
+		edgeCluster,
+		cursor)
 }
 
 // NewDeleteEdgeCluster creates new instance of the deleteEdgeCluster, setting up all dependencies and returns the instance
