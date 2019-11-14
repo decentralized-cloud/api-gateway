@@ -98,7 +98,7 @@ func (service *transportService) Start() error {
 		return err
 	}
 
-	server.Path("OPTIONS", "/graphql", service.corsPreflightCheck)
+	server.Path("OPTIONS", "/graphql", service.corsPreflightCheckForGraphQLHandler)
 	server.Path("POST", "/graphql", service.graphQLHandler)
 	server.Path("GET", "/live", service.livenessCheckHandler)
 	server.Path("GET", "/ready", service.readinessCheckHandler)
@@ -131,6 +131,8 @@ func (service *transportService) graphQLHandler(ctx *atreugo.RequestCtx) error {
 
 	response := service.schema.Exec(ctx, params.Query, params.OperationName, params.Variables)
 
+	service.setCorsHeaders(ctx)
+
 	return ctx.JSONResponse(response, http.StatusOK)
 }
 
@@ -146,12 +148,16 @@ func (service *transportService) livenessCheckHandler(ctx *atreugo.RequestCtx) e
 	return nil
 }
 
-func (service *transportService) corsPreflightCheck(ctx *atreugo.RequestCtx) error {
-	ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
-	ctx.Response.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	ctx.Response.Header.Set("Access-Control-Allow-Headers", "Origin,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range")
+func (service *transportService) corsPreflightCheckForGraphQLHandler(ctx *atreugo.RequestCtx) error {
+	service.setCorsHeaders(ctx)
 
 	ctx.Response.SetStatusCode(http.StatusNoContent)
 
 	return nil
+}
+
+func (service *transportService) setCorsHeaders(ctx *atreugo.RequestCtx) {
+	ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
+	ctx.Response.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	ctx.Response.Header.Set("Access-Control-Allow-Headers", "Origin,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range")
 }
