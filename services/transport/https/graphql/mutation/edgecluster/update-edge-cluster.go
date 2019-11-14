@@ -4,6 +4,7 @@ package edgeclster
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
@@ -23,6 +24,7 @@ type updateEdgeClusterPayloadResolver struct {
 	clientMutationId *string
 	edgeClusterID    string
 	edgeCluster      *edgeclusterGrpcContract.EdgeCluster
+	cursor           string
 }
 
 // NewUpdateEdgeCluster updates new instance of the updateEdgeCluster, setting up all dependencies and returns the instance
@@ -60,13 +62,18 @@ func NewUpdateEdgeCluster(
 
 // EdgeCluster returns the updated edge cluster inforamtion
 // ctx: Mandatory. Reference to the context
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
+// edgeClusterID: Mandatory. The edge cluster unique identifier
+// edgeCluster: Optional. The edge cluster details
+// cursor: Mandatory. The edge cluster cursor
 // Returns the updated edge cluster inforamtion
 func NewUpdateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
+	edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+	cursor string) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -75,11 +82,24 @@ func NewUpdateEdgeClusterPayloadResolver(
 		return nil, commonErrors.NewArgumentNilError("resolverCreator", "resolverCreator is required")
 	}
 
+	if strings.Trim(edgeClusterID, " ") == "" {
+		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
+	}
+
+	if edgeCluster == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeCluster", "edgeCluster is required")
+	}
+
+	if strings.Trim(cursor, " ") == "" {
+		return nil, commonErrors.NewArgumentError("cursor", "cursor is required")
+	}
+
 	return &updateEdgeClusterPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
 		edgeClusterID:    edgeClusterID,
 		edgeCluster:      edgeCluster,
+		cursor:           cursor,
 	}, nil
 }
 
@@ -121,16 +141,19 @@ func (m *updateEdgeCluster) MutateAndGetPayload(
 		ctx,
 		args.Input.ClientMutationId,
 		edgeClusterID,
-		response.EdgeCluster)
+		response.EdgeCluster,
+		response.Cursor)
 }
 
 // EdgeCluster returns the updated edge cluster inforamtion
 // ctx: Mandatory. Reference to the context
 // Returns the updated edge cluster inforamtion
 func (r *updateEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewEdgeClusterTypeEdgeResolver(ctx, r.edgeClusterID, "Not implemented", r.edgeCluster)
-
-	return resolver, err
+	return r.resolverCreator.NewEdgeClusterTypeEdgeResolver(
+		ctx,
+		r.edgeClusterID,
+		r.cursor,
+		r.edgeCluster)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request

@@ -4,6 +4,7 @@ package tenant
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
@@ -23,6 +24,7 @@ type createTenantPayloadResolver struct {
 	clientMutationId *string
 	tenantID         string
 	tenant           *tenantGrpcContract.Tenant
+	cursor           string
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
@@ -65,13 +67,15 @@ func NewCreateTenant(
 // clientMutationId: Optional. Reference to the client mutation ID
 // tenantID: Mandatory. The tenant unique identifier
 // tenant: Optional. The tenant details
+// cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func NewCreateTenantPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	clientMutationId *string,
 	tenantID string,
-	tenant *tenantGrpcContract.Tenant) (tenant.CreateTenantPayloadResolverContract, error) {
+	tenant *tenantGrpcContract.Tenant,
+	cursor string) (tenant.CreateTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -80,11 +84,24 @@ func NewCreateTenantPayloadResolver(
 		return nil, commonErrors.NewArgumentNilError("resolverCreator", "resolverCreator is required")
 	}
 
+	if strings.Trim(tenantID, " ") == "" {
+		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
+	}
+
+	if tenant == nil {
+		return nil, commonErrors.NewArgumentNilError("tenant", "tenant is required")
+	}
+
+	if strings.Trim(cursor, " ") == "" {
+		return nil, commonErrors.NewArgumentError("cursor", "cursor is required")
+	}
+
 	return &createTenantPayloadResolver{
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
 		tenantID:         tenantID,
 		tenant:           tenant,
+		cursor:           cursor,
 	}, nil
 }
 
@@ -122,16 +139,19 @@ func (m *createTenant) MutateAndGetPayload(
 		ctx,
 		args.Input.ClientMutationId,
 		response.TenantID,
-		response.Tenant)
+		response.Tenant,
+		response.Cursor)
 }
 
 // Tenant returns the new tenant inforamtion
 // ctx: Mandatory. Reference to the context
 // Returns the new tenant inforamtion
 func (r *createTenantPayloadResolver) Tenant(ctx context.Context) (tenant.TenantTypeEdgeResolverContract, error) {
-	resolver, err := r.resolverCreator.NewTenantTypeEdgeResolver(ctx, r.tenantID, "Not implemented", r.tenant)
-
-	return resolver, err
+	return r.resolverCreator.NewTenantTypeEdgeResolver(
+		ctx,
+		r.tenantID,
+		r.cursor,
+		r.tenant)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request

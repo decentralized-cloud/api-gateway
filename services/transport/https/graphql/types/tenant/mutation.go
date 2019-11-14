@@ -19,12 +19,14 @@ type MutationResolverCreatorContract interface {
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// tenantID: Mandatory. The tenant unique identifier
 	// tenant: Optional. The tenant details
+	// cursor: Mandatory. The edge cluster cursor
 	// Returns the new instance or error if something goes wrong
 	NewCreateTenantPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string,
 		tenantID string,
-		tenant *tenantGrpcContract.Tenant) (CreateTenantPayloadResolverContract, error)
+		tenant *tenantGrpcContract.Tenant,
+		cursor string) (CreateTenantPayloadResolverContract, error)
 
 	// NewUpdateTenant creates new instance of the UpdateTenantContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
@@ -37,12 +39,14 @@ type MutationResolverCreatorContract interface {
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// tenantID: Mandatory. The tenant unique identifier
 	// tenant: Optional. The tenant details
+	// cursor: Mandatory. The edge cluster cursor
 	// Returns the new instance or error if something goes wrong
 	NewUpdateTenantPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string,
 		tenantID string,
-		tenant *tenantGrpcContract.Tenant) (UpdateTenantPayloadResolverContract, error)
+		tenant *tenantGrpcContract.Tenant,
+		cursor string) (UpdateTenantPayloadResolverContract, error)
 
 	// NewDeleteTenant creates new instance of the DeleteTenantContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
