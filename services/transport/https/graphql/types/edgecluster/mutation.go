@@ -168,6 +168,7 @@ type UpdateEdgeClusterInput struct {
 	TenantID               graphql.ID
 	Name                   string
 	ClusterPublicIPAddress string
+	K3SClusterSecret       string
 	ClientMutationId       *string
 }
 
