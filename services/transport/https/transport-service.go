@@ -98,11 +98,14 @@ func (service *transportService) Start() error {
 		return err
 	}
 
+	server.UseAfter(service.cors)
+
 	server.Path("POST", "/graphql", service.graphQLHandler)
 	server.Path("GET", "/live", service.livenessCheckHandler)
 	server.Path("GET", "/ready", service.readinessCheckHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	server.NetHTTPPath("GET", "/metrics", promhttp.Handler())
+
 	service.logger.Info("HTTPS service started", zap.String("address", config.Addr))
 
 	return server.ListenAndServe()
@@ -142,4 +145,12 @@ func (service *transportService) livenessCheckHandler(ctx *atreugo.RequestCtx) e
 	ctx.Response.SetStatusCode(http.StatusOK)
 
 	return nil
+}
+
+func (service *transportService) cors(ctx *atreugo.RequestCtx) error {
+	ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
+	ctx.Response.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+	ctx.Response.Header.Set("Access-Control-Allow-Headers", "Origin,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range")
+
+	return ctx.Next()
 }
