@@ -148,6 +148,7 @@ input UpdateEdgeClusterInput {
   tenantID: ID!
   name: String!
   clusterPublicIPAddress: String!
+  k3SClusterSecret: String!
   clientMutationId: String
 }
 
