@@ -54,10 +54,12 @@ type MutationResolverCreatorContract interface {
 
 	// NewDeleteEdgeClusterPayloadResolver creates new instance of the DeleteEdgeClusterPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// edgeClusterID: Mandatory. The edge cluster unique identifier
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// Returns the new instance or error if something goes wrong
 	NewDeleteEdgeClusterPayloadResolver(
 		ctx context.Context,
+		edgeClusterID string,
 		clientMutationId *string) (DeleteEdgeClusterPayloadResolverContract, error)
 }
 
@@ -113,6 +115,11 @@ type UpdateEdgeClusterPayloadResolverContract interface {
 
 // DeleteEdgeClusterPayloadResolverContract declares the resolver that can return the payload contains the result of deleting an existing edge cluster
 type DeleteEdgeClusterPayloadResolverContract interface {
+	// DeletedEdgeClusterID returns the unique identifier of the edge cluster that got deleted
+	// ctx: Mandatory. Reference to the context
+	// Returns the unique identifier of the the edge cluster that got deleted
+	DeletedEdgeClusterID(ctx context.Context) graphql.ID
+
 	// ClientMutationId returns the client mutation ID that was provided as part of the mutation request
 	// ctx: Mandatory. Reference to the context
 	// Returns the provided clientMutationId as part of mutation request
@@ -153,10 +160,10 @@ type DeleteEdgeClusterContract interface {
 }
 
 type CreateEdgeClusterInput struct {
-	TenantID               graphql.ID
-	Name                   string
-	ClusterPublicIPAddress string
-	ClientMutationId       *string
+	TenantID         graphql.ID
+	Name             string
+	K3SClusterSecret string
+	ClientMutationId *string
 }
 
 type CreateEdgeClusterInputArgument struct {
@@ -164,12 +171,11 @@ type CreateEdgeClusterInputArgument struct {
 }
 
 type UpdateEdgeClusterInput struct {
-	EdgeClusterID          graphql.ID
-	TenantID               graphql.ID
-	Name                   string
-	ClusterPublicIPAddress string
-	K3SClusterSecret       string
-	ClientMutationId       *string
+	EdgeClusterID    graphql.ID
+	TenantID         graphql.ID
+	Name             string
+	K3SClusterSecret string
+	ClientMutationId *string
 }
 
 type UpdateEdgeClusterInputArgument struct {

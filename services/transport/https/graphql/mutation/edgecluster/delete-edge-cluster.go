@@ -8,6 +8,7 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
+	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
@@ -20,6 +21,7 @@ type deleteEdgeCluster struct {
 
 type deleteEdgeClusterPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
+	edgeClusterID    string
 	clientMutationId *string
 }
 
@@ -63,6 +65,7 @@ func NewDeleteEdgeCluster(
 func NewDeleteEdgeClusterPayloadResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
+	edgeClusterID string,
 	clientMutationId *string) (edgecluster.DeleteEdgeClusterPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -74,6 +77,7 @@ func NewDeleteEdgeClusterPayloadResolver(
 
 	return &deleteEdgeClusterPayloadResolver{
 		resolverCreator:  resolverCreator,
+		edgeClusterID:    edgeClusterID,
 		clientMutationId: clientMutationId,
 	}, nil
 }
@@ -110,8 +114,16 @@ func (m *deleteEdgeCluster) MutateAndGetPayload(
 
 	return m.resolverCreator.NewDeleteEdgeClusterPayloadResolver(
 		ctx,
+		edgeClusterID,
 		args.Input.ClientMutationId,
 	)
+}
+
+// DeletedEdgeClusterID returns the unique identifier of the edge cluster that got deleted
+// ctx: Mandatory. Reference to the context
+// Returns the unique identifier of the the edge cluster that got deleted
+func (r *deleteEdgeClusterPayloadResolver) DeletedEdgeClusterID(ctx context.Context) graphql.ID {
+	return graphql.ID(r.edgeClusterID)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request

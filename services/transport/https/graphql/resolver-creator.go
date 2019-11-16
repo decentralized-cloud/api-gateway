@@ -313,15 +313,17 @@ func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.Del
 
 // NewDeleteTenantPayloadResolver creates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
-// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // tenantID: Mandatory. The tenant unique identifier
+// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
 	ctx context.Context,
+	tenantID string,
 	clientMutationId *string) (tenant.DeleteTenantPayloadResolverContract, error) {
 	return mutationtenant.NewDeleteTenantPayloadResolver(
 		ctx,
 		creator,
+		tenantID,
 		clientMutationId)
 }
 
@@ -404,13 +406,16 @@ func (creator *resolverCreator) NewDeleteEdgeCluster(ctx context.Context) (edgec
 
 // NewDeleteEdgeClusterPayloadResolver creates new instance of the deleteEdgeClusterPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
+// edgeClusterID: Mandatory. The edge cluster unique identifier
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewDeleteEdgeClusterPayloadResolver(
 	ctx context.Context,
+	edgeClusterID string,
 	clientMutationId *string) (edgecluster.DeleteEdgeClusterPayloadResolverContract, error) {
 	return mutationedgecluster.NewDeleteEdgeClusterPayloadResolver(
 		ctx,
 		creator,
+		edgeClusterID,
 		clientMutationId)
 }

@@ -6,6 +6,8 @@ export default mutationWithClientMutationId({
   inputFields: {
     edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
   },
-  outputFields: {},
+  outputFields: {
+    deletedEdgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
+  },
   mutateAndGetPayload: () => ({}),
 });
