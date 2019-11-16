@@ -19,7 +19,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/thoas/go-funk v0.4.0
 	go.uber.org/zap v1.10.0
-	golang.org/x/sys v0.0.0-20191113165036-4c7a9d0fe056 // indirect
-	golang.org/x/tools v0.0.0-20191113232020-e2727e816f5a // indirect
+	golang.org/x/sys v0.0.0-20191115151921-52ab43148777 // indirect
+	golang.org/x/tools v0.0.0-20191115202509-3a792d9c32b2 // indirect
 	google.golang.org/grpc v1.24.0
 )
