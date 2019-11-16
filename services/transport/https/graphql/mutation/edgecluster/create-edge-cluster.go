@@ -124,9 +124,8 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 		ctx,
 		&edgeclusterGrpcContract.CreateEdgeClusterRequest{
 			EdgeCluster: &edgeclusterGrpcContract.EdgeCluster{
-				TenantID:               string(args.Input.TenantID),
-				Name:                   args.Input.Name,
-				ClusterPublicIPAddress: args.Input.ClusterPublicIPAddress,
+				TenantID: string(args.Input.TenantID),
+				Name:     args.Input.Name,
 			}})
 	if err != nil {
 		return nil, err

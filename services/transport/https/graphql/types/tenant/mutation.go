@@ -56,10 +56,12 @@ type MutationResolverCreatorContract interface {
 
 	// NewDeleteTenantPayloadResolver creates new instance of the DeleteTenantPayloadResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
+	// tenantID: Mandatory. The tenant unique identifier
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// Returns the new instance or error if something goes wrong
 	NewDeleteTenantPayloadResolver(
 		ctx context.Context,
+		tenantID string,
 		clientMutationId *string) (DeleteTenantPayloadResolverContract, error)
 }
 
@@ -115,6 +117,11 @@ type UpdateTenantPayloadResolverContract interface {
 
 // DeleteTenantPayloadResolverContract declares the resolver that can return the payload contains the result of deleting an existing tenant
 type DeleteTenantPayloadResolverContract interface {
+	// DeletedTenantID returns the unique identifier of the tenant that got deleted
+	// ctx: Mandatory. Reference to the context
+	// Returns the unique identifier of the the tenant that got deleted
+	DeletedTenantID(ctx context.Context) graphql.ID
+
 	// ClientMutationId returns the client mutation ID that was provided as part of the mutation request
 	// ctx: Mandatory. Reference to the context
 	// Returns the provided clientMutationId as part of mutation request

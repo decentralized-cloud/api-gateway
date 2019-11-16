@@ -6,6 +6,8 @@ export default mutationWithClientMutationId({
   inputFields: {
     tenantID: { type: new GraphQLNonNull(GraphQLID) },
   },
-  outputFields: {},
+  outputFields: {
+    deletedTenantID: { type: new GraphQLNonNull(GraphQLID) },
+  },
   mutateAndGetPayload: () => ({}),
 });
