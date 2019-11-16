@@ -7,7 +7,6 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/edgecluster"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types/tenant"
-	"github.com/lucsky/cuid"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
@@ -48,7 +47,8 @@ func NewRootResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the user resolver or error if something goes wrong
 func (r *rootResolver) User(ctx context.Context) (types.UserResolverContract, error) {
-	return r.resolverCreator.NewUserResolver(ctx, cuid.New())
+	// TODO: mortezaalizadeh, 16/11/2019 user ID hard coded until we have authentication flow implemented
+	return r.resolverCreator.NewUserResolver(ctx, "ck30lptw000060133f1rg1uf9")
 }
 
 // CreateTenant returns create tenant mutator
