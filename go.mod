@@ -3,7 +3,7 @@ module github.com/decentralized-cloud/api-gateway
 go 1.13
 
 require (
-	github.com/decentralized-cloud/edge-cluster v0.0.20
+	github.com/decentralized-cloud/edge-cluster v0.0.21
 	github.com/decentralized-cloud/tenant v0.0.23
 	github.com/friendsofgo/graphiql v0.2.2
 	github.com/gobuffalo/envy v1.7.1 // indirect

@@ -4,7 +4,6 @@ package edgecluster
 import (
 	"context"
 
-	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -18,14 +17,14 @@ type MutationResolverCreatorContract interface {
 	// ctx: Mandatory. Reference to the context
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
-	// edgeCluster: Optional. The edge cluster details
+	// edgeClusterDetails: Mandatory. The edge cluster details
 	// cursor: Mandatory. The edge cluster cursor
 	// Returns the new instance or error if something goes wrong
 	NewCreateEdgeClusterPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string,
 		edgeClusterID string,
-		edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+		edgeClusterDetails *EdgeClusterDetails,
 		cursor string) (CreateEdgeClusterPayloadResolverContract, error)
 
 	// NewUpdateEdgeCluster creates new instance of the UpdateEdgeClusterContract, setting up all dependencies and returns the instance
@@ -37,14 +36,14 @@ type MutationResolverCreatorContract interface {
 	// ctx: Mandatory. Reference to the context
 	// clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
-	// edgeCluster: Optional. The edge cluster details
+	// edgeClusterDetails: Mandatory. The edge cluster details
 	// cursor: Mandatory. The edge cluster cursor
 	// Returns the new instance or error if something goes wrong
 	NewUpdateEdgeClusterPayloadResolver(
 		ctx context.Context,
 		clientMutationId *string,
 		edgeClusterID string,
-		edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+		edgeClusterDetails *EdgeClusterDetails,
 		cursor string) (UpdateEdgeClusterPayloadResolverContract, error)
 
 	// NewDeleteEdgeCluster creates new instance of the DeleteEdgeClusterContract, setting up all dependencies and returns the instance
