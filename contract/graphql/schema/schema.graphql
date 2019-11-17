@@ -1,7 +1,7 @@
 input CreateEdgeClusterInput {
   tenantID: ID!
   name: String!
-  k3SClusterSecret: String!
+  clusterSecret: String!
   clientMutationId: String
 }
 
@@ -43,7 +43,7 @@ type DeleteTenantPayload {
 type EdgeCluster implements Node {
   id: ID!
   name: String!
-  clusterPublicIPAddress: String!
+  clusterSecret: String!
   tenant: EdgeClusterTenant!
 }
 
@@ -149,7 +149,7 @@ input UpdateEdgeClusterInput {
   edgeClusterID: ID!
   tenantID: ID!
   name: String!
-  k3SClusterSecret: String!
+  clusterSecret: String!
   clientMutationId: String
 }
 

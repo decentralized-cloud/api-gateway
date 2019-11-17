@@ -34,8 +34,8 @@ github.com/davecgh/go-spew v0.0.0-20151105211317-5215b55f46b2/go.mod h1:J7Y8YcW2
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/decentralized-cloud/edge-cluster v0.0.18 h1:3+oiuzVmcfkVMpGvOSb2s2OMPeNJDu64nXujcCHP5LM=
-github.com/decentralized-cloud/edge-cluster v0.0.18/go.mod h1:htBHDFo2URhi92+C6L3Ydv/hhk9vPa6Npq703Aai2eA=
+github.com/decentralized-cloud/edge-cluster v0.0.20 h1:qtpPEQGyfS+JBQKx8xfpdgYGxFoWtWZnSxwPqulas38=
+github.com/decentralized-cloud/edge-cluster v0.0.20/go.mod h1:htBHDFo2URhi92+C6L3Ydv/hhk9vPa6Npq703Aai2eA=
 github.com/decentralized-cloud/tenant v0.0.23 h1:BrMC1yKl72v4iAsR6foXEw5Y0CPsJmdzhQbFQoXSS1A=
 github.com/decentralized-cloud/tenant v0.0.23/go.mod h1:P+VunxXTn32HGjQ1yb85DS581FMa0oOM68EACQQTV+Q=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
@@ -326,8 +326,8 @@ golang.org/x/tools v0.0.0-20190624180213-70d37148ca0c/go.mod h1:/rFqwRUd4F7ZHNgw
 golang.org/x/tools v0.0.0-20191029041327-9cc4af7d6b2c/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
 golang.org/x/tools v0.0.0-20191029190741-b9c20aec41a5/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
 golang.org/x/tools v0.0.0-20191112005509-a3f652f18032/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
-golang.org/x/tools v0.0.0-20191115202509-3a792d9c32b2 h1:EtTFh6h4SAKemS+CURDMTDIANuduG5zKEXShyy18bGA=
-golang.org/x/tools v0.0.0-20191115202509-3a792d9c32b2/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
+golang.org/x/tools v0.0.0-20191116214431-80313e1ba718 h1:cWviR33VVbwok1/RNvFm9XHNcdJCsaSocBflkEXrIdo=
+golang.org/x/tools v0.0.0-20191116214431-80313e1ba718/go.mod h1:b+2E5dAYhXwXZwtnZ6UAqBI28+e2cm9otk0dWdXHAEo=
 golang.org/x/xerrors v0.0.0-20190717185122-a985d3407aa7/go.mod h1:I/5z698sn9Ka8TeJc9MKroUUfqBBauWjQqLJ2OPfmY0=
 google.golang.org/api v0.4.0/go.mod h1:8k5glujaEP+g9n7WNsDg8QP6cUVNI86fCNMcbazEtwE=
 google.golang.org/appengine v1.1.0/go.mod h1:EbEs0AVv82hx2wNQdGPgUI5lhzA/G0D9YwlJXL52JkM=

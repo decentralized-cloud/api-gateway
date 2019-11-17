@@ -67,10 +67,10 @@ type EdgeClusterResolverContract interface {
 	// Returns the edge cluster name
 	Name(ctx context.Context) string
 
-	// ClusterPublicIPAddress returns edge cluster public IP address
+	// ClusterSecret returns edge cluster secret
 	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster public IP address
-	ClusterPublicIPAddress(ctx context.Context) string
+	// Returns the edge cluster secret
+	ClusterSecret(ctx context.Context) string
 
 	// Tenant returns edge cluster tenant
 	// ctx: Mandatory. Reference to the context
