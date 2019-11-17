@@ -20,11 +20,11 @@ type createEdgeCluster struct {
 }
 
 type createEdgeClusterPayloadResolver struct {
-	resolverCreator    types.ResolverCreatorContract
-	clientMutationId   *string
-	edgeClusterID      string
-	edgeClusterDetails *edgecluster.EdgeClusterDetails
-	cursor             string
+	resolverCreator   types.ResolverCreatorContract
+	clientMutationId  *string
+	edgeClusterID     string
+	edgeClusterDetail *edgecluster.EdgeClusterDetail
+	cursor            string
 }
 
 // NewCreateEdgeCluster creates new instance of the createEdgeCluster, setting up all dependencies and returns the instance
@@ -65,7 +65,7 @@ func NewCreateEdgeCluster(
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // edgeClusterID: Mandatory. The edge cluster unique identifier
-// edgeClusterDetails: Mandatory. The edge cluster details
+// edgeClusterDetail: Mandatory. The edge cluster details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func NewCreateEdgeClusterPayloadResolver(
@@ -73,7 +73,7 @@ func NewCreateEdgeClusterPayloadResolver(
 	resolverCreator types.ResolverCreatorContract,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeClusterDetails *edgecluster.EdgeClusterDetails,
+	edgeClusterDetail *edgecluster.EdgeClusterDetail,
 	cursor string) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -87,8 +87,8 @@ func NewCreateEdgeClusterPayloadResolver(
 		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
 	}
 
-	if edgeClusterDetails == nil {
-		return nil, commonErrors.NewArgumentNilError("edgeClusterDetails", "edgeClusterDetails is required")
+	if edgeClusterDetail == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterDetail", "edgeClusterDetail is required")
 	}
 
 	if strings.Trim(cursor, " ") == "" {
@@ -96,11 +96,11 @@ func NewCreateEdgeClusterPayloadResolver(
 	}
 
 	return &createEdgeClusterPayloadResolver{
-		resolverCreator:    resolverCreator,
-		clientMutationId:   clientMutationId,
-		edgeClusterID:      edgeClusterID,
-		edgeClusterDetails: edgeClusterDetails,
-		cursor:             cursor,
+		resolverCreator:   resolverCreator,
+		clientMutationId:  clientMutationId,
+		edgeClusterID:     edgeClusterID,
+		edgeClusterDetail: edgeClusterDetail,
+		cursor:            cursor,
 	}, nil
 }
 
@@ -140,7 +140,7 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 		ctx,
 		args.Input.ClientMutationId,
 		response.EdgeClusterID,
-		&edgecluster.EdgeClusterDetails{
+		&edgecluster.EdgeClusterDetail{
 			EdgeCluster:        response.EdgeCluster,
 			ProvisioningDetail: response.ProvisioningDetail,
 		},
@@ -155,7 +155,7 @@ func (r *createEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (edg
 		ctx,
 		r.edgeClusterID,
 		r.cursor,
-		r.edgeClusterDetails)
+		r.edgeClusterDetail)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request

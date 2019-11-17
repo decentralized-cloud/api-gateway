@@ -14,24 +14,24 @@ type QueryResolverCreatorContract interface {
 	// NewTenantResolver creates new TenantResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// tenantID: Mandatory. The tenant unique identifier
-	// tenant: Optional. The tenant details
+	// tenantDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
 	// Returns the TenantResolverContract or error if something goes wrong
 	NewTenantResolver(
 		ctx context.Context,
 		tenantID string,
-		tenant *tenantGrpcContract.Tenant) (TenantResolverContract, error)
+		tenantDetail *TenantDetail) (TenantResolverContract, error)
 
 	// NewTenantTypeEdgeResolver creates new TenantTypeEdgeResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// tenantID: Mandatory. The tenant unique identifier
-	// tenant: Optional. The tenant details
+	// tenantDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
 	// cursor: Mandatory. The cursor
 	// Returns the TenantTypeEdgeResolverContract or error if something goes wrong
 	NewTenantTypeEdgeResolver(
 		ctx context.Context,
 		tenantID string,
 		cursor string,
-		tenant *tenantGrpcContract.Tenant) (TenantTypeEdgeResolverContract, error)
+		tenantDetail *TenantDetail) (TenantTypeEdgeResolverContract, error)
 
 	// NewTenantTypeConnectionResolver creates new TenantTypeConnectionResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -106,6 +106,10 @@ type TenantTypeEdgeResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the cursor
 	Cursor(ctx context.Context) string
+}
+
+type TenantDetail struct {
+	Tenant *tenantGrpcContract.Tenant
 }
 
 type TenantClusterEdgeClusterInputArgument struct {

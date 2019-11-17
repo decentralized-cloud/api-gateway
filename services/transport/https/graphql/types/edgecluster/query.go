@@ -13,24 +13,24 @@ type QueryResolverCreatorContract interface {
 	// NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
-	// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
+	// edgeClusterDetail: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 	// Returns the EdgeClusterResolverContract or error if something goes wrong
 	NewEdgeClusterResolver(
 		ctx context.Context,
 		edgeClusterID string,
-		edgeClusterDetails *EdgeClusterDetails) (EdgeClusterResolverContract, error)
+		edgeClusterDetail *EdgeClusterDetail) (EdgeClusterResolverContract, error)
 
 	// NewEdgeClusterTypeEdgeResolver creates new EdgeClusterTypeEdgeResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
 	// cursor: Mandatory. The cursor
-	// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
+	// edgeClusterDetail: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 	// Returns the EdgeClusterTypeEdgeResolverContract or error if something goes wrong
 	NewEdgeClusterTypeEdgeResolver(
 		ctx context.Context,
 		edgeClusterID string,
 		cursor string,
-		edgeClusterDetails *EdgeClusterDetails) (EdgeClusterTypeEdgeResolverContract, error)
+		edgeClusterDetail *EdgeClusterDetail) (EdgeClusterTypeEdgeResolverContract, error)
 
 	// NewEdgeClusterTypeConnectionResolver creates new EdgeClusterTypeConnectionResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -161,7 +161,7 @@ type EdgeClusterProvisioningDetailResolverContract interface {
 	KubeconfigContent(ctx context.Context) *string
 }
 
-type EdgeClusterDetails struct {
+type EdgeClusterDetail struct {
 	EdgeCluster        *edgeclusterGrpcContract.EdgeCluster
 	ProvisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail
 }

@@ -81,12 +81,14 @@ func (r *tenantTypeConnectionResolver) Edges(ctx context.Context) (*[]tenant.Ten
 
 	edges := []tenant.TenantTypeEdgeResolverContract{}
 
-	for _, tenant := range tenants {
+	for _, item := range tenants {
 		edge, err := r.resolverCreator.NewTenantTypeEdgeResolver(
 			ctx,
-			tenant.TenantID,
-			tenant.Cursor,
-			tenant.Tenant)
+			item.TenantID,
+			item.Cursor,
+			&tenant.TenantDetail{
+				Tenant: item.Tenant,
+			})
 
 		if err != nil {
 			return nil, err

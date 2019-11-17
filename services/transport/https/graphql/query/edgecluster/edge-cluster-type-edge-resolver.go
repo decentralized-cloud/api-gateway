@@ -11,24 +11,24 @@ import (
 )
 
 type edgeClusterTypeEdgeResolver struct {
-	resolverCreator    types.ResolverCreatorContract
-	edgeClusterID      string
-	edgeClusterDetails *edgecluster.EdgeClusterDetails
-	cursor             string
+	resolverCreator   types.ResolverCreatorContract
+	edgeClusterID     string
+	edgeClusterDetail *edgecluster.EdgeClusterDetail
+	cursor            string
 }
 
 // NewEdgeClusterTypeEdgeResolver creates new instance of the edgeClusterTypeEdgeResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // edgeClusterID: Mandatory. the edge cluster unique identifier
-// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
+// edgeClusterDetail: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 // cursor: Mandatory. the cursor
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterTypeEdgeResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	edgeClusterID string,
-	edgeClusterDetails *edgecluster.EdgeClusterDetails,
+	edgeClusterDetail *edgecluster.EdgeClusterDetail,
 	cursor string) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -47,10 +47,10 @@ func NewEdgeClusterTypeEdgeResolver(
 	}
 
 	return &edgeClusterTypeEdgeResolver{
-		resolverCreator:    resolverCreator,
-		edgeClusterID:      edgeClusterID,
-		edgeClusterDetails: edgeClusterDetails,
-		cursor:             cursor,
+		resolverCreator:   resolverCreator,
+		edgeClusterID:     edgeClusterID,
+		edgeClusterDetail: edgeClusterDetail,
+		cursor:            cursor,
 	}, nil
 }
 
@@ -61,7 +61,7 @@ func (r *edgeClusterTypeEdgeResolver) Node(ctx context.Context) (edgecluster.Edg
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
 		r.edgeClusterID,
-		r.edgeClusterDetails)
+		r.edgeClusterDetail)
 }
 
 // Cursor returns the cursor for the edge cluster edge compatible with graphql-relay

@@ -81,14 +81,14 @@ func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]edgec
 
 	edges := []edgecluster.EdgeClusterTypeEdgeResolverContract{}
 
-	for _, edgeCluster := range edgeClusters {
+	for _, item := range edgeClusters {
 		edge, err := r.resolverCreator.NewEdgeClusterTypeEdgeResolver(
 			ctx,
-			edgeCluster.EdgeClusterID,
-			edgeCluster.Cursor,
-			&edgecluster.EdgeClusterDetails{
-				EdgeCluster:        edgeCluster.EdgeCluster,
-				ProvisioningDetail: edgeCluster.ProvisioningDetail,
+			item.EdgeClusterID,
+			item.Cursor,
+			&edgecluster.EdgeClusterDetail{
+				EdgeCluster:        item.EdgeCluster,
+				ProvisioningDetail: item.ProvisioningDetail,
 			})
 
 		if err != nil {
