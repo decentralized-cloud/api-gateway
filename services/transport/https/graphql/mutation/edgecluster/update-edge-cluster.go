@@ -20,11 +20,11 @@ type updateEdgeCluster struct {
 }
 
 type updateEdgeClusterPayloadResolver struct {
-	resolverCreator    types.ResolverCreatorContract
-	clientMutationId   *string
-	edgeClusterID      string
-	edgeClusterDetails *edgecluster.EdgeClusterDetails
-	cursor             string
+	resolverCreator   types.ResolverCreatorContract
+	clientMutationId  *string
+	edgeClusterID     string
+	edgeClusterDetail *edgecluster.EdgeClusterDetail
+	cursor            string
 }
 
 // NewUpdateEdgeCluster updates new instance of the updateEdgeCluster, setting up all dependencies and returns the instance
@@ -64,7 +64,7 @@ func NewUpdateEdgeCluster(
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // edgeClusterID: Mandatory. The edge cluster unique identifier
-// edgeClusterDetails: Mandatory. The edge cluster details
+// edgeClusterDetail: Mandatory. The edge cluster details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the updated edge cluster inforamtion
 func NewUpdateEdgeClusterPayloadResolver(
@@ -72,7 +72,7 @@ func NewUpdateEdgeClusterPayloadResolver(
 	resolverCreator types.ResolverCreatorContract,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeClusterDetails *edgecluster.EdgeClusterDetails,
+	edgeClusterDetail *edgecluster.EdgeClusterDetail,
 	cursor string) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -86,8 +86,8 @@ func NewUpdateEdgeClusterPayloadResolver(
 		return nil, commonErrors.NewArgumentError("edgeClusterID", "edgeClusterID is required")
 	}
 
-	if edgeClusterDetails == nil {
-		return nil, commonErrors.NewArgumentNilError("edgeClusterDetails", "edgeClusterDetails is required")
+	if edgeClusterDetail == nil {
+		return nil, commonErrors.NewArgumentNilError("edgeClusterDetail", "edgeClusterDetail is required")
 	}
 
 	if strings.Trim(cursor, " ") == "" {
@@ -95,11 +95,11 @@ func NewUpdateEdgeClusterPayloadResolver(
 	}
 
 	return &updateEdgeClusterPayloadResolver{
-		resolverCreator:    resolverCreator,
-		clientMutationId:   clientMutationId,
-		edgeClusterID:      edgeClusterID,
-		edgeClusterDetails: edgeClusterDetails,
-		cursor:             cursor,
+		resolverCreator:   resolverCreator,
+		clientMutationId:  clientMutationId,
+		edgeClusterID:     edgeClusterID,
+		edgeClusterDetail: edgeClusterDetail,
+		cursor:            cursor,
 	}, nil
 }
 
@@ -141,7 +141,7 @@ func (m *updateEdgeCluster) MutateAndGetPayload(
 		ctx,
 		args.Input.ClientMutationId,
 		edgeClusterID,
-		&edgecluster.EdgeClusterDetails{
+		&edgecluster.EdgeClusterDetail{
 			EdgeCluster:        response.EdgeCluster,
 			ProvisioningDetail: response.ProvisioningDetail,
 		},
@@ -156,7 +156,7 @@ func (r *updateEdgeClusterPayloadResolver) EdgeCluster(ctx context.Context) (edg
 		ctx,
 		r.edgeClusterID,
 		r.cursor,
-		r.edgeClusterDetails)
+		r.edgeClusterDetail)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request

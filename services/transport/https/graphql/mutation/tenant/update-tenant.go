@@ -23,7 +23,7 @@ type updateTenantPayloadResolver struct {
 	resolverCreator  types.ResolverCreatorContract
 	clientMutationId *string
 	tenantID         string
-	tenant           *tenantGrpcContract.Tenant
+	tenantDetail     *tenant.TenantDetail
 	cursor           string
 }
 
@@ -66,7 +66,7 @@ func NewUpdateTenant(
 // resolverCreator: Mandatory. Reference to the resolver creator service that can update new instances of resolvers
 // clientMutationId: Optional. Reference to the client mutation ID
 // tenantID: Mandatory. The tenant unique identifier
-// tenant: Optional. The tenant details
+// tenantDetail: Mandatory. The tenant details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func NewUpdateTenantPayloadResolver(
@@ -74,7 +74,7 @@ func NewUpdateTenantPayloadResolver(
 	resolverCreator types.ResolverCreatorContract,
 	clientMutationId *string,
 	tenantID string,
-	tenant *tenantGrpcContract.Tenant,
+	tenantDetail *tenant.TenantDetail,
 	cursor string) (tenant.UpdateTenantPayloadResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -88,8 +88,8 @@ func NewUpdateTenantPayloadResolver(
 		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
 	}
 
-	if tenant == nil {
-		return nil, commonErrors.NewArgumentNilError("tenant", "tenant is required")
+	if tenantDetail == nil {
+		return nil, commonErrors.NewArgumentNilError("tenantDetail", "tenantDetail is required")
 	}
 
 	if strings.Trim(cursor, " ") == "" {
@@ -100,7 +100,7 @@ func NewUpdateTenantPayloadResolver(
 		resolverCreator:  resolverCreator,
 		clientMutationId: clientMutationId,
 		tenantID:         tenantID,
-		tenant:           tenant,
+		tenantDetail:     tenantDetail,
 		cursor:           cursor,
 	}, nil
 }
@@ -142,7 +142,9 @@ func (m *updateTenant) MutateAndGetPayload(
 		ctx,
 		args.Input.ClientMutationId,
 		tenantID,
-		response.Tenant,
+		&tenant.TenantDetail{
+			Tenant: response.Tenant,
+		},
 		response.Cursor)
 }
 
@@ -154,7 +156,7 @@ func (r *updateTenantPayloadResolver) Tenant(ctx context.Context) (tenant.Tenant
 		ctx,
 		r.tenantID,
 		r.cursor,
-		r.tenant)
+		r.tenantDetail)
 }
 
 // ClientMutationId returns the client mutation ID that was provided as part of the mutation request

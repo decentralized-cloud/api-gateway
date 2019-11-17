@@ -20,7 +20,7 @@ type tenantResolver struct {
 	logger                   *zap.Logger
 	resolverCreator          types.ResolverCreatorContract
 	tenantID                 string
-	tenant                   *tenantGrpcContract.Tenant
+	tenantDetail             *tenant.TenantDetail
 	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
@@ -30,7 +30,7 @@ type tenantResolver struct {
 // logger: Mandatory. Reference to the logger service
 // tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
 // tenantID: Mandatory. the tenant unique identifier
-// tenant: Optional. The tenant details
+// tenantDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
 // Returns the new instance or error if something goes wrong
 func NewTenantResolver(
 	ctx context.Context,
@@ -39,7 +39,7 @@ func NewTenantResolver(
 	tenantClientService tenant.TenantClientContract,
 	edgeClusterClientService edgecluster.EdgeClusterClientContract,
 	tenantID string,
-	tenant *tenantGrpcContract.Tenant) (tenant.TenantResolverContract, error) {
+	tenantDetail *tenant.TenantDetail) (tenant.TenantResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -71,7 +71,7 @@ func NewTenantResolver(
 		tenantID:                 tenantID,
 	}
 
-	if tenant == nil {
+	if tenantDetail == nil {
 		connection, tenantServiceClient, err := tenantClientService.CreateClient()
 		if err != nil {
 			return nil, err
@@ -94,9 +94,11 @@ func NewTenantResolver(
 			return nil, errors.New(response.ErrorMessage)
 		}
 
-		resolver.tenant = response.Tenant
+		resolver.tenantDetail = &tenant.TenantDetail{
+			Tenant: response.Tenant,
+		}
 	} else {
-		resolver.tenant = tenant
+		resolver.tenantDetail = tenantDetail
 	}
 
 	return &resolver, nil
@@ -113,7 +115,7 @@ func (r *tenantResolver) ID(ctx context.Context) graphql.ID {
 // ctx: Mandatory. Reference to the context
 // Returns the tenant name or error
 func (r *tenantResolver) Name(ctx context.Context) string {
-	return r.tenant.Name
+	return r.tenantDetail.Tenant.Name
 }
 
 // EdgeCluster returns tenant resolver
