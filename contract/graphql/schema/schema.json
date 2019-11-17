@@ -578,7 +578,7 @@
               "deprecationReason": null
             },
             {
-              "name": "clusterPublicIPAddress",
+              "name": "clusterSecret",
               "description": null,
               "args": [],
               "type": {
@@ -1443,7 +1443,7 @@
               "defaultValue": null
             },
             {
-              "name": "k3SClusterSecret",
+              "name": "clusterSecret",
               "description": null,
               "type": {
                 "kind": "NON_NULL",
@@ -1555,7 +1555,7 @@
               "defaultValue": null
             },
             {
-              "name": "k3SClusterSecret",
+              "name": "clusterSecret",
               "description": null,
               "type": {
                 "kind": "NON_NULL",

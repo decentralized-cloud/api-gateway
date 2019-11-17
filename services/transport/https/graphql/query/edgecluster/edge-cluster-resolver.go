@@ -105,11 +105,11 @@ func (r *edgeClusterResolver) Name(ctx context.Context) string {
 	return r.edgeCluster.Name
 }
 
-// ClusterPublicIPAddress returns edge cluster public IP address
+// ClusterSecret returns edge cluster secret
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster public IP address
-func (r *edgeClusterResolver) ClusterPublicIPAddress(ctx context.Context) string {
-	return r.edgeCluster.ClusterPublicIPAddress
+// Returns the edge cluster secret
+func (r *edgeClusterResolver) ClusterSecret(ctx context.Context) string {
+	return r.edgeCluster.ClusterSecret
 }
 
 // Tenant returns edge cluster tenant

@@ -8,7 +8,7 @@ export default mutationWithClientMutationId({
     edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
     tenantID: { type: new GraphQLNonNull(GraphQLID) },
     name: { type: new GraphQLNonNull(GraphQLString) },
-    k3SClusterSecret: { type: new GraphQLNonNull(GraphQLString) },
+    clusterSecret: { type: new GraphQLNonNull(GraphQLString) },
   },
   outputFields: {
     edgeCluster: { type: EdgeClusterConnection.edgeType },
