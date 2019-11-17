@@ -45,6 +45,19 @@ type EdgeCluster implements Node {
   name: String!
   clusterSecret: String!
   tenant: EdgeClusterTenant!
+  provisioningDetail: EdgeClusterProvisioningDetail
+}
+
+type EdgeClusterProvisioningDetail {
+  status: EdgeClusterStatus
+  publicIPAddress: String
+  kubeconfigContent: String
+}
+
+enum EdgeClusterStatus {
+  Provisioning
+  Ready
+  Deleting
 }
 
 type EdgeClusterTenant implements Node {

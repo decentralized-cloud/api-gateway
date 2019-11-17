@@ -15,10 +15,10 @@ import (
 )
 
 type edgeClusterResolver struct {
-	logger          *zap.Logger
-	resolverCreator types.ResolverCreatorContract
-	edgeclusterID   string
-	edgeCluster     *edgeclusterGrpcContract.EdgeCluster
+	logger             *zap.Logger
+	resolverCreator    types.ResolverCreatorContract
+	edgeclusterID      string
+	edgeClusterDetails *edgecluster.EdgeClusterDetails
 }
 
 // NewEdgeClusterResolver creates new instance of the edgeClusterResolver, setting up all dependencies and returns the instance
@@ -26,6 +26,7 @@ type edgeClusterResolver struct {
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
 // edgeClusterID: Mandatory. the edge cluster unique identifier
+// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterResolver(
 	ctx context.Context,
@@ -33,7 +34,7 @@ func NewEdgeClusterResolver(
 	logger *zap.Logger,
 	edgeClusterClientService edgecluster.EdgeClusterClientContract,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.EdgeClusterResolverContract, error) {
+	edgeClusterDetails *edgecluster.EdgeClusterDetails) (edgecluster.EdgeClusterResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -60,7 +61,7 @@ func NewEdgeClusterResolver(
 		edgeclusterID:   edgeClusterID,
 	}
 
-	if edgeCluster == nil {
+	if edgeClusterDetails == nil {
 		connection, edgeClusterServiceClient, err := edgeClusterClientService.CreateClient()
 		if err != nil {
 			return nil, err
@@ -83,9 +84,12 @@ func NewEdgeClusterResolver(
 			return nil, errors.New(response.ErrorMessage)
 		}
 
-		resolver.edgeCluster = response.EdgeCluster
+		resolver.edgeClusterDetails = &edgecluster.EdgeClusterDetails{
+			EdgeCluster:        response.EdgeCluster,
+			ProvisioningDetail: response.ProvisioningDetail,
+		}
 	} else {
-		resolver.edgeCluster = edgeCluster
+		resolver.edgeClusterDetails = edgeClusterDetails
 	}
 
 	return &resolver, nil
@@ -102,19 +106,26 @@ func (r *edgeClusterResolver) ID(ctx context.Context) graphql.ID {
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster name or error
 func (r *edgeClusterResolver) Name(ctx context.Context) string {
-	return r.edgeCluster.Name
+	return r.edgeClusterDetails.EdgeCluster.Name
 }
 
 // ClusterSecret returns edge cluster secret
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster secret
 func (r *edgeClusterResolver) ClusterSecret(ctx context.Context) string {
-	return r.edgeCluster.ClusterSecret
+	return r.edgeClusterDetails.EdgeCluster.ClusterSecret
 }
 
 // Tenant returns edge cluster tenant
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster tenant
 func (r *edgeClusterResolver) Tenant(ctx context.Context) (edgecluster.EdgeClusterTenantResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.edgeCluster.TenantID)
+	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.edgeClusterDetails.EdgeCluster.TenantID)
+}
+
+// ProvisioningDetail returns edge cluster provisioning detail
+// ctx: Mandatory. Reference to the context
+// Returns the edge cluster provisioning detail
+func (r *edgeClusterResolver) ProvisioningDetail(ctx context.Context) (edgecluster.EdgeClusterProvisioningDetailResolverContract, error) {
+	return r.resolverCreator.NewEdgeClusterProvisioningDetailResolver(ctx, r.edgeClusterDetails.ProvisioningDetail)
 }

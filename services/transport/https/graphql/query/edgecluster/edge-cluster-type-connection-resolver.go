@@ -86,7 +86,10 @@ func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]edgec
 			ctx,
 			edgeCluster.EdgeClusterID,
 			edgeCluster.Cursor,
-			edgeCluster.EdgeCluster)
+			&edgecluster.EdgeClusterDetails{
+				EdgeCluster:        edgeCluster.EdgeCluster,
+				ProvisioningDetail: edgeCluster.ProvisioningDetail,
+			})
 
 		if err != nil {
 			return nil, err

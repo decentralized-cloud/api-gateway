@@ -13,24 +13,24 @@ type QueryResolverCreatorContract interface {
 	// NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
-	// edgeCluster: Optional. The edge clusterdetails
+	// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 	// Returns the EdgeClusterResolverContract or error if something goes wrong
 	NewEdgeClusterResolver(
 		ctx context.Context,
 		edgeClusterID string,
-		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (EdgeClusterResolverContract, error)
+		edgeClusterDetails *EdgeClusterDetails) (EdgeClusterResolverContract, error)
 
 	// NewEdgeClusterTypeEdgeResolver creates new EdgeClusterTypeEdgeResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
 	// edgeClusterID: Mandatory. The edge cluster unique identifier
-	// edgeCluster: Optional. The edge cluster details
 	// cursor: Mandatory. The cursor
+	// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 	// Returns the EdgeClusterTypeEdgeResolverContract or error if something goes wrong
 	NewEdgeClusterTypeEdgeResolver(
 		ctx context.Context,
 		edgeClusterID string,
 		cursor string,
-		edgeCluster *edgeclusterGrpcContract.EdgeCluster) (EdgeClusterTypeEdgeResolverContract, error)
+		edgeClusterDetails *EdgeClusterDetails) (EdgeClusterTypeEdgeResolverContract, error)
 
 	// NewEdgeClusterTypeConnectionResolver creates new EdgeClusterTypeConnectionResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -53,6 +53,14 @@ type QueryResolverCreatorContract interface {
 	NewEdgeClusterTenantResolver(
 		ctx context.Context,
 		tenantID string) (EdgeClusterTenantResolverContract, error)
+
+	// NewEdgeClusterProvisioningDetailResolver creates new EdgeClusterProvisioningDetailResolverContract and returns it
+	// ctx: Mandatory. Reference to the context
+	// provisioningDetail: Optional. The edge cluster provisioning details
+	// Returns the EdgeClusterProvisioningDetailResolverContract or error if something goes wrong
+	NewEdgeClusterProvisioningDetailResolver(
+		ctx context.Context,
+		provisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail) (EdgeClusterProvisioningDetailResolverContract, error)
 }
 
 // EdgeClusterResolverContract declares the resolver that can retrieve edge cluster information
@@ -76,6 +84,11 @@ type EdgeClusterResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster tenant
 	Tenant(ctx context.Context) (EdgeClusterTenantResolverContract, error)
+
+	// ProvisioningDetail returns edge cluster provisioning detail
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster provisioning detail
+	ProvisioningDetail(ctx context.Context) (EdgeClusterProvisioningDetailResolverContract, error)
 }
 
 // EdgeClusterTypeConnectionResolverContract declares the resolver that returns edge cluster edge compatible with graphql-relay
@@ -120,6 +133,37 @@ type EdgeClusterTenantResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the tenant name
 	Name(ctx context.Context) string
+}
+
+type EdgeClusterStatus int
+
+const (
+	Provisioning EdgeClusterStatus = iota
+	Ready
+	Deleting
+)
+
+// EdgeClusterProvisioningDetailResolverContract declares the resolver that returns edge cluster provisioning details
+type EdgeClusterProvisioningDetailResolverContract interface {
+	// Status returns the edge cluster current status
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster current status
+	Status(ctx context.Context) *EdgeClusterStatus
+
+	// PublicIPAddress returns the edge cluster public IP address
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster public IP address
+	PublicIPAddress(ctx context.Context) *string
+
+	// KubeconfigContent returns the edge cluster Kubeconfig content
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster Kubeconfig content
+	KubeconfigContent(ctx context.Context) *string
+}
+
+type EdgeClusterDetails struct {
+	EdgeCluster        *edgeclusterGrpcContract.EdgeCluster
+	ProvisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail
 }
 
 type EdgeClusterClusterEdgeClusterInputArgument struct {

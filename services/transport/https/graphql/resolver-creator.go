@@ -164,37 +164,37 @@ func (creator *resolverCreator) NewTenantTypeConnectionResolver(
 // NewEdgeClusterResolver creates new EdgeClusterResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // edgeClusterID: Mandatory. The edge cluster unique identifier
-// edgeCluster: Optional. The edge clusterdetails
+// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 // Returns the EdgeClusterResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterResolver(
 	ctx context.Context,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.EdgeClusterResolverContract, error) {
+	edgeClusterDetails *edgecluster.EdgeClusterDetails) (edgecluster.EdgeClusterResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterResolver(
 		ctx,
 		creator,
 		creator.logger,
 		creator.edgeClusterClientService,
 		edgeClusterID,
-		edgeCluster)
+		edgeClusterDetails)
 }
 
 // NewEdgeClusterTypeEdgeResolver creates new EdgeClusterTypeEdgeResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // edgeClusterID: Mandatory. The edge cluster unique identifier
-// edgeCluster: Optional. The edge cluster details
 // cursor: Mandatory. The cursor
+// edgeClusterDetails: Optional. The edge cluster details, if provided, the value be used instead of contacting  the edge cluster service
 // Returns the EdgeClusterTypeEdgeResolverContract or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterTypeEdgeResolver(
 	ctx context.Context,
 	edgeClusterID string,
 	cursor string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
+	edgeClusterDetails *edgecluster.EdgeClusterDetails) (edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterTypeEdgeResolver(
 		ctx,
 		creator,
 		edgeClusterID,
-		edgeCluster,
+		edgeClusterDetails,
 		cursor)
 }
 
@@ -232,6 +232,19 @@ func (creator *resolverCreator) NewEdgeClusterTenantResolver(
 		creator,
 		creator.logger,
 		tenantID)
+}
+
+// NewEdgeClusterProvisioningDetailResolver creates new EdgeClusterProvisioningDetailResolverContract and returns it
+// ctx: Mandatory. Reference to the context
+// provisioningDetail: Mandatory. The edge cluster provisioning details
+// Returns the EdgeClusterProvisioningDetailResolverContract or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterProvisioningDetailResolver(
+	ctx context.Context,
+	provisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail) (edgecluster.EdgeClusterProvisioningDetailResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterProvisioningDetailResolver(
+		ctx,
+		creator.logger,
+		provisioningDetail)
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
@@ -342,21 +355,21 @@ func (creator *resolverCreator) NewCreateEdgeCluster(ctx context.Context) (edgec
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // edgeClusterID: Mandatory. The edge cluster unique identifier
-// edgeCluster: Optional. The edge cluster details
+// edgeClusterDetails: Mandatory. The edge cluster details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewCreateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+	edgeClusterDetails *edgecluster.EdgeClusterDetails,
 	cursor string) (edgecluster.CreateEdgeClusterPayloadResolverContract, error) {
 	return mutationedgecluster.NewCreateEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
 		edgeClusterID,
-		edgeCluster,
+		edgeClusterDetails,
 		cursor)
 }
 
@@ -375,21 +388,21 @@ func (creator *resolverCreator) NewUpdateEdgeCluster(ctx context.Context) (edgec
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // edgeClusterID: Mandatory. The edge cluster unique identifier
-// edgeCluster: Optional. The edge cluster details
+// edgeClusterDetails: Mandatory. The edge cluster details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewUpdateEdgeClusterPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
 	edgeClusterID string,
-	edgeCluster *edgeclusterGrpcContract.EdgeCluster,
+	edgeClusterDetails *edgecluster.EdgeClusterDetails,
 	cursor string) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
 	return mutationedgecluster.NewUpdateEdgeClusterPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
 		edgeClusterID,
-		edgeCluster,
+		edgeClusterDetails,
 		cursor)
 }
 

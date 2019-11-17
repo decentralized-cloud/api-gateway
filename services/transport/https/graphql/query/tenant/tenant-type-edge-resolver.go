@@ -59,7 +59,10 @@ func NewTenantTypeEdgeResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the tenant resolver or error if something goes wrong
 func (r *tenantTypeEdgeResolver) Node(ctx context.Context) (tenant.TenantResolverContract, error) {
-	return r.resolverCreator.NewTenantResolver(ctx, r.tenantID, r.tenant)
+	return r.resolverCreator.NewTenantResolver(
+		ctx,
+		r.tenantID,
+		r.tenant)
 }
 
 // Cursor returns the cursor for the tenant edge compatible with graphql-relay
