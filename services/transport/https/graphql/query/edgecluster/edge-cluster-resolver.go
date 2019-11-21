@@ -120,9 +120,9 @@ func (r *edgeClusterResolver) ClusterSecret(ctx context.Context) string {
 // ClusterType returns the edge cluster current type
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster current type or error if something went wrong
-func (r *edgeClusterResolver) ClusterType(ctx context.Context) (clusterType edgecluster.EdgeClusterType, err error) {
+func (r *edgeClusterResolver) ClusterType(ctx context.Context) (clusterType string, err error) {
 	if r.edgeClusterDetail.EdgeCluster.ClusterType == edgeclusterGrpcContract.ClusterType_K3S {
-		clusterType = edgecluster.K3S
+		clusterType = "K3S"
 
 		return
 	}
