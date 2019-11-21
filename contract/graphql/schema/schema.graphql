@@ -2,6 +2,7 @@ input CreateEdgeClusterInput {
   tenantID: ID!
   name: String!
   clusterSecret: String!
+  clusterType: EdgeClusterType!
   clientMutationId: String
 }
 
@@ -44,6 +45,7 @@ type EdgeCluster implements Node {
   id: ID!
   name: String!
   clusterSecret: String!
+  clusterType: EdgeClusterType!
   tenant: EdgeClusterTenant!
   provisioningDetail: EdgeClusterProvisioningDetail
 }
@@ -63,6 +65,10 @@ enum EdgeClusterStatus {
 type EdgeClusterTenant implements Node {
   id: ID!
   name: String!
+}
+
+enum EdgeClusterType {
+  K3S
 }
 
 """A connection to a list of items."""
@@ -163,6 +169,7 @@ input UpdateEdgeClusterInput {
   tenantID: ID!
   name: String!
   clusterSecret: String!
+  clusterType: EdgeClusterType!
   clientMutationId: String
 }
 
