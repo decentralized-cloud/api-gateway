@@ -162,6 +162,7 @@ type CreateEdgeClusterInput struct {
 	TenantID         graphql.ID
 	Name             string
 	ClusterSecret    string
+	ClusterType      string
 	ClientMutationId *string
 }
 
@@ -174,6 +175,7 @@ type UpdateEdgeClusterInput struct {
 	TenantID         graphql.ID
 	Name             string
 	ClusterSecret    string
+	ClusterType      string
 	ClientMutationId *string
 }
 

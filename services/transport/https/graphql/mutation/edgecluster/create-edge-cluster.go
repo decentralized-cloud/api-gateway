@@ -4,6 +4,7 @@ package edgeclster
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
@@ -120,6 +121,14 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 		_ = connection.Close()
 	}()
 
+	var clusterType edgeclusterGrpcContract.ClusterType
+
+	if args.Input.ClusterType == "K3S" {
+		clusterType = edgeclusterGrpcContract.ClusterType_K3S
+	} else {
+		return nil, fmt.Errorf("Cluster type is not supported. Cluster type: %v", args.Input.ClusterType)
+	}
+
 	response, err := edgeClusterServiceClient.CreateEdgeCluster(
 		ctx,
 		&edgeclusterGrpcContract.CreateEdgeClusterRequest{
@@ -127,6 +136,7 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 				TenantID:      string(args.Input.TenantID),
 				Name:          args.Input.Name,
 				ClusterSecret: args.Input.ClusterSecret,
+				ClusterType:   clusterType,
 			}})
 	if err != nil {
 		return nil, err

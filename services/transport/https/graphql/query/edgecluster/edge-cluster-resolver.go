@@ -4,6 +4,7 @@ package edgeclster
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
@@ -114,6 +115,21 @@ func (r *edgeClusterResolver) Name(ctx context.Context) string {
 // Returns the edge cluster secret
 func (r *edgeClusterResolver) ClusterSecret(ctx context.Context) string {
 	return r.edgeClusterDetail.EdgeCluster.ClusterSecret
+}
+
+// ClusterType returns the edge cluster current type
+// ctx: Mandatory. Reference to the context
+// Returns the edge cluster current type or error if something went wrong
+func (r *edgeClusterResolver) ClusterType(ctx context.Context) (clusterType edgecluster.EdgeClusterType, err error) {
+	if r.edgeClusterDetail.EdgeCluster.ClusterType == edgeclusterGrpcContract.ClusterType_K3S {
+		clusterType = edgecluster.K3S
+
+		return
+	}
+
+	err = fmt.Errorf("Cluster type is not supported. Cluster type: %v", r.edgeClusterDetail.EdgeCluster.ClusterType)
+
+	return
 }
 
 // Tenant returns edge cluster tenant

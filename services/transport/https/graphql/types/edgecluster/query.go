@@ -80,6 +80,11 @@ type EdgeClusterResolverContract interface {
 	// Returns the edge cluster secret
 	ClusterSecret(ctx context.Context) string
 
+	// ClusterType returns the edge cluster current type
+	// ctx: Mandatory. Reference to the context
+	// Returns the edge cluster current type or error if something went wrong
+	ClusterType(ctx context.Context) (EdgeClusterType, error)
+
 	// Tenant returns edge cluster tenant
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster tenant
@@ -141,6 +146,12 @@ const (
 	Provisioning EdgeClusterStatus = iota
 	Ready
 	Deleting
+)
+
+type EdgeClusterType int
+
+const (
+	K3S EdgeClusterType = iota
 )
 
 // EdgeClusterProvisioningDetailResolverContract declares the resolver that returns edge cluster provisioning details
