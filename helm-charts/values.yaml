@@ -37,7 +37,7 @@ pod:
     edgeCluster: "edge-cluster:80"
 
 service:
-  type: LoadBalancer
+  type: ClusterIP
   httpsport: 80
 
 ingress:
