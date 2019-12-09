@@ -9,17 +9,17 @@ require (
 	github.com/gobuffalo/envy v1.8.1 // indirect
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/mock v1.3.1
-	github.com/graph-gophers/graphql-go v0.0.0-20190917030536-38a077bc812d
+	github.com/graph-gophers/graphql-go v0.0.0-20191115155744-f33e81362277
 	github.com/lucsky/cuid v1.0.2
 	github.com/micro-business/go-core v0.0.13
 	github.com/prometheus/client_golang v1.2.1
 	github.com/rogpeppe/go-internal v1.5.0 // indirect
-	github.com/savsgio/atreugo/v9 v9.0.0
+	github.com/savsgio/atreugo/v9 v9.0.1
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/thoas/go-funk v0.4.0
-	go.uber.org/zap v1.10.0
-	golang.org/x/sys v0.0.0-20191128015809-6d18c012aee9 // indirect
-	golang.org/x/tools v0.0.0-20191203051722-db047d72ee39 // indirect
-	google.golang.org/grpc v1.24.0
+	github.com/thoas/go-funk v0.5.0
+	go.uber.org/zap v1.13.0
+	golang.org/x/sys v0.0.0-20191206220618-eeba5f6aabab // indirect
+	golang.org/x/tools v0.0.0-20191206204035-259af5ff87bd // indirect
+	google.golang.org/grpc v1.25.1
 )
