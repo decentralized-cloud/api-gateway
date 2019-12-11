@@ -93,16 +93,16 @@ func (service *transportService) Start() error {
 
 	service.schema = graphql.MustParseSchema(graphqlSchema, rootResolver)
 
-	graphiqlHandler, err := graphiql.NewGraphiqlHandler("/api/graphql")
+	graphiqlHandler, err := graphiql.NewGraphiqlHandler("/graphql")
 	if err != nil {
 		return err
 	}
 
-	server.Path("OPTIONS", "/api/graphql", service.corsPreflightCheckForGraphQLHandler)
-	server.Path("POST", "/api/graphql", service.graphQLHandler)
+	server.Path("OPTIONS", "/graphql", service.corsPreflightCheckForGraphQLHandler)
+	server.Path("POST", "/graphql", service.graphQLHandler)
 	server.Path("GET", "/live", service.livenessCheckHandler)
 	server.Path("GET", "/ready", service.readinessCheckHandler)
-	server.NetHTTPPath("GET", "/api/graphiql", graphiqlHandler)
+	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 	server.NetHTTPPath("GET", "/metrics", promhttp.Handler())
 
 	service.logger.Info("HTTPS service started", zap.String("address", config.Addr))
