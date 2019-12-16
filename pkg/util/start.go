@@ -7,11 +7,16 @@ import (
 	"os/signal"
 
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
+	"github.com/decentralized-cloud/api-gateway/services/endpoint"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql"
-	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
+	"github.com/micro-business/gokit-core/middleware"
 	"go.uber.org/zap"
 )
+
+var configurationService configuration.ConfigurationContract
+var endpointCreatorService endpoint.EndpointCreatorContract
+var middlewareProviderService middleware.MiddlewareProviderContract
 
 // StartService setups all dependecies required to start the API Gateway service and
 // start the service
@@ -23,7 +28,7 @@ func StartService() {
 
 	defer logger.Sync()
 
-	configurationService, resolverCreator, err := setupDependencies(logger)
+	err = setupDependencies(logger)
 	if err != nil {
 		logger.Fatal("Failed to setup dependecies", zap.Error(err))
 	}
@@ -31,7 +36,8 @@ func StartService() {
 	httpsTransportService, err := https.NewTransportService(
 		logger,
 		configurationService,
-		resolverCreator)
+		endpointCreatorService,
+		middlewareProviderService)
 	if err != nil {
 		logger.Fatal("Failed to create GraphQL transport service", zap.Error(err))
 	}
@@ -59,20 +65,23 @@ func StartService() {
 	<-cleanupDone
 }
 
-func setupDependencies(logger *zap.Logger) (configuration.ConfigurationContract, types.ResolverCreatorContract, error) {
-	configurationService, err := configuration.NewEnvConfigurationService()
-	if err != nil {
-		return nil, nil, err
+func setupDependencies(logger *zap.Logger) (err error) {
+	if configurationService, err = configuration.NewEnvConfigurationService(); err != nil {
+		return
+	}
+
+	if middlewareProviderService, err = middleware.NewMiddlewareProviderService(logger, true, ""); err != nil {
+		return
 	}
 
 	tenantClientService, err := graphql.NewTenantClientService(configurationService)
 	if err != nil {
-		return nil, nil, err
+		return
 	}
 
 	edgeClusterClientService, err := graphql.NewEdgeClusterClientService(configurationService)
 	if err != nil {
-		return nil, nil, err
+		return
 	}
 
 	resolverCreator, err := graphql.NewResolverCreator(
@@ -80,8 +89,12 @@ func setupDependencies(logger *zap.Logger) (configuration.ConfigurationContract,
 		tenantClientService,
 		edgeClusterClientService)
 	if err != nil {
-		return nil, nil, err
+		return
 	}
 
-	return configurationService, resolverCreator, err
+	if endpointCreatorService, err = endpoint.NewEndpointCreatorService(resolverCreator); err != nil {
+		return
+	}
+
+	return
 }
