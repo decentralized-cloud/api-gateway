@@ -9,7 +9,7 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/endpoint"
 	"github.com/decentralized-cloud/api-gateway/services/transport/https"
-	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql"
+	"github.com/decentralized-cloud/api-gateway/services/graphql"
 	"github.com/micro-business/gokit-core/middleware"
 	"go.uber.org/zap"
 )

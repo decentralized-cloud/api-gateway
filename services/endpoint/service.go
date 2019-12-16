@@ -4,7 +4,7 @@ package endpoint
 import (
 	"context"
 
-	"github.com/decentralized-cloud/api-gateway/services/transport/https/graphql/types"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types"
 	"github.com/go-kit/kit/endpoint"
 	"github.com/gobuffalo/packr"
 	"github.com/graph-gophers/graphql-go"
