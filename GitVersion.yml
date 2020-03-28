@@ -1,0 +1,10 @@
+mode: ContinuousDeployment
+branches:
+  master:
+    tag: latest
+  release: {}
+  feature: {}
+  hotfix: {}
+ignore:
+  sha: []
+merge-message-formats: {}
