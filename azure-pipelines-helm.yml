@@ -7,7 +7,7 @@ trigger:
       - master
       - release/*
       - feature/*
-      - bug/*
+      - hotfix/*
   paths:
     include:
       - helm-charts/*

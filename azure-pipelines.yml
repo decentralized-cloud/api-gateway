@@ -7,7 +7,7 @@ trigger:
       - master
       - release/*
       - feature/*
-      - bug/*
+      - hotfix/*
   paths:
     exclude:
       - README.md
@@ -21,11 +21,10 @@ variables:
   DOCKER_REPOSITORY_NAME: 'decentralizedcloud/api-gateway'
 
 steps:
-- task: Bash@3
-  displayName: "Generating version"
+- task: GitVersion@5
   inputs:
-    filePath: '$(system.defaultWorkingDirectory)/script/generate-version.sh'
-    arguments: $(Build.SourceBranch)
+    runtime: 'core'
+    configFilePath: './GitVersion.yml'
 
 - task: Bash@3
   displayName: "Build GraphQL contract"
@@ -40,8 +39,8 @@ steps:
     command: 'build'
     Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.build'
     buildContext: '$(system.defaultWorkingDirectory)'
-    arguments: '--build-arg VERSION=$(VERSION)'
-    tags: $(VERSION)
+    arguments: '--build-arg VERSION=$(GitVersion.SemVer)'
+    tags: $(GitVersion.SemVer)
 
 - task: Docker@2
   displayName: "Test and Coverage"
@@ -64,10 +63,11 @@ steps:
     repository: $(DOCKER_REPOSITORY_NAME)
     command: 'push'
     buildContext: '$(system.defaultWorkingDirectory)'
-    tags: $(VERSION)
+    tags: $(GitVersion.SemVer)
 
 - task: Docker@2
   displayName: "Docker Logout"
   inputs:
     containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
     command: 'logout'
+
