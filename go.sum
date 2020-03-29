@@ -64,8 +64,8 @@ github.com/cpuguy83/go-md2man/v2 v2.0.0/go.mod h1:maD7wRr/U5Z6m/iR4s+kqSMx2CaBsr
 github.com/creack/pty v1.1.7/go.mod h1:lj5s0c3V2DBrqTV7llrYr5NG6My20zk30Fl46Y7DoTY=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/decentralized-cloud/edge-cluster v0.1.0 h1:8j7nHT/Fnf66a5eZVRxy5FejitlmBsruQhIR1dzah2M=
-github.com/decentralized-cloud/edge-cluster v0.1.0/go.mod h1:JV3KNq2F5WxK8P97ie9s1P9v/M1jIBH8LekVVSEb7OY=
+github.com/decentralized-cloud/edge-cluster v0.1.1 h1:WKmmQsGFgtOU6DaWIPF9cx0JSByAl+amQkq4dh61/l8=
+github.com/decentralized-cloud/edge-cluster v0.1.1/go.mod h1:JV3KNq2F5WxK8P97ie9s1P9v/M1jIBH8LekVVSEb7OY=
 github.com/decentralized-cloud/tenant v0.1.0 h1:faLx9voJl0o7zbx/KYxSyCmrfNZC7BFk0xoCDCdF/Tk=
 github.com/decentralized-cloud/tenant v0.1.0/go.mod h1:xl5EYwf/XZpxLC+fSV72o6O0npmTtg1a2dMUD3tSuCQ=
 github.com/dgrijalva/jwt-go v3.2.0+incompatible/go.mod h1:E3ru+11k8xSBh+hMPgOLZmtrrCbhqsmaPHjLKYnJCaQ=
@@ -372,8 +372,6 @@ github.com/russross/blackfriday v1.5.2/go.mod h1:JO/DiYxRf+HjHt06OyowR9PTA263kcR
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/ryanuber/columnize v0.0.0-20160712163229-9b3edd62028f/go.mod h1:sm1tb6uqfes/u+d4ooFouqFdy9/2g9QGwK3SQygK0Ts=
 github.com/samuel/go-zookeeper v0.0.0-20190923202752-2cc03de413da/go.mod h1:gi+0XIa01GRL2eRQVjQkKGqKF3SF9vZR/HnPullcV2E=
-github.com/savsgio/atreugo v1.0.0 h1:i3fy5nU7CsN6qpkDY8QEjuqsQ99IcHokPpchhTIKH1A=
-github.com/savsgio/atreugo v5.4.0+incompatible h1:CYGL9tYYCA0VCI+8S0iXKQG/hba+rpEMBRkMD7yQOAM=
 github.com/savsgio/atreugo/v9 v9.0.1 h1:4F64Qhb4lN5IijaxVOfXaxgy2ZhJOvBTVdJzHlacMjE=
 github.com/savsgio/atreugo/v9 v9.0.1/go.mod h1:FFJlZa79UDwWrqgFTEezbdfd/i4ll/pfQ4eEhHVUPSs=
 github.com/savsgio/go-logger v1.0.0 h1:jiaRvohRr8RwtcK/WDcA/Yp4eaPaarAko3JNPzt1xoQ=
