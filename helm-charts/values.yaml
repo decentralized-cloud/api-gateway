@@ -7,6 +7,7 @@ replicaCount: 1
 image:
   repository: decentralizedcloud/api-gateway
   pullPolicy: IfNotPresent
+  version: latest
 
 imagePullSecrets: []
 nameOverride: ""
