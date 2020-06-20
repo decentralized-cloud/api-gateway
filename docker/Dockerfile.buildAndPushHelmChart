@@ -1,4 +1,4 @@
-FROM decentralizedcloud/k8s-toolset:0.1.0
+FROM microbusiness/k8s-toolset:0.1.2
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
 ARG GITHUB_ACCESS_CREDENTIAL
@@ -18,6 +18,6 @@ RUN export VERSION=$(awk '/version: /{print $NF}' helm-charts/Chart.yaml);mv -f 
 WORKDIR /src/helm
 RUN helm repo index . --url https://decentralized-cloud.github.io/helm/
 RUN git add .
-RUN git commit -am "CI: Tenant - $VERSION"
+RUN git commit -am "CI: API Gateway - $VERSION"
 RUN git push
 
