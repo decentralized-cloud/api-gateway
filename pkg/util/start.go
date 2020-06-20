@@ -8,8 +8,8 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/configuration"
 	"github.com/decentralized-cloud/api-gateway/services/endpoint"
-	"github.com/decentralized-cloud/api-gateway/services/transport/https"
 	"github.com/decentralized-cloud/api-gateway/services/graphql"
+	"github.com/decentralized-cloud/api-gateway/services/transport/https"
 	"github.com/micro-business/gokit-core/middleware"
 	"go.uber.org/zap"
 )
@@ -26,7 +26,9 @@ func StartService() {
 		log.Fatal(err)
 	}
 
-	defer logger.Sync()
+	defer func() {
+		_ = logger.Sync()
+	}()
 
 	err = setupDependencies(logger)
 	if err != nil {

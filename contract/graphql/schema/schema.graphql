@@ -1,44 +1,26 @@
-input CreateEdgeClusterInput {
-  tenantID: ID!
+type Query {
+  user: User
+}
+
+type User implements Node {
+  id: ID!
+  tenant(tenantID: ID!): Tenant
+  tenants(after: String, first: Int, before: String, last: Int, tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): TenantTypeConnection
+  edgeCluster(edgeClusterID: ID!): EdgeCluster
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+type Tenant implements Node {
+  id: ID!
   name: String!
-  clusterSecret: String!
-  clusterType: EdgeClusterType!
-  clientMutationId: String
-}
-
-type CreateEdgeClusterPayload {
-  edgeCluster: EdgeClusterTypeEdge
-  clientMutationId: String
-}
-
-input CreateTenantInput {
-  name: String!
-  clientMutationId: String
-}
-
-type CreateTenantPayload {
-  tenant: TenantTypeEdge
-  clientMutationId: String
-}
-
-input DeleteEdgeClusterInput {
-  edgeClusterID: ID!
-  clientMutationId: String
-}
-
-type DeleteEdgeClusterPayload {
-  deletedEdgeClusterID: ID!
-  clientMutationId: String
-}
-
-input DeleteTenantInput {
-  tenantID: ID!
-  clientMutationId: String
-}
-
-type DeleteTenantPayload {
-  deletedTenantID: ID!
-  clientMutationId: String
+  edgeCluster(edgeClusterID: ID!): EdgeCluster
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortOption: String): EdgeClusterTypeConnection
 }
 
 type EdgeCluster implements Node {
@@ -48,6 +30,15 @@ type EdgeCluster implements Node {
   clusterType: EdgeClusterType!
   tenant: EdgeClusterTenant!
   provisioningDetail: EdgeClusterProvisioningDetail
+}
+
+enum EdgeClusterType {
+  K3S
+}
+
+type EdgeClusterTenant implements Node {
+  id: ID!
+  name: String!
 }
 
 type EdgeClusterProvisioningDetail {
@@ -62,15 +53,6 @@ enum EdgeClusterStatus {
   Deleting
 }
 
-type EdgeClusterTenant implements Node {
-  id: ID!
-  name: String!
-}
-
-enum EdgeClusterType {
-  K3S
-}
-
 """A connection to a list of items."""
 type EdgeClusterTypeConnection {
   """Information to aid in pagination."""
@@ -81,30 +63,6 @@ type EdgeClusterTypeConnection {
 
   """Total number of edge clusters"""
   totalCount: Int
-}
-
-"""An edge in a connection."""
-type EdgeClusterTypeEdge {
-  """The item at the end of the edge"""
-  node: EdgeCluster
-
-  """A cursor for use in pagination"""
-  cursor: String!
-}
-
-type Mutation {
-  createTenant(input: CreateTenantInput!): CreateTenantPayload
-  updateTenant(input: UpdateTenantInput!): UpdateTenantPayload
-  deleteTenant(input: DeleteTenantInput!): DeleteTenantPayload
-  createEdgeCluster(input: CreateEdgeClusterInput!): CreateEdgeClusterPayload
-  updateEdgeCluster(input: UpdateEdgeClusterInput!): UpdateEdgeClusterPayload
-  deleteEdgeCluster(input: DeleteEdgeClusterInput!): DeleteEdgeClusterPayload
-}
-
-"""An object with an ID"""
-interface Node {
-  """The id of the object."""
-  id: ID!
 }
 
 """Information about pagination in a connection."""
@@ -122,25 +80,13 @@ type PageInfo {
   endCursor: String
 }
 
-type Query {
-  user: User
-}
+"""An edge in a connection."""
+type EdgeClusterTypeEdge {
+  """The item at the end of the edge"""
+  node: EdgeCluster
 
-enum SortingDirection {
-  ASCENDING
-  DESCENDING
-}
-
-input SortingOptionPair {
-  name: String!
-  direction: SortingDirection!
-}
-
-type Tenant implements Node {
-  id: ID!
-  name: String!
-  edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortOption: String): EdgeClusterTypeConnection
+  """A cursor for use in pagination"""
+  cursor: String!
 }
 
 """A connection to a list of items."""
@@ -164,8 +110,62 @@ type TenantTypeEdge {
   cursor: String!
 }
 
-input UpdateEdgeClusterInput {
-  edgeClusterID: ID!
+input SortingOptionPair {
+  name: String!
+  direction: SortingDirection!
+}
+
+enum SortingDirection {
+  ASCENDING
+  DESCENDING
+}
+
+type Mutation {
+  createTenant(input: CreateTenantInput!): CreateTenantPayload
+  updateTenant(input: UpdateTenantInput!): UpdateTenantPayload
+  deleteTenant(input: DeleteTenantInput!): DeleteTenantPayload
+  createEdgeCluster(input: CreateEdgeClusterInput!): CreateEdgeClusterPayload
+  updateEdgeCluster(input: UpdateEdgeClusterInput!): UpdateEdgeClusterPayload
+  deleteEdgeCluster(input: DeleteEdgeClusterInput!): DeleteEdgeClusterPayload
+}
+
+type CreateTenantPayload {
+  tenant: TenantTypeEdge
+  clientMutationId: String
+}
+
+input CreateTenantInput {
+  name: String!
+  clientMutationId: String
+}
+
+type UpdateTenantPayload {
+  tenant: TenantTypeEdge
+  clientMutationId: String
+}
+
+input UpdateTenantInput {
+  tenantID: ID!
+  name: String!
+  clientMutationId: String
+}
+
+type DeleteTenantPayload {
+  deletedTenantID: ID!
+  clientMutationId: String
+}
+
+input DeleteTenantInput {
+  tenantID: ID!
+  clientMutationId: String
+}
+
+type CreateEdgeClusterPayload {
+  edgeCluster: EdgeClusterTypeEdge
+  clientMutationId: String
+}
+
+input CreateEdgeClusterInput {
   tenantID: ID!
   name: String!
   clusterSecret: String!
@@ -178,21 +178,21 @@ type UpdateEdgeClusterPayload {
   clientMutationId: String
 }
 
-input UpdateTenantInput {
+input UpdateEdgeClusterInput {
+  edgeClusterID: ID!
   tenantID: ID!
   name: String!
+  clusterSecret: String!
+  clusterType: EdgeClusterType!
   clientMutationId: String
 }
 
-type UpdateTenantPayload {
-  tenant: TenantTypeEdge
+type DeleteEdgeClusterPayload {
+  deletedEdgeClusterID: ID!
   clientMutationId: String
 }
 
-type User implements Node {
-  id: ID!
-  tenant(tenantID: ID!): Tenant
-  tenants(after: String, first: Int, before: String, last: Int, tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): TenantTypeConnection
-  edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
+input DeleteEdgeClusterInput {
+  edgeClusterID: ID!
+  clientMutationId: String
 }
