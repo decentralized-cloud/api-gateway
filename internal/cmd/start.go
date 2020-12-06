@@ -12,7 +12,7 @@ func newStartCommand() *cobra.Command {
 		Use:   "start",
 		Short: "Start the API Gateway service",
 		Run: func(cmd *cobra.Command, args []string) {
-			gocoreUtil.PrintInfo("Copyright (C) 2019, Micro Business Ltd.\n")
+			gocoreUtil.PrintInfo("Copyright (C) 2020, Micro Business Ltd.\n")
 			gocoreUtil.PrintYAML(gocoreUtil.GetVersion())
 			util.StartService()
 		},

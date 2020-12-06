@@ -1,4 +1,4 @@
-FROM microbusiness/k8s-toolset:0.1.2
+FROM microbusiness/k8s-toolset:0.4.0
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
 ARG GITHUB_ACCESS_CREDENTIAL
