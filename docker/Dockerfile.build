@@ -1,4 +1,4 @@
-FROM golang:1.14.4
+FROM golang:1.15
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
 ARG VERSION
@@ -8,7 +8,7 @@ WORKDIR /src
 RUN make dep
 RUN make build
 
-FROM alpine:3.12.0
+FROM alpine:3
 WORKDIR /
 COPY --from=0 /src/bin/api-gateway .
 CMD ["/api-gateway", "start"]
