@@ -2,6 +2,9 @@
 package cmd
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/micro-business/go-core/pkg/util"
 	"github.com/spf13/cobra"
 )
@@ -12,7 +15,7 @@ func newVersionCommand() *cobra.Command {
 		Short: "Get API Gateway CLI version",
 		Run: func(cmd *cobra.Command, args []string) {
 			util.PrintInfo("API Gateway CLI\n")
-			util.PrintInfo("Copyright (C) 2020, Micro Business Ltd.\n")
+			util.PrintInfo(fmt.Sprintf("Copyright (C) %d, Micro Business Ltd.\n", time.Now().Year()))
 			util.PrintYAML(util.GetVersion())
 		},
 	}

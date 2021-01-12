@@ -2,6 +2,9 @@
 package cmd
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/decentralized-cloud/api-gateway/pkg/util"
 	gocoreUtil "github.com/micro-business/go-core/pkg/util"
 	"github.com/spf13/cobra"
@@ -12,7 +15,7 @@ func newStartCommand() *cobra.Command {
 		Use:   "start",
 		Short: "Start the API Gateway service",
 		Run: func(cmd *cobra.Command, args []string) {
-			gocoreUtil.PrintInfo("Copyright (C) 2020, Micro Business Ltd.\n")
+			gocoreUtil.PrintInfo(fmt.Sprintf("Copyright (C) %d, Micro Business Ltd.\n", time.Now().Year()))
 			gocoreUtil.PrintYAML(gocoreUtil.GetVersion())
 			util.StartService()
 		},
