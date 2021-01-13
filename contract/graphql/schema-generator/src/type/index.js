@@ -1,6 +1,6 @@
-export RootQuery from './RootQuery';
-export Tenant from './Tenant';
-export TenantConnection from './TenantConnection';
-export EdgeCluster from './EdgeCluster';
-export EdgeClusterConnection from './EdgeClusterConnection';
-export EdgeClusterType from './EdgeClusterType';
+export { default as RootQuery } from './RootQuery';
+export { default as Tenant } from './Tenant';
+export { default as TenantConnection } from './TenantConnection';
+export { default as EdgeCluster } from './EdgeCluster';
+export { default as EdgeClusterConnection } from './EdgeClusterConnection';
+export { default as EdgeClusterType } from './EdgeClusterType';

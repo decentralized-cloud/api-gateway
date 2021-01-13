@@ -1,1 +1,1 @@
-export getRootSchema from './RootSchema';
+export { default as getRootSchema } from './RootSchema';

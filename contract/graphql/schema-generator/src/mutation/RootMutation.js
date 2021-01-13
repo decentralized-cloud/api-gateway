@@ -7,13 +7,13 @@ import updateEdgeCluster from './UpdateEdgeCluster';
 import deleteEdgeCluster from './DeleteEdgeCluster';
 
 export default new GraphQLObjectType({
-  name: 'Mutation',
-  fields: {
-    createTenant,
-    updateTenant,
-    deleteTenant,
-    createEdgeCluster,
-    updateEdgeCluster,
-    deleteEdgeCluster,
-  },
+	name: 'Mutation',
+	fields: {
+		createTenant,
+		updateTenant,
+		deleteTenant,
+		createEdgeCluster,
+		updateEdgeCluster,
+		deleteEdgeCluster,
+	},
 });

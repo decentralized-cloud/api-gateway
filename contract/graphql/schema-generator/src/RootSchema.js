@@ -3,8 +3,8 @@ import { RootMutation } from './mutation';
 import { RootQuery } from './type';
 
 export default function getRootSchema() {
-  return new GraphQLSchema({
-    query: RootQuery,
-    mutation: RootMutation,
-  });
+	return new GraphQLSchema({
+		query: RootQuery,
+		mutation: RootMutation,
+	});
 }
