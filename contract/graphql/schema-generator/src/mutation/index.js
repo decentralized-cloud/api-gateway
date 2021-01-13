@@ -1,1 +1,1 @@
-export RootMutation from './RootMutation';
+export { default as RootMutation } from './RootMutation';
