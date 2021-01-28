@@ -32,34 +32,34 @@ func (m *MockConfigurationContract) EXPECT() *MockConfigurationContractMockRecor
 	return m.recorder
 }
 
-// GetHttpsHost mocks base method
-func (m *MockConfigurationContract) GetHttpsHost() (string, error) {
+// GetHttpHost mocks base method
+func (m *MockConfigurationContract) GetHttpHost() (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetHttpsHost")
+	ret := m.ctrl.Call(m, "GetHttpHost")
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetHttpsHost indicates an expected call of GetHttpsHost
-func (mr *MockConfigurationContractMockRecorder) GetHttpsHost() *gomock.Call {
+// GetHttpHost indicates an expected call of GetHttpHost
+func (mr *MockConfigurationContractMockRecorder) GetHttpHost() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHttpsHost", reflect.TypeOf((*MockConfigurationContract)(nil).GetHttpsHost))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHttpHost", reflect.TypeOf((*MockConfigurationContract)(nil).GetHttpHost))
 }
 
-// GetHttpsPort mocks base method
-func (m *MockConfigurationContract) GetHttpsPort() (int, error) {
+// GetHttpPort mocks base method
+func (m *MockConfigurationContract) GetHttpPort() (int, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetHttpsPort")
+	ret := m.ctrl.Call(m, "GetHttpPort")
 	ret0, _ := ret[0].(int)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// GetHttpsPort indicates an expected call of GetHttpsPort
-func (mr *MockConfigurationContractMockRecorder) GetHttpsPort() *gomock.Call {
+// GetHttpPort indicates an expected call of GetHttpPort
+func (mr *MockConfigurationContractMockRecorder) GetHttpPort() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHttpsPort", reflect.TypeOf((*MockConfigurationContract)(nil).GetHttpsPort))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHttpPort", reflect.TypeOf((*MockConfigurationContract)(nil).GetHttpPort))
 }
 
 // GetTenantServiceAddress mocks base method

@@ -14,60 +14,63 @@ trigger:
       - helm-charts/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
 
 variables:
-  DOCKER_CONTAINER_REGISTRY: 'Decentralized Cloud Docker Hub'
-  DOCKER_REPOSITORY_NAME: 'decentralizedcloud/api-gateway'
+  DOCKER_CONTAINER_REGISTRY: "Decentralized Cloud Docker Hub"
+  DOCKER_REPOSITORY_NAME: "decentralizedcloud/api-gateway"
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    version: latest
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+    version: $(GitVersion.SemVer)
 
 steps:
-- task: GitVersion@5
-  inputs:
-    runtime: 'core'
-    configFilePath: './GitVersion.yml'
+  - task: GitVersion@5
+    inputs:
+      runtime: "core"
+      configFilePath: "./GitVersion.yml"
 
-- task: Bash@3
-  displayName: "Build GraphQL contract"
-  inputs:
-    filePath: '$(system.defaultWorkingDirectory)/script/compile-graphql.sh'
-    arguments: '$(system.defaultWorkingDirectory)/script'
+  - task: Bash@3
+    displayName: "Build GraphQL contract"
+    inputs:
+      filePath: "$(system.defaultWorkingDirectory)/script/compile-graphql.sh"
+      arguments: "$(system.defaultWorkingDirectory)/script"
 
-- task: Docker@2
-  displayName: "Build docker image"
-  inputs:
-    repository: $(DOCKER_REPOSITORY_NAME)
-    command: 'build'
-    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.build'
-    buildContext: '$(system.defaultWorkingDirectory)'
-    arguments: '--build-arg VERSION=$(GitVersion.SemVer)'
-    tags: $(GitVersion.SemVer)
+  - task: Docker@2
+    displayName: "Build docker image"
+    inputs:
+      repository: $(DOCKER_REPOSITORY_NAME)
+      command: "build"
+      Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.build"
+      buildContext: "$(system.defaultWorkingDirectory)"
+      arguments: "--build-arg VERSION=${{variables.version}}"
+      tags: ${{variables.version}}
 
-- task: Docker@2
-  displayName: "Test and Coverage"
-  inputs:
-    command: 'build'
-    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.testAndCoverage'
-    buildContext: '$(system.defaultWorkingDirectory)'
-    arguments: '--build-arg CI_SERVICE=$(CI_SERVICE) --build-arg COVERALLS_TOKEN=$(COVERALLS_TOKEN)'
+  - task: Docker@2
+    displayName: "Test and Coverage"
+    inputs:
+      command: "build"
+      Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.testAndCoverage"
+      buildContext: "$(system.defaultWorkingDirectory)"
+      arguments: "--build-arg CI_SERVICE=$(CI_SERVICE) --build-arg COVERALLS_TOKEN=$(COVERALLS_TOKEN)"
 
-- task: Docker@2
-  displayName: "Docker Login"
-  inputs:
-    containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
-    command: 'login'
+  - task: Docker@2
+    displayName: "Docker Login"
+    inputs:
+      containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
+      command: "login"
 
-- task: Docker@2
-  displayName: "Push docker image"
-  inputs:
-    containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
-    repository: $(DOCKER_REPOSITORY_NAME)
-    command: 'push'
-    buildContext: '$(system.defaultWorkingDirectory)'
-    tags: $(GitVersion.SemVer)
+  - task: Docker@2
+    displayName: "Push docker image"
+    inputs:
+      containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
+      repository: $(DOCKER_REPOSITORY_NAME)
+      command: "push"
+      buildContext: "$(system.defaultWorkingDirectory)"
+      tags: ${{variables.version}}
 
-- task: Docker@2
-  displayName: "Docker Logout"
-  inputs:
-    containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
-    command: 'logout'
-
+  - task: Docker@2
+    displayName: "Docker Logout"
+    inputs:
+      containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
+      command: "logout"

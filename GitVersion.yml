@@ -1,7 +1,6 @@
 mode: ContinuousDeployment
 branches:
-  master:
-    tag: latest
+  master: {}
   release: {}
   feature: {}
   hotfix: {}

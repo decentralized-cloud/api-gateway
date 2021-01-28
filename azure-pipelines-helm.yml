@@ -13,14 +13,27 @@ trigger:
       - helm-charts/*
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: "ubuntu-latest"
+
+variables:
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    version: latest
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+    version: $(GitVersion.SemVer)
+  isMasterTriggered: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isTagTriggered: $[startsWith(variables['Build.SourceBranch'], 'refs/tags/v')]
 
 steps:
-- task: Docker@2
-  displayName: "Build and Push Helm Chart"
-  inputs:
-    command: 'build'
-    Dockerfile: '$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart'
-    buildContext: '$(system.defaultWorkingDirectory)'
-    arguments: '--build-arg GITHUB_ACCESS_CREDENTIAL=$(GITHUB_ACCESS_CREDENTIAL)'
+  - task: GitVersion@5
+    inputs:
+      runtime: "core"
+      configFilePath: "./GitVersion.yml"
 
+  - task: Docker@2
+    displayName: "Build and Push Helm Chart"
+    condition: or(eq(variables.isMasterTriggered, true), eq(variables.isTagTriggered, true))
+    inputs:
+      command: "build"
+      Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart"
+      buildContext: "$(system.defaultWorkingDirectory)"
+      arguments: "--build-arg GITHUB_ACCESS_CREDENTIAL=$(GITHUB_ACCESS_CREDENTIAL) --build-arg VERSION=${{variables.version}}"

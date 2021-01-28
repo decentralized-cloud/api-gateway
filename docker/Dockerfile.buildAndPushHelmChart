@@ -2,6 +2,7 @@ FROM microbusiness/k8s-toolset:0.4.0
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
 ARG GITHUB_ACCESS_CREDENTIAL
+ARG VERSION
 
 ADD . /src
 WORKDIR /src
@@ -10,10 +11,11 @@ RUN git config --global http.sslVerify false
 RUN git config --global user.email "ci@micro-business.co.nz"
 RUN git config --global user.name "CI-Pipeline"
 
+RUN sed -i 's/latest/'"$VERSION"'/g' helm-charts/Chart.yaml
 RUN helm package helm-charts
 
 RUN git clone https://$GITHUB_ACCESS_CREDENTIAL@github.com/decentralized-cloud/helm.git
-RUN export VERSION=$(awk '/version: /{print $NF}' helm-charts/Chart.yaml);mv -f api-gateway-$VERSION.tgz helm;
+RUN export CHART_VERSION=$(awk '/version: /{print $NF}' helm-charts/Chart.yaml);mv -f api-gateway-$CHART_VERSION.tgz helm;
 
 WORKDIR /src/helm
 RUN helm repo index . --url https://decentralized-cloud.github.io/helm/
