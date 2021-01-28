@@ -68,12 +68,12 @@ func (service *transportService) Start() error {
 	config := &atreugo.Config{GracefulShutdown: true}
 	var err error
 
-	host, err := service.configurationService.GetHttpsHost()
+	host, err := service.configurationService.GetHttpHost()
 	if err != nil {
 		return err
 	}
 
-	port, err := service.configurationService.GetHttpsPort()
+	port, err := service.configurationService.GetHttpPort()
 	if err != nil {
 		return err
 	}
