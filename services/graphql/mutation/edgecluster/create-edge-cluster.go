@@ -1,5 +1,5 @@
 // Package edgecluster implements edge cluster mutation required by the GraphQL transport layer
-package edgeclster
+package edgecluster
 
 import (
 	"context"
@@ -151,8 +151,8 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 		args.Input.ClientMutationId,
 		response.EdgeClusterID,
 		&edgecluster.EdgeClusterDetail{
-			EdgeCluster:        response.EdgeCluster,
-			ProvisioningDetail: response.ProvisioningDetail,
+			EdgeCluster:     response.EdgeCluster,
+			ProvisionDetail: response.ProvisionDetail,
 		},
 		response.Cursor)
 }

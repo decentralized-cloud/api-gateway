@@ -1,5 +1,5 @@
-// Package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
-package edgeclster
+// Package edgecluster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
+package edgecluster
 
 import (
 	"context"

@@ -1,1 +1,1 @@
-package edgeclster_test
+package edgecluster_test

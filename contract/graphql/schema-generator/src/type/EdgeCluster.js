@@ -1,7 +1,7 @@
 import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLNonNull } from 'graphql';
 import { NodeInterface } from '../interface';
 import Tenant from './EdgeClusterTenant';
-import EdgeClusterProvisioningDetail from './EdgeClusterProvisioningDetail';
+import EdgeClusterProvisionDetail from './EdgeClusterProvisionDetail';
 import EdgeClusterType from './EdgeClusterType';
 
 export default new GraphQLObjectType({
@@ -12,7 +12,7 @@ export default new GraphQLObjectType({
 		clusterSecret: { type: new GraphQLNonNull(GraphQLString) },
 		clusterType: { type: new GraphQLNonNull(EdgeClusterType) },
 		tenant: { type: new GraphQLNonNull(Tenant) },
-		provisioningDetail: { type: EdgeClusterProvisioningDetail },
+		provisionDetail: { type: EdgeClusterProvisionDetail },
 	},
 	interfaces: [NodeInterface],
 });
