@@ -1,5 +1,5 @@
-// Package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
-package edgeclster
+// Package edgecluster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
+package edgecluster
 
 import (
 	"context"
@@ -86,8 +86,8 @@ func NewEdgeClusterResolver(
 		}
 
 		resolver.edgeClusterDetail = &edgecluster.EdgeClusterDetail{
-			EdgeCluster:        response.EdgeCluster,
-			ProvisioningDetail: response.ProvisioningDetail,
+			EdgeCluster:     response.EdgeCluster,
+			ProvisionDetail: response.ProvisionDetail,
 		}
 	} else {
 		resolver.edgeClusterDetail = edgeClusterDetail
@@ -139,9 +139,9 @@ func (r *edgeClusterResolver) Tenant(ctx context.Context) (edgecluster.EdgeClust
 	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.edgeClusterDetail.EdgeCluster.TenantID)
 }
 
-// ProvisioningDetail returns edge cluster provisioning detail
+// ProvisionDetail returns edge cluster provisioning detail
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster provisioning detail
-func (r *edgeClusterResolver) ProvisioningDetail(ctx context.Context) (edgecluster.EdgeClusterProvisioningDetailResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterProvisioningDetailResolver(ctx, r.edgeClusterDetail.ProvisioningDetail)
+func (r *edgeClusterResolver) ProvisionDetail(ctx context.Context) (edgecluster.EdgeClusterProvisionDetailResolverContract, error) {
+	return r.resolverCreator.NewEdgeClusterProvisionDetailResolver(ctx, r.edgeClusterDetail.ProvisionDetail)
 }

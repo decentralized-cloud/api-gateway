@@ -29,7 +29,7 @@ type EdgeCluster implements Node {
   clusterSecret: String!
   clusterType: EdgeClusterType!
   tenant: EdgeClusterTenant!
-  provisioningDetail: EdgeClusterProvisioningDetail
+  provisionDetail: EdgeClusterProvisionDetail
 }
 
 enum EdgeClusterType {
@@ -41,16 +41,26 @@ type EdgeClusterTenant implements Node {
   name: String!
 }
 
-type EdgeClusterProvisioningDetail {
-  status: EdgeClusterStatus
-  publicIPAddress: String
+type EdgeClusterProvisionDetail {
+  ingress: [Ingress!]
+  ports: [Port!]
   kubeconfigContent: String
 }
 
-enum EdgeClusterStatus {
-  Provisioning
-  Ready
-  Deleting
+type Ingress {
+  ip: String
+  hostname: String
+}
+
+type Port {
+  port: Int!
+  protocol: Protocol!
+}
+
+enum Protocol {
+  TCP
+  UDP
+  SCTP
 }
 
 """A connection to a list of items."""

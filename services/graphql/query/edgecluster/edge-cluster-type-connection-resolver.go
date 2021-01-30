@@ -1,5 +1,5 @@
-// Package edgelcuster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
-package edgeclster
+// Package edgecluster implements different edge cluster GraphQL query resovlers required by the GraphQL transport layer
+package edgecluster
 
 import (
 	"context"
@@ -87,8 +87,8 @@ func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]edgec
 			item.EdgeClusterID,
 			item.Cursor,
 			&edgecluster.EdgeClusterDetail{
-				EdgeCluster:        item.EdgeCluster,
-				ProvisioningDetail: item.ProvisioningDetail,
+				EdgeCluster:     item.EdgeCluster,
+				ProvisionDetail: item.ProvisionDetail,
 			})
 
 		if err != nil {

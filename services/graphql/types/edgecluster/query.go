@@ -54,13 +54,30 @@ type QueryResolverCreatorContract interface {
 		ctx context.Context,
 		tenantID string) (EdgeClusterTenantResolverContract, error)
 
-	// NewEdgeClusterProvisioningDetailResolver creates new EdgeClusterProvisioningDetailResolverContract and returns it
+	// NewEdgeClusterProvisionDetailResolver creates new EdgeClusterProvisionDetailResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
-	// provisioningDetail: Optional. The edge cluster provisioning details
-	// Returns the EdgeClusterProvisioningDetailResolverContract or error if something goes wrong
-	NewEdgeClusterProvisioningDetailResolver(
+	// provisionDetail: Optional. The edge cluster provisioning details
+	// Returns the EdgeClusterProvisionDetailResolverContract or error if something goes wrong
+	NewEdgeClusterProvisionDetailResolver(
 		ctx context.Context,
-		provisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail) (EdgeClusterProvisioningDetailResolverContract, error)
+		provisionDetail *edgeclusterGrpcContract.EdgeClusterProvisionDetail) (EdgeClusterProvisionDetailResolverContract, error)
+
+	// NewIngressResolver creates new instance of the ingressResolver, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// ingress: Mandatory. The ingress details
+	// Returns the new instance or error if something goes wrong
+	NewIngressResolver(
+		ctx context.Context,
+		ingress *edgeclusterGrpcContract.Ingress) (IngressResolverContract, error)
+
+	// NewPortResolver creates new instance of the PortResolver, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// logger: Mandatory. Reference to the logger service
+	// Port: Mandatory. The PostStatus details
+	// Returns the new instance or error if something goes wrong
+	NewPortResolver(
+		ctx context.Context,
+		Port *edgeclusterGrpcContract.Port) (PortResolverContract, error)
 }
 
 // EdgeClusterResolverContract declares the resolver that can retrieve edge cluster information
@@ -90,10 +107,10 @@ type EdgeClusterResolverContract interface {
 	// Returns the edge cluster tenant
 	Tenant(ctx context.Context) (EdgeClusterTenantResolverContract, error)
 
-	// ProvisioningDetail returns edge cluster provisioning detail
+	// ProvisionDetail returns edge cluster provisioning detail
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster provisioning detail
-	ProvisioningDetail(ctx context.Context) (EdgeClusterProvisioningDetailResolverContract, error)
+	ProvisionDetail(ctx context.Context) (EdgeClusterProvisionDetailResolverContract, error)
 }
 
 // EdgeClusterTypeConnectionResolverContract declares the resolver that returns edge cluster edge compatible with graphql-relay
@@ -140,25 +157,45 @@ type EdgeClusterTenantResolverContract interface {
 	Name(ctx context.Context) string
 }
 
-type EdgeClusterStatus int
-
-const (
-	Provisioning EdgeClusterStatus = iota
-	Ready
-	Deleting
-)
-
-// EdgeClusterProvisioningDetailResolverContract declares the resolver that returns edge cluster provisioning details
-type EdgeClusterProvisioningDetailResolverContract interface {
-	// Status returns the edge cluster current status
+// IngressResolverContract declares the resolver that returns Ingress
+type IngressResolverContract interface {
+	// IP is set for load-balancer ingress points that are IP based
+	// (typically GCE or OpenStack load-balancers)
 	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster current status
-	Status(ctx context.Context) *EdgeClusterStatus
+	// Returns the IP is set for load-balancer ingress points that are IP based
+	IP(ctx context.Context) *string
 
-	// PublicIPAddress returns the edge cluster public IP address
+	// Hostname is set for load-balancer ingress points that are DNS based
+	// (typically AWS load-balancers)
 	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster public IP address
-	PublicIPAddress(ctx context.Context) *string
+	// Returns the Hostname is set for load-balancer ingress points that are DNS based
+	Hostname(ctx context.Context) *string
+}
+
+// PortResolverContract declares the resolver that returns Port
+type PortResolverContract interface {
+	// Port returns the port number of the edge-cluster master port of which status is recorded here
+	// ctx: Mandatory. Reference to the context
+	// Returns the port number of the edge-cluster master port of which status is recorded here
+	Port(ctx context.Context) int32
+
+	// Protocol returns the protocol of the edge-cluster master port of which status is recorded here
+	// ctx: Mandatory. Reference to the context
+	// Returns the protocol of the edge-cluster master port of which status is recorded here
+	Protocol(ctx context.Context) string
+}
+
+// EdgeClusterProvisionDetailResolverContract declares the resolver that returns edge cluster provisioning details
+type EdgeClusterProvisionDetailResolverContract interface {
+	// Ingress returns the ingress details of the edge cluster master node
+	// ctx: Mandatory. Reference to the context
+	// Returns the ingress details of the edge cluster master node
+	Ingress(ctx context.Context) (*[]IngressResolverContract, error)
+
+	// Ports is a list of records of edge-cluster master ports
+	// ctx: Mandatory. Reference to the context
+	// Returns the Ports is a list of records of edge-cluster master ports
+	Ports(ctx context.Context) (*[]PortResolverContract, error)
 
 	// KubeconfigContent returns the edge cluster Kubeconfig content
 	// ctx: Mandatory. Reference to the context
@@ -167,8 +204,8 @@ type EdgeClusterProvisioningDetailResolverContract interface {
 }
 
 type EdgeClusterDetail struct {
-	EdgeCluster        *edgeclusterGrpcContract.EdgeCluster
-	ProvisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail
+	EdgeCluster     *edgeclusterGrpcContract.EdgeCluster
+	ProvisionDetail *edgeclusterGrpcContract.EdgeClusterProvisionDetail
 }
 
 type EdgeClusterClusterEdgeClusterInputArgument struct {

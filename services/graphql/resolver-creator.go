@@ -234,17 +234,45 @@ func (creator *resolverCreator) NewEdgeClusterTenantResolver(
 		tenantID)
 }
 
-// NewEdgeClusterProvisioningDetailResolver creates new EdgeClusterProvisioningDetailResolverContract and returns it
+// NewEdgeClusterProvisionDetailResolver creates new EdgeClusterProvisionDetailResolverContract and returns it
 // ctx: Mandatory. Reference to the context
-// provisioningDetail: Mandatory. The edge cluster provisioning details
-// Returns the EdgeClusterProvisioningDetailResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewEdgeClusterProvisioningDetailResolver(
+// ProvisionDetail: Mandatory. The edge cluster provisioning details
+// Returns the EdgeClusterProvisionDetailResolverContract or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterProvisionDetailResolver(
 	ctx context.Context,
-	provisioningDetail *edgeclusterGrpcContract.EdgeClusterProvisioningDetail) (edgecluster.EdgeClusterProvisioningDetailResolverContract, error) {
-	return queryedgecluster.NewEdgeClusterProvisioningDetailResolver(
+	provisionDetail *edgeclusterGrpcContract.EdgeClusterProvisionDetail) (edgecluster.EdgeClusterProvisionDetailResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterProvisionDetailResolver(
 		ctx,
 		creator.logger,
-		provisioningDetail)
+		creator,
+		provisionDetail)
+}
+
+// NewIngressResolver creates new instance of the ingressResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// ingress: Mandatory. The ingress details
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewIngressResolver(
+	ctx context.Context,
+	ingress *edgeclusterGrpcContract.Ingress) (edgecluster.IngressResolverContract, error) {
+	return queryedgecluster.NewIngressResolver(
+		ctx,
+		creator.logger,
+		ingress)
+}
+
+// NewPortResolver creates new instance of the PortResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// logger: Mandatory. Reference to the logger service
+// Port: Mandatory. The PostStatus details
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewPortResolver(
+	ctx context.Context,
+	Port *edgeclusterGrpcContract.Port) (edgecluster.PortResolverContract, error) {
+	return queryedgecluster.NewPortResolver(
+		ctx,
+		creator.logger,
+		Port)
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
