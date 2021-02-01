@@ -16,10 +16,11 @@ import (
 )
 
 type edgeClusterResolver struct {
-	logger            *zap.Logger
-	resolverCreator   types.ResolverCreatorContract
-	edgeclusterID     string
-	edgeClusterDetail *edgecluster.EdgeClusterDetail
+	logger                   *zap.Logger
+	resolverCreator          types.ResolverCreatorContract
+	edgeclusterID            string
+	edgeClusterDetail        *edgecluster.EdgeClusterDetail
+	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
 // NewEdgeClusterResolver creates new instance of the edgeClusterResolver, setting up all dependencies and returns the instance
@@ -57,9 +58,10 @@ func NewEdgeClusterResolver(
 	}
 
 	resolver := edgeClusterResolver{
-		logger:          logger,
-		resolverCreator: resolverCreator,
-		edgeclusterID:   edgeClusterID,
+		logger:                   logger,
+		resolverCreator:          resolverCreator,
+		edgeclusterID:            edgeClusterID,
+		edgeClusterClientService: edgeClusterClientService,
 	}
 
 	if edgeClusterDetail == nil {
@@ -144,4 +146,45 @@ func (r *edgeClusterResolver) Tenant(ctx context.Context) (edgecluster.EdgeClust
 // Returns the edge cluster provisioning detail
 func (r *edgeClusterResolver) ProvisionDetail(ctx context.Context) (edgecluster.EdgeClusterProvisionDetailResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterProvisionDetailResolver(ctx, r.edgeClusterDetail.ProvisionDetail)
+}
+
+// Ingress returns the ingress details of the edge cluster master node
+// ctx: Mandatory. Reference to the context
+// Returns the ingress details of the edge cluster master node
+func (r *edgeClusterResolver) Nodes(ctx context.Context) (*[]edgecluster.EdgeClusterNodeStatusResolverContract, error) {
+	connection, edgeClusterServiceClient, err := r.edgeClusterClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	listEdgeClusterNodesResponse, err := edgeClusterServiceClient.ListEdgeClusterNodes(
+		ctx,
+		&edgeclusterGrpcContract.ListEdgeClusterNodesRequest{
+			EdgeClusterID: r.edgeclusterID,
+		})
+	if err != nil {
+		return nil, err
+	}
+
+	if listEdgeClusterNodesResponse.Error != edgeclusterGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(listEdgeClusterNodesResponse.ErrorMessage)
+	}
+
+	response := []edgecluster.EdgeClusterNodeStatusResolverContract{}
+
+	for _, item := range listEdgeClusterNodesResponse.Nodes {
+		resolver, err := r.resolverCreator.NewEdgeClusterNodeStatusResolver(ctx, item)
+
+		if err != nil {
+			return nil, err
+		}
+
+		response = append(response, resolver)
+	}
+
+	return &response, nil
 }

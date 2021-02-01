@@ -10,5 +10,6 @@ export default connectionDefinitions({
 		},
 	},
 	name: 'TenantType',
+	description: 'The tenant connection compatible with relay',
 	nodeType: Tenant,
 });

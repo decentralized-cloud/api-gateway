@@ -3,7 +3,7 @@ module github.com/decentralized-cloud/api-gateway
 go 1.15
 
 require (
-	github.com/decentralized-cloud/edge-cluster v0.5.3
+	github.com/decentralized-cloud/edge-cluster v0.5.6
 	github.com/decentralized-cloud/tenant v0.4.2
 	github.com/friendsofgo/graphiql v0.2.2
 	github.com/go-kit/kit v0.10.0
