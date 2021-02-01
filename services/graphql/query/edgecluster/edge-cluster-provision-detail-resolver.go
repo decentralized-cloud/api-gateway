@@ -39,6 +39,10 @@ func NewEdgeClusterProvisionDetailResolver(
 		return nil, commonErrors.NewArgumentNilError("resolverCreator", "resolverCreator is required")
 	}
 
+	if provisionDetail == nil {
+		return nil, commonErrors.NewArgumentNilError("provisionDetail", "provisionDetail is required")
+	}
+
 	return &edgeClusterProvisionDetailResolver{
 		logger:          logger,
 		resolverCreator: resolverCreator,
@@ -50,7 +54,7 @@ func NewEdgeClusterProvisionDetailResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the ingress details of the edge cluster master node
 func (r *edgeClusterProvisionDetailResolver) Ingress(ctx context.Context) (*[]edgecluster.IngressResolverContract, error) {
-	if r.provisionDetail == nil || r.provisionDetail.Ingress == nil {
+	if r.provisionDetail.Ingress == nil {
 		return nil, nil
 	}
 
@@ -73,7 +77,7 @@ func (r *edgeClusterProvisionDetailResolver) Ingress(ctx context.Context) (*[]ed
 // ctx: Mandatory. Reference to the context
 // Returns the ingress details of the edge cluster master node
 func (r *edgeClusterProvisionDetailResolver) Ports(ctx context.Context) (*[]edgecluster.PortResolverContract, error) {
-	if r.provisionDetail == nil || r.provisionDetail.Ports == nil {
+	if r.provisionDetail.Ports == nil {
 		return nil, nil
 	}
 
@@ -96,9 +100,5 @@ func (r *edgeClusterProvisionDetailResolver) Ports(ctx context.Context) (*[]edge
 // ctx: Mandatory. Reference to the context
 // Returns the edge cluster Kubeconfig content
 func (r *edgeClusterProvisionDetailResolver) KubeconfigContent(ctx context.Context) *string {
-	if r.provisionDetail == nil {
-		return nil
-	}
-
 	return &r.provisionDetail.KubeConfigContent
 }

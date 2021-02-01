@@ -268,11 +268,65 @@ func (creator *resolverCreator) NewIngressResolver(
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewPortResolver(
 	ctx context.Context,
-	Port *edgeclusterGrpcContract.Port) (edgecluster.PortResolverContract, error) {
+	port *edgeclusterGrpcContract.Port) (edgecluster.PortResolverContract, error) {
 	return queryedgecluster.NewPortResolver(
 		ctx,
 		creator.logger,
-		Port)
+		port)
+}
+
+// NewEdgeClusterNodeStatusResolver creates new instance of the edgeClusterNodeStatusResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// logger: Mandatory. Reference to the logger service
+// node: Mandatory. Contains information about the current status of a node.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterNodeStatusResolver(
+	ctx context.Context,
+	node *edgeclusterGrpcContract.EdgeClusterNodeStatus) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterNodeStatusResolver(
+		ctx,
+		creator.logger,
+		creator,
+		node)
+}
+
+// NewEdgeClusterNodeConditionResolver creates new instance of the edgeClusterNodeConditionResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// condition: Mandatory. Contains condition information for a node.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterNodeConditionResolver(
+	ctx context.Context,
+	condition *edgeclusterGrpcContract.EdgeClusterNodeCondition) (edgecluster.EdgeClusterNodeConditionResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterNodeConditionResolver(
+		ctx,
+		creator.logger,
+		condition)
+}
+
+// NewEdgeClusterNodeAddressResolverContract creates new instance of the edgeClusterNodeAddressResolverContract, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// nodeAddresss: Mandatory. Contains information for the edge cluster node's address.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterNodeAddressResolverContract(
+	ctx context.Context,
+	nodeAddresss *edgeclusterGrpcContract.EdgeClusterNodeAddress) (edgecluster.EdgeClusterNodeAddressResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterNodeAddressResolverContract(
+		ctx,
+		creator.logger,
+		nodeAddresss)
+}
+
+// NewEdgeClusterNodeSystemInfoResolverContract creates new instance of the edgeClusterNodeSystemInfoResolverContract, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// nodeInfo: Mandatory. Contains a set of ids/uuids to uniquely identify the node.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterNodeSystemInfoResolverContract(
+	ctx context.Context,
+	nodeInfo *edgeclusterGrpcContract.EdgeClusterNodeSystemInfo) (edgecluster.EdgeClusterNodeSystemInfoResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterNodeSystemInfoResolverContract(
+		ctx,
+		creator.logger,
+		nodeInfo)
 }
 
 // NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance

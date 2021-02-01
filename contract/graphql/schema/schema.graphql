@@ -23,16 +23,33 @@ type Tenant implements Node {
   edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortOption: String): EdgeClusterTypeConnection
 }
 
+"""The edge cluster"""
 type EdgeCluster implements Node {
+  """The unique edge cluster ID"""
   id: ID!
+
+  """The edge cluster name"""
   name: String!
+
+  """The cluster secrect value"""
   clusterSecret: String!
+
+  """The cluster type"""
   clusterType: EdgeClusterType!
+
+  """The tenant that owns the edge cluster"""
   tenant: EdgeClusterTenant!
+
+  """The edge cluster provision details"""
   provisionDetail: EdgeClusterProvisionDetail
+
+  """The list of an existing edge cluster nodes details"""
+  nodes: [EdgeClusterNodeStatus!]
 }
 
+"""The different cluster types"""
 enum EdgeClusterType {
+  """K3S cluster"""
   K3S
 }
 
@@ -41,26 +58,190 @@ type EdgeClusterTenant implements Node {
   name: String!
 }
 
+"""
+The edge cluster provision details contains details such as current status of the edge cluster as well as ingress address of the edge cluster to connect to
+"""
 type EdgeClusterProvisionDetail {
+  """The ingress details of the edge cluster master node"""
   ingress: [Ingress!]
+
+  """The ingress details of the edge cluster master node"""
   ports: [Port!]
+
+  """The provisioned edge cluster kubeconfig content"""
   kubeconfigContent: String
 }
 
+"""
+Ingress represents the status of a load-balancer ingress point traffic intended for the service should be sent to an ingress point
+"""
 type Ingress {
+  """
+  IP is set for load-balancer ingress points that are IP based, (typically GCE or OpenStack load-balancers)
+  """
   ip: String
+
+  """
+  Hostname is set for load-balancer ingress points that are DNS based, (typically AWS load-balancers)
+  """
   hostname: String
 }
 
+"""Port contains information on service port"""
 type Port {
+  """The port number of the edge-cluster master port"""
   port: Int!
+
+  """The protocol of the edge-cluster master port"""
   protocol: Protocol!
 }
 
+"""Protocol defines network protocols"""
 enum Protocol {
+  """TCP protocol"""
   TCP
+
+  """UDP protocol"""
   UDP
+
+  """SCTP protocol"""
   SCTP
+}
+
+"""Contains information about the current status of a node"""
+type EdgeClusterNodeStatus {
+  """Conditions is an array of current observed node conditions"""
+  Conditions: [EdgeClusterNodeCondition!]
+
+  """Addresses is the list of addresses reachable to the node"""
+  Addresses: [EdgeClusterNodeAddress!]
+
+  """NodeInfo is the set of ids/uuids to uniquely identify the node"""
+  NodeInfo: EdgeClusterNodeSystemInfo!
+}
+
+"""Condition information for a node"""
+type EdgeClusterNodeCondition {
+  """Type of node condition"""
+  Type: EdgeClusterNodeConditionType!
+
+  """Status of the condition, one of True, False, Unknown"""
+  Status: EdgeClusterNodeConditionStatus!
+
+  """Last time we got an update on a given condition"""
+  LastHeartbeatTime: String!
+
+  """Last time the condition transit from one status to another"""
+  LastTransitionTime: String!
+
+  """(brief) reason for the condition last transition"""
+  Reason: String!
+
+  """Human readable message indicating details about last transition"""
+  Message: String!
+}
+
+"""The valid conditions of node"""
+enum EdgeClusterNodeConditionType {
+  """NodeReady means kubelet is healthy and ready to accept pods"""
+  Ready
+
+  """
+  NodeMemoryPressure means the kubelet is under pressure due to insufficient available memory
+  """
+  MemoryPressure
+
+  """
+  NodeDiskPressure means the kubelet is under pressure due to insufficient available disk
+  """
+  DiskPressure
+
+  """
+  NodePIDPressure means the kubelet is under pressure due to insufficient available PID
+  """
+  PIDPressure
+
+  """
+  NodeNetworkUnavailable means that network for the node is not correctly configured
+  """
+  NetworkUnavailable
+}
+
+"""These are valid condition statuses"""
+enum EdgeClusterNodeConditionStatus {
+  """True means a resource is in the condition"""
+  True
+
+  """False means a resource is not in the condition"""
+  False
+
+  """
+  Unknown means kubernetes cannot decide if a resource is in the condition or not
+  """
+  Unknown
+}
+
+"""The information for the edge cluster node address"""
+type EdgeClusterNodeAddress {
+  """
+  Edge cluster node address type, one of Hostname, ExternalIP or InternalIP
+  """
+  NodeAddressType: EdgeClusterNodeAddressType!
+
+  """The node address"""
+  Address: String!
+}
+
+"""The valid address type of edge cluster node"""
+enum EdgeClusterNodeAddressType {
+  Hostname
+  ExternalIP
+  InternalIP
+  ExternalDNS
+  InternalDNS
+}
+
+"""contains a set of ids/uuids to uniquely identify the node"""
+type EdgeClusterNodeSystemInfo {
+  """
+  MachineID reported by the node. For unique machine identification in the cluster this field is preferred
+  """
+  MachineID: String!
+
+  """
+  SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat host
+  """
+  SystemUUID: String!
+
+  """Boot ID reported by the node"""
+  BootID: String!
+
+  """
+  Kernel Version reported by the node from "uname -r" (e.g. 3.16.0-0.bpo.4-amd64).
+  """
+  KernelVersion: String!
+
+  """
+  OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy))
+  """
+  OSImage: String!
+
+  """
+  ContainerRuntime Version reported by the node through runtime remote API (e.g. docker://1.5.0)
+  """
+  ContainerRuntimeVersion: String!
+
+  """Kubelet Version reported by the node"""
+  KubeletVersion: String!
+
+  """KubeProxy Version reported by the node"""
+  KubeProxyVersion: String!
+
+  """The Operating System reported by the node"""
+  OperatingSystem: String!
+
+  """The Architecture reported by the node"""
+  Architecture: String!
 }
 
 """A connection to a list of items."""

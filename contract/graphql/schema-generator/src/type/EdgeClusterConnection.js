@@ -10,5 +10,6 @@ export default connectionDefinitions({
 		},
 	},
 	name: 'EdgeClusterType',
+	description: 'The edge cluster connection compatible with relay',
 	nodeType: EdgeCluster,
 });
