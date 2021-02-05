@@ -170,7 +170,7 @@ type CreateTenantInputArgument struct {
 }
 
 type UpdateTenantInput struct {
-	TenantID         graphql.ID
+	ID               graphql.ID
 	Name             string
 	ClientMutationId *string
 }
@@ -180,8 +180,7 @@ type UpdateTenantInputArgument struct {
 }
 
 type DeleteTenantInput struct {
-	TenantID         graphql.ID
-	Name             string
+	ID               graphql.ID
 	ClientMutationId *string
 }
 

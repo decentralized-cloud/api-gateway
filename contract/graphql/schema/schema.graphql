@@ -336,7 +336,7 @@ type UpdateTenantPayload {
 }
 
 input UpdateTenantInput {
-  tenantID: ID!
+  id: ID!
   name: String!
   clientMutationId: String
 }
@@ -347,7 +347,7 @@ type DeleteTenantPayload {
 }
 
 input DeleteTenantInput {
-  tenantID: ID!
+  id: ID!
   clientMutationId: String
 }
 
@@ -370,7 +370,7 @@ type UpdateEdgeClusterPayload {
 }
 
 input UpdateEdgeClusterInput {
-  edgeClusterID: ID!
+  id: ID!
   tenantID: ID!
   name: String!
   clusterSecret: String!
@@ -384,6 +384,6 @@ type DeleteEdgeClusterPayload {
 }
 
 input DeleteEdgeClusterInput {
-  edgeClusterID: ID!
+  id: ID!
   clientMutationId: String
 }

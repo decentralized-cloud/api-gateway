@@ -5,7 +5,7 @@ import { EdgeClusterConnection, EdgeClusterType } from '../type';
 export default mutationWithClientMutationId({
 	name: 'UpdateEdgeCluster',
 	inputFields: {
-		edgeClusterID: { type: new GraphQLNonNull(GraphQLID) },
+		id: { type: new GraphQLNonNull(GraphQLID) },
 		tenantID: { type: new GraphQLNonNull(GraphQLID) },
 		name: { type: new GraphQLNonNull(GraphQLString) },
 		clusterSecret: { type: new GraphQLNonNull(GraphQLString) },

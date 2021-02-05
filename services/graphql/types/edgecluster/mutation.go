@@ -171,7 +171,7 @@ type CreateEdgeClusterInputArgument struct {
 }
 
 type UpdateEdgeClusterInput struct {
-	EdgeClusterID    graphql.ID
+	ID               graphql.ID
 	TenantID         graphql.ID
 	Name             string
 	ClusterSecret    string
@@ -184,7 +184,7 @@ type UpdateEdgeClusterInputArgument struct {
 }
 
 type DeleteEdgeClusterInput struct {
-	EdgeClusterID    graphql.ID
+	ID               graphql.ID
 	ClientMutationId *string
 }
 

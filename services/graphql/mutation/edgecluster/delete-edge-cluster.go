@@ -89,7 +89,7 @@ func NewDeleteEdgeClusterPayloadResolver(
 func (m *deleteEdgeCluster) MutateAndGetPayload(
 	ctx context.Context,
 	args edgecluster.DeleteEdgeClusterInputArgument) (edgecluster.DeleteEdgeClusterPayloadResolverContract, error) {
-	edgeClusterID := string(args.Input.EdgeClusterID)
+	edgeClusterID := string(args.Input.ID)
 	connection, edgeClusterServiceClient, err := m.edgeClusterClientService.CreateClient()
 	if err != nil {
 		return nil, err

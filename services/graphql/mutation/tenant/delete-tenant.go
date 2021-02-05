@@ -92,7 +92,7 @@ func NewDeleteTenantPayloadResolver(
 func (m *deleteTenant) MutateAndGetPayload(
 	ctx context.Context,
 	args tenant.DeleteTenantInputArgument) (tenant.DeleteTenantPayloadResolverContract, error) {
-	tenantID := string(args.Input.TenantID)
+	tenantID := string(args.Input.ID)
 	connection, tenantServiceClient, err := m.tenantClientService.CreateClient()
 	if err != nil {
 		return nil, err

@@ -111,7 +111,7 @@ func NewUpdateEdgeClusterPayloadResolver(
 func (m *updateEdgeCluster) MutateAndGetPayload(
 	ctx context.Context,
 	args edgecluster.UpdateEdgeClusterInputArgument) (edgecluster.UpdateEdgeClusterPayloadResolverContract, error) {
-	edgeClusterID := string(args.Input.EdgeClusterID)
+	edgeClusterID := string(args.Input.ID)
 	connection, edgeClusterServiceClient, err := m.edgeClusterClientService.CreateClient()
 	if err != nil {
 		return nil, err
