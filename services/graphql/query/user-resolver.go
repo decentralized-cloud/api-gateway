@@ -8,9 +8,9 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 	edgeClusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
-	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
+	projectGrpcContract "github.com/decentralized-cloud/project/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"github.com/thoas/go-funk"
@@ -21,7 +21,7 @@ type userResolver struct {
 	logger                   *zap.Logger
 	resolverCreator          types.ResolverCreatorContract
 	userID                   string
-	tenantClientService      tenant.TenantClientContract
+	projectClientService     project.ProjectClientContract
 	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
@@ -29,15 +29,15 @@ type userResolver struct {
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
-// userID: Mandatory. the tenant unique identifier
-// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
+// userID: Mandatory. the project unique identifier
+// projectClientService: Mandatory. the project client service that creates gRPC connection and client to the project
 // Returns the new instance or error if something goes wrong
 func NewUserResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
 	userID string,
-	tenantClientService tenant.TenantClientContract,
+	projectClientService project.ProjectClientContract,
 	edgeClusterClientService edgecluster.EdgeClusterClientContract) (types.UserResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
@@ -55,8 +55,8 @@ func NewUserResolver(
 		return nil, commonErrors.NewArgumentError("userID", "userID is required")
 	}
 
-	if tenantClientService == nil {
-		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
+	if projectClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("projectClientService", "projectClientService is required")
 	}
 
 	if edgeClusterClientService == nil {
@@ -67,7 +67,7 @@ func NewUserResolver(
 		logger:                   logger,
 		resolverCreator:          resolverCreator,
 		userID:                   userID,
-		tenantClientService:      tenantClientService,
+		projectClientService:     projectClientService,
 		edgeClusterClientService: edgeClusterClientService,
 	}, nil
 }
@@ -79,28 +79,28 @@ func (r *userResolver) ID(ctx context.Context) graphql.ID {
 	return graphql.ID(r.userID)
 }
 
-// Tenant returns tenant resolver
+// Project returns project resolver
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
-// Returns the tenant resolver or error if something goes wrong
-func (r *userResolver) Tenant(
+// Returns the project resolver or error if something goes wrong
+func (r *userResolver) Project(
 	ctx context.Context,
-	args types.UserTenantInputArgument) (tenant.TenantResolverContract, error) {
-	return r.resolverCreator.NewTenantResolver(
+	args types.UserProjectInputArgument) (project.ProjectResolverContract, error) {
+	return r.resolverCreator.NewProjectResolver(
 		ctx,
-		string(args.TenantID),
+		string(args.ProjectID),
 		nil)
 }
 
-// Tenants returns tenant connection compatible with graphql-relay
+// Projects returns project connection compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
-// Returns the tenant resolver or error if something goes wrong
-func (r *userResolver) Tenants(
+// Returns the project resolver or error if something goes wrong
+func (r *userResolver) Projects(
 	ctx context.Context,
-	args types.UserTenantsInputArgument) (tenant.TenantTypeConnectionResolverContract, error) {
+	args types.UserProjectsInputArgument) (project.ProjectTypeConnectionResolverContract, error) {
 
-	pagination := tenantGrpcContract.Pagination{}
+	pagination := projectGrpcContract.Pagination{}
 
 	if args.After != nil {
 		pagination.HasAfter = true
@@ -122,31 +122,31 @@ func (r *userResolver) Tenants(
 		pagination.Last = *args.Last
 	}
 
-	sortingOptions := []*tenantGrpcContract.SortingOptionPair{}
+	sortingOptions := []*projectGrpcContract.SortingOptionPair{}
 
 	if args.SortingOptions != nil {
-		sortingOptions = funk.Map(*args.SortingOptions, func(sortingOption types.SortingOptionPair) *tenantGrpcContract.SortingOptionPair {
-			direction := tenantGrpcContract.SortingDirection_ASCENDING
+		sortingOptions = funk.Map(*args.SortingOptions, func(sortingOption types.SortingOptionPair) *projectGrpcContract.SortingOptionPair {
+			direction := projectGrpcContract.SortingDirection_ASCENDING
 
 			if sortingOption.Direction == "DESCENDING" {
-				direction = tenantGrpcContract.SortingDirection_DESCENDING
+				direction = projectGrpcContract.SortingDirection_DESCENDING
 			}
 
-			return &tenantGrpcContract.SortingOptionPair{
+			return &projectGrpcContract.SortingOptionPair{
 				Name:      sortingOption.Name,
 				Direction: direction,
 			}
-		}).([]*tenantGrpcContract.SortingOptionPair)
+		}).([]*projectGrpcContract.SortingOptionPair)
 	}
 
-	tenantIDs := []string{}
-	if args.TenantIDs != nil {
-		tenantIDs = funk.Map(*args.TenantIDs, func(tenantID graphql.ID) string {
-			return string(tenantID)
+	projectIDs := []string{}
+	if args.ProjectIDs != nil {
+		projectIDs = funk.Map(*args.ProjectIDs, func(projectID graphql.ID) string {
+			return string(projectID)
 		}).([]string)
 	}
 
-	connection, tenantServiceClient, err := r.tenantClientService.CreateClient()
+	connection, projectServiceClient, err := r.projectClientService.CreateClient()
 	if err != nil {
 		return nil, err
 	}
@@ -155,34 +155,34 @@ func (r *userResolver) Tenants(
 		_ = connection.Close()
 	}()
 
-	response, err := tenantServiceClient.Search(
+	response, err := projectServiceClient.Search(
 		ctx,
-		&tenantGrpcContract.SearchRequest{
+		&projectGrpcContract.SearchRequest{
 			Pagination:     &pagination,
 			SortingOptions: sortingOptions,
-			TenantIDs:      tenantIDs,
+			ProjectIDs:     projectIDs,
 		})
 	if err != nil {
 		return nil, err
 	}
 
-	if response.Error != tenantGrpcContract.Error_NO_ERROR {
+	if response.Error != projectGrpcContract.Error_NO_ERROR {
 		return nil, errors.New(response.ErrorMessage)
 	}
 
-	return r.resolverCreator.NewTenantTypeConnectionResolver(
+	return r.resolverCreator.NewProjectTypeConnectionResolver(
 		ctx,
-		response.Tenants,
+		response.Projects,
 		response.HasPreviousPage,
 		response.HasNextPage,
 		int32(response.TotalCount),
 	)
 }
 
-// EdgeCluster returns tenant resolver
+// EdgeCluster returns project resolver
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
-// Returns the tenant resolver or error if something goes wrong
+// Returns the project resolver or error if something goes wrong
 func (r *userResolver) EdgeCluster(
 	ctx context.Context,
 	args types.UserEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
@@ -192,10 +192,10 @@ func (r *userResolver) EdgeCluster(
 		nil)
 }
 
-// EdgeClusters returns tenant connection compatible with graphql-relay
+// EdgeClusters returns project connection compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
-// Returns the tenant resolver or error if something goes wrong
+// Returns the project resolver or error if something goes wrong
 func (r *userResolver) EdgeClusters(
 	ctx context.Context,
 	args types.UserEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
@@ -239,10 +239,10 @@ func (r *userResolver) EdgeClusters(
 		}).([]*edgeClusterGrpcContract.SortingOptionPair)
 	}
 
-	tenantIDs := []string{}
-	if args.TenantIDs != nil {
-		tenantIDs = funk.Map(*args.TenantIDs, func(tenantID graphql.ID) string {
-			return string(tenantID)
+	projectIDs := []string{}
+	if args.ProjectIDs != nil {
+		projectIDs = funk.Map(*args.ProjectIDs, func(projectID graphql.ID) string {
+			return string(projectID)
 		}).([]string)
 	}
 
@@ -268,7 +268,7 @@ func (r *userResolver) EdgeClusters(
 			Pagination:     &pagination,
 			SortingOptions: sortingOptions,
 			EdgeClusterIDs: edgeClusterIDs,
-			TenantIDs:      tenantIDs,
+			ProjectIDs:     projectIDs,
 		})
 	if err != nil {
 		return nil, err

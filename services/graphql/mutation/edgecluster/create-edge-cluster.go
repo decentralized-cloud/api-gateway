@@ -133,7 +133,7 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 		ctx,
 		&edgeclusterGrpcContract.CreateEdgeClusterRequest{
 			EdgeCluster: &edgeclusterGrpcContract.EdgeCluster{
-				TenantID:      string(args.Input.TenantID),
+				ProjectID:     string(args.Input.ProjectID),
 				Name:          args.Input.Name,
 				ClusterSecret: args.Input.ClusterSecret,
 				ClusterType:   clusterType,

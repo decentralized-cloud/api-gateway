@@ -4,10 +4,10 @@ type Query {
 
 type User implements Node {
   id: ID!
-  tenant(tenantID: ID!): Tenant
-  tenants(after: String, first: Int, before: String, last: Int, tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): TenantTypeConnection
+  project(projectID: ID!): Project
+  projects(after: String, first: Int, before: String, last: Int, projectIDs: [ID!], sortingOptions: [SortingOptionPair!]): ProjectTypeConnection
   edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], tenantIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
+  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], projectIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
 }
 
 """An object with an ID"""
@@ -16,7 +16,7 @@ interface Node {
   id: ID!
 }
 
-type Tenant implements Node {
+type Project implements Node {
   id: ID!
   name: String!
   edgeCluster(edgeClusterID: ID!): EdgeCluster
@@ -37,8 +37,8 @@ type EdgeCluster implements Node {
   """The cluster type"""
   clusterType: EdgeClusterType!
 
-  """The tenant that owns the edge cluster"""
-  tenant: EdgeClusterTenant!
+  """The project that owns the edge cluster"""
+  project: EdgeClusterProject!
 
   """The edge cluster provision details"""
   provisionDetail: EdgeClusterProvisionDetail
@@ -53,7 +53,7 @@ enum EdgeClusterType {
   K3S
 }
 
-type EdgeClusterTenant implements Node {
+type EdgeClusterProject implements Node {
   id: ID!
   name: String!
 }
@@ -281,21 +281,21 @@ type EdgeClusterTypeEdge {
 }
 
 """A connection to a list of items."""
-type TenantTypeConnection {
+type ProjectTypeConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [TenantTypeEdge]
+  edges: [ProjectTypeEdge]
 
-  """Total number of tenants"""
+  """Total number of projects"""
   totalCount: Int
 }
 
 """An edge in a connection."""
-type TenantTypeEdge {
+type ProjectTypeEdge {
   """The item at the end of the edge"""
-  node: Tenant
+  node: Project
 
   """A cursor for use in pagination"""
   cursor: String!
@@ -312,42 +312,42 @@ enum SortingDirection {
 }
 
 type Mutation {
-  createTenant(input: CreateTenantInput!): CreateTenantPayload
-  updateTenant(input: UpdateTenantInput!): UpdateTenantPayload
-  deleteTenant(input: DeleteTenantInput!): DeleteTenantPayload
+  createProject(input: CreateProjectInput!): CreateProjectPayload
+  updateProject(input: UpdateProjectInput!): UpdateProjectPayload
+  deleteProject(input: DeleteProjectInput!): DeleteProjectPayload
   createEdgeCluster(input: CreateEdgeClusterInput!): CreateEdgeClusterPayload
   updateEdgeCluster(input: UpdateEdgeClusterInput!): UpdateEdgeClusterPayload
   deleteEdgeCluster(input: DeleteEdgeClusterInput!): DeleteEdgeClusterPayload
 }
 
-type CreateTenantPayload {
-  tenant: TenantTypeEdge
+type CreateProjectPayload {
+  project: ProjectTypeEdge
   clientMutationId: String
 }
 
-input CreateTenantInput {
+input CreateProjectInput {
   name: String!
   clientMutationId: String
 }
 
-type UpdateTenantPayload {
-  tenant: TenantTypeEdge
+type UpdateProjectPayload {
+  project: ProjectTypeEdge
   clientMutationId: String
 }
 
-input UpdateTenantInput {
-  tenantID: ID!
+input UpdateProjectInput {
+  projectID: ID!
   name: String!
   clientMutationId: String
 }
 
-type DeleteTenantPayload {
-  deletedTenantID: ID!
+type DeleteProjectPayload {
+  deletedProjectID: ID!
   clientMutationId: String
 }
 
-input DeleteTenantInput {
-  tenantID: ID!
+input DeleteProjectInput {
+  projectID: ID!
   clientMutationId: String
 }
 
@@ -357,7 +357,7 @@ type CreateEdgeClusterPayload {
 }
 
 input CreateEdgeClusterInput {
-  tenantID: ID!
+  projectID: ID!
   name: String!
   clusterSecret: String!
   clusterType: EdgeClusterType!
@@ -371,7 +371,7 @@ type UpdateEdgeClusterPayload {
 
 input UpdateEdgeClusterInput {
   edgeClusterID: ID!
-  tenantID: ID!
+  projectID: ID!
   name: String!
   clusterSecret: String!
   clusterType: EdgeClusterType!

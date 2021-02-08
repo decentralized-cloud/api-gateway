@@ -1,8 +1,8 @@
 import { GraphQLID, GraphQLObjectType, GraphQLNonNull, GraphQLList } from 'graphql';
 import { connectionArgs } from 'graphql-relay';
 import { NodeInterface } from '../interface';
-import Tenant from './Tenant';
-import TenantConnection from './TenantConnection';
+import Project from './Project';
+import ProjectConnection from './ProjectConnection';
 import EdgeCluster from './EdgeCluster';
 import EdgeClusterConnection from './EdgeClusterConnection';
 import SortingOptionPair from './SortingOptionPair';
@@ -11,17 +11,17 @@ export default new GraphQLObjectType({
 	name: 'User',
 	fields: {
 		id: { type: new GraphQLNonNull(GraphQLID) },
-		tenant: {
-			type: Tenant,
+		project: {
+			type: Project,
 			args: {
-				tenantID: { type: new GraphQLNonNull(GraphQLID) },
+				projectID: { type: new GraphQLNonNull(GraphQLID) },
 			},
 		},
-		tenants: {
-			type: TenantConnection.connectionType,
+		projects: {
+			type: ProjectConnection.connectionType,
 			args: {
 				...connectionArgs,
-				tenantIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+				projectIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
 				sortingOptions: { type: new GraphQLList(new GraphQLNonNull(SortingOptionPair)) },
 			},
 		},
@@ -36,7 +36,7 @@ export default new GraphQLObjectType({
 			args: {
 				...connectionArgs,
 				edgeClusterIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
-				tenantIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
+				projectIDs: { type: new GraphQLList(new GraphQLNonNull(GraphQLID)) },
 				sortingOptions: { type: new GraphQLList(new GraphQLNonNull(SortingOptionPair)) },
 			},
 		},

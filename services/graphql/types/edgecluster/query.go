@@ -46,13 +46,13 @@ type QueryResolverCreatorContract interface {
 		hasNextPage bool,
 		totalCount int32) (EdgeClusterTypeConnectionResolverContract, error)
 
-	// NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it
+	// NewEdgeClusterProjectResolver creates new EdgeClusterTenatnResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
-	// tenantID: Mandatory. The tenant unique identifier
+	// projectID: Mandatory. The project unique identifier
 	// Returns the EdgeClusterTenatnResolverContract or error if something goes wrong
-	NewEdgeClusterTenantResolver(
+	NewEdgeClusterProjectResolver(
 		ctx context.Context,
-		tenantID string) (EdgeClusterTenantResolverContract, error)
+		projectID string) (EdgeClusterProjectResolverContract, error)
 
 	// NewEdgeClusterProvisionDetailResolver creates new EdgeClusterProvisionDetailResolverContract and returns it
 	// ctx: Mandatory. Reference to the context
@@ -252,10 +252,10 @@ type EdgeClusterResolverContract interface {
 	// Returns the edge cluster current type or error if something went wrong
 	ClusterType(ctx context.Context) (string, error)
 
-	// Tenant returns edge cluster tenant
+	// Project returns edge cluster project
 	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster tenant
-	Tenant(ctx context.Context) (EdgeClusterTenantResolverContract, error)
+	// Returns the edge cluster project
+	Project(ctx context.Context) (EdgeClusterProjectResolverContract, error)
 
 	// ProvisionDetail returns edge cluster provisioning detail
 	// ctx: Mandatory. Reference to the context
@@ -299,16 +299,16 @@ type EdgeClusterTypeEdgeResolverContract interface {
 	Cursor(ctx context.Context) string
 }
 
-// EdgeClusterTenantResolverContract declares the resolver that returns edge cluster tenant
-type EdgeClusterTenantResolverContract interface {
-	// ID returns tenant unique identifier
+// EdgeClusterProjectResolverContract declares the resolver that returns edge cluster project
+type EdgeClusterProjectResolverContract interface {
+	// ID returns project unique identifier
 	// ctx: Mandatory. Reference to the context
-	// Returns the tenant  unique identifier
+	// Returns the project  unique identifier
 	ID(ctx context.Context) graphql.ID
 
-	// Name returns tenant name
+	// Name returns project name
 	// ctx: Mandatory. Reference to the context
-	// Returns the tenant name
+	// Returns the project name
 	Name(ctx context.Context) string
 }
 

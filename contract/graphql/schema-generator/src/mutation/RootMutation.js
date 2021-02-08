@@ -1,7 +1,7 @@
 import { GraphQLObjectType } from 'graphql';
-import createTenant from './CreateTenant';
-import updateTenant from './UpdateTenant';
-import deleteTenant from './DeleteTenant';
+import createProject from './CreateProject';
+import updateProject from './UpdateProject';
+import deleteProject from './DeleteProject';
 import createEdgeCluster from './CreateEdgeCluster';
 import updateEdgeCluster from './UpdateEdgeCluster';
 import deleteEdgeCluster from './DeleteEdgeCluster';
@@ -9,9 +9,9 @@ import deleteEdgeCluster from './DeleteEdgeCluster';
 export default new GraphQLObjectType({
 	name: 'Mutation',
 	fields: {
-		createTenant,
-		updateTenant,
-		deleteTenant,
+		createProject,
+		updateProject,
+		deleteProject,
 		createEdgeCluster,
 		updateEdgeCluster,
 		deleteEdgeCluster,

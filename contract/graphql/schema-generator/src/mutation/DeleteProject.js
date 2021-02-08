@@ -2,12 +2,12 @@ import { GraphQLNonNull, GraphQLID } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
 
 export default mutationWithClientMutationId({
-	name: 'DeleteTenant',
+	name: 'DeleteProject',
 	inputFields: {
-		tenantID: { type: new GraphQLNonNull(GraphQLID) },
+		projectID: { type: new GraphQLNonNull(GraphQLID) },
 	},
 	outputFields: {
-		deletedTenantID: { type: new GraphQLNonNull(GraphQLID) },
+		deletedProjectID: { type: new GraphQLNonNull(GraphQLID) },
 	},
 	mutateAndGetPayload: () => ({}),
 });

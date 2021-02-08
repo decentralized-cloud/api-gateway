@@ -6,7 +6,7 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
@@ -51,13 +51,13 @@ func (r *rootResolver) User(ctx context.Context) (types.UserResolverContract, er
 	return r.resolverCreator.NewUserResolver(ctx, "ck30lptw000060133f1rg1uf9")
 }
 
-// CreateTenant returns create tenant mutator
+// CreateProject returns create project mutator
 // ctx: Mandatory. Reference to the context
-// Returns the create tenant mutator or error if something goes wrong
-func (r *rootResolver) CreateTenant(
+// Returns the create project mutator or error if something goes wrong
+func (r *rootResolver) CreateProject(
 	ctx context.Context,
-	args tenant.CreateTenantInputArgument) (tenant.CreateTenantPayloadResolverContract, error) {
-	mutation, err := r.resolverCreator.NewCreateTenant(ctx)
+	args project.CreateProjectInputArgument) (project.CreateProjectPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewCreateProject(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -65,13 +65,13 @@ func (r *rootResolver) CreateTenant(
 	return mutation.MutateAndGetPayload(ctx, args)
 }
 
-// UpdateTenant returns update tenant mutator
+// UpdateProject returns update project mutator
 // ctx: Mandatory. Reference to the context
-// Returns the update tenant mutator or error if something goes wrong
-func (r *rootResolver) UpdateTenant(
+// Returns the update project mutator or error if something goes wrong
+func (r *rootResolver) UpdateProject(
 	ctx context.Context,
-	args tenant.UpdateTenantInputArgument) (tenant.UpdateTenantPayloadResolverContract, error) {
-	mutation, err := r.resolverCreator.NewUpdateTenant(ctx)
+	args project.UpdateProjectInputArgument) (project.UpdateProjectPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewUpdateProject(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -79,13 +79,13 @@ func (r *rootResolver) UpdateTenant(
 	return mutation.MutateAndGetPayload(ctx, args)
 }
 
-// DeleteTenant returns delete tenant mutator
+// DeleteProject returns delete project mutator
 // ctx: Mandatory. Reference to the context
-// Returns the delete tenant mutator or error if something goes wrong
-func (r *rootResolver) DeleteTenant(
+// Returns the delete project mutator or error if something goes wrong
+func (r *rootResolver) DeleteProject(
 	ctx context.Context,
-	args tenant.DeleteTenantInputArgument) (tenant.DeleteTenantPayloadResolverContract, error) {
-	mutation, err := r.resolverCreator.NewDeleteTenant(ctx)
+	args project.DeleteProjectInputArgument) (project.DeleteProjectPayloadResolverContract, error) {
+	mutation, err := r.resolverCreator.NewDeleteProject(ctx)
 	if err != nil {
 		return nil, err
 	}

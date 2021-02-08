@@ -5,8 +5,8 @@ import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/relay"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
 )
 
 // ResolverCreatorContract declares the service that can create different resolvers
@@ -25,8 +25,8 @@ type ResolverCreatorContract interface {
 		userID string) (UserResolverContract, error)
 
 	relay.PageInfoResolverCreatorContract
-	tenant.QueryResolverCreatorContract
-	tenant.MutationResolverCreatorContract
+	project.QueryResolverCreatorContract
+	project.MutationResolverCreatorContract
 	edgecluster.QueryResolverCreatorContract
 	edgecluster.MutationResolverCreatorContract
 }

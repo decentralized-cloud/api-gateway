@@ -134,11 +134,11 @@ func (r *edgeClusterResolver) ClusterType(ctx context.Context) (clusterType stri
 	return
 }
 
-// Tenant returns edge cluster tenant
+// Project returns edge cluster project
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster tenant
-func (r *edgeClusterResolver) Tenant(ctx context.Context) (edgecluster.EdgeClusterTenantResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterTenantResolver(ctx, r.edgeClusterDetail.EdgeCluster.TenantID)
+// Returns the edge cluster project
+func (r *edgeClusterResolver) Project(ctx context.Context) (edgecluster.EdgeClusterProjectResolverContract, error) {
+	return r.resolverCreator.NewEdgeClusterProjectResolver(ctx, r.edgeClusterDetail.EdgeCluster.ProjectID)
 }
 
 // ProvisionDetail returns edge cluster provisioning detail

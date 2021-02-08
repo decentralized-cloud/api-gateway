@@ -2,7 +2,7 @@ import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLNonNull } from 'gra
 import { NodeInterface } from '../interface';
 
 export default new GraphQLObjectType({
-	name: 'EdgeClusterTenant',
+	name: 'EdgeClusterProject',
 	fields: {
 		id: { type: new GraphQLNonNull(GraphQLID) },
 		name: { type: new GraphQLNonNull(GraphQLString) },

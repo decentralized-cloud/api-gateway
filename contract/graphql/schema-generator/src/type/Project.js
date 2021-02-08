@@ -5,7 +5,7 @@ import EdgeCluster from './EdgeCluster';
 import EdgeClusterConnection from './EdgeClusterConnection';
 
 export default new GraphQLObjectType({
-	name: 'Tenant',
+	name: 'Project',
 	fields: {
 		id: { type: new GraphQLNonNull(GraphQLID) },
 		name: { type: new GraphQLNonNull(GraphQLString) },

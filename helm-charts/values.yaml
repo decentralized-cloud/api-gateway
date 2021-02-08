@@ -39,7 +39,7 @@ securityContext: {}
 pod:
   httpport: 80
   services:
-    tenant: "tenant:80"
+    project: "project:80"
     edgeCluster: "edge-cluster:80"
 
 service:

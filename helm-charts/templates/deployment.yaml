@@ -36,8 +36,8 @@ spec:
           env:
             - name: HTTP_PORT
               value: "{{ .Values.pod.httpport }}"
-            - name: TENANT_ADDRESS
-              value: "{{ .Values.pod.services.tenant }}"
+            - name: PROJECT_ADDRESS
+              value: "{{ .Values.pod.services.project }}"
             - name: EDGE_CLUSTER_ADDRESS
               value: "{{ .Values.pod.services.edgeCluster }}"
           ports:

@@ -1,6 +1,6 @@
 import { GraphQLID, GraphQLObjectType, GraphQLString, GraphQLNonNull, GraphQLList } from 'graphql';
 import { NodeInterface } from '../interface';
-import Tenant from './EdgeClusterTenant';
+import Project from './EdgeClusterProject';
 import EdgeClusterProvisionDetail from './EdgeClusterProvisionDetail';
 import EdgeClusterType from './EdgeClusterType';
 import EdgeClusterNodeStatus from './EdgeClusterNodeStatus';
@@ -13,7 +13,7 @@ export default new GraphQLObjectType({
 		name: { type: new GraphQLNonNull(GraphQLString), description: 'The edge cluster name' },
 		clusterSecret: { type: new GraphQLNonNull(GraphQLString), description: 'The cluster secrect value' },
 		clusterType: { type: new GraphQLNonNull(EdgeClusterType), description: 'The cluster type' },
-		tenant: { type: new GraphQLNonNull(Tenant), description: 'The tenant that owns the edge cluster' },
+		project: { type: new GraphQLNonNull(Project), description: 'The project that owns the edge cluster' },
 		provisionDetail: { type: EdgeClusterProvisionDetail, description: 'The edge cluster provision details' },
 		nodes: {
 			type: new GraphQLList(new GraphQLNonNull(EdgeClusterNodeStatus)),

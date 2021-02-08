@@ -1,5 +1,5 @@
-// Package tenant implements different tenant GraphQL query resovlers required by the GraphQL transport layer
-package tenant
+// Package project implements different project GraphQL query resovlers required by the GraphQL transport layer
+package project
 
 import (
 	"context"
@@ -8,38 +8,38 @@ import (
 
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 	edgeClusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
-	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
+	projectGrpcContract "github.com/decentralized-cloud/project/contract/grpc/go"
 	"github.com/graph-gophers/graphql-go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
-type tenantResolver struct {
+type projectResolver struct {
 	logger                   *zap.Logger
 	resolverCreator          types.ResolverCreatorContract
-	tenantID                 string
-	tenantDetail             *tenant.TenantDetail
+	projectID                string
+	projectDetail            *project.ProjectDetail
 	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
-// NewTenantResolver creates new instance of the tenantResolver, setting up all dependencies and returns the instance
+// NewProjectResolver creates new instance of the projectResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
 // logger: Mandatory. Reference to the logger service
-// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
-// tenantID: Mandatory. the tenant unique identifier
-// tenantDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
+// projectClientService: Mandatory. the project client service that creates gRPC connection and client to the project
+// projectID: Mandatory. the project unique identifier
+// projectDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
 // Returns the new instance or error if something goes wrong
-func NewTenantResolver(
+func NewProjectResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	tenantClientService tenant.TenantClientContract,
+	projectClientService project.ProjectClientContract,
 	edgeClusterClientService edgecluster.EdgeClusterClientContract,
-	tenantID string,
-	tenantDetail *tenant.TenantDetail) (tenant.TenantResolverContract, error) {
+	projectID string,
+	projectDetail *project.ProjectDetail) (project.ProjectResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -52,27 +52,27 @@ func NewTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if tenantClientService == nil {
-		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
+	if projectClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("projectClientService", "projectClientService is required")
 	}
 
 	if edgeClusterClientService == nil {
 		return nil, commonErrors.NewArgumentNilError("edgeClusterClientService", "edgeClusterClientService is required")
 	}
 
-	if strings.Trim(tenantID, " ") == "" {
-		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
+	if strings.Trim(projectID, " ") == "" {
+		return nil, commonErrors.NewArgumentError("projectID", "projectID is required")
 	}
 
-	resolver := tenantResolver{
+	resolver := projectResolver{
 		logger:                   logger,
 		resolverCreator:          resolverCreator,
 		edgeClusterClientService: edgeClusterClientService,
-		tenantID:                 tenantID,
+		projectID:                projectID,
 	}
 
-	if tenantDetail == nil {
-		connection, tenantServiceClient, err := tenantClientService.CreateClient()
+	if projectDetail == nil {
+		connection, projectServiceClient, err := projectClientService.CreateClient()
 		if err != nil {
 			return nil, err
 		}
@@ -81,64 +81,64 @@ func NewTenantResolver(
 			_ = connection.Close()
 		}()
 
-		response, err := tenantServiceClient.ReadTenant(
+		response, err := projectServiceClient.ReadProject(
 			ctx,
-			&tenantGrpcContract.ReadTenantRequest{
-				TenantID: tenantID,
+			&projectGrpcContract.ReadProjectRequest{
+				ProjectID: projectID,
 			})
 		if err != nil {
 			return nil, err
 		}
 
-		if response.Error != tenantGrpcContract.Error_NO_ERROR {
+		if response.Error != projectGrpcContract.Error_NO_ERROR {
 			return nil, errors.New(response.ErrorMessage)
 		}
 
-		resolver.tenantDetail = &tenant.TenantDetail{
-			Tenant: response.Tenant,
+		resolver.projectDetail = &project.ProjectDetail{
+			Project: response.Project,
 		}
 	} else {
-		resolver.tenantDetail = tenantDetail
+		resolver.projectDetail = projectDetail
 	}
 
 	return &resolver, nil
 }
 
-// ID returns tenant unique identifier
+// ID returns project unique identifier
 // ctx: Mandatory. Reference to the context
-// Returns the tenant unique identifier
-func (r *tenantResolver) ID(ctx context.Context) graphql.ID {
-	return graphql.ID(r.tenantID)
+// Returns the project unique identifier
+func (r *projectResolver) ID(ctx context.Context) graphql.ID {
+	return graphql.ID(r.projectID)
 }
 
-// Name returns tenant name
+// Name returns project name
 // ctx: Mandatory. Reference to the context
-// Returns the tenant name or error
-func (r *tenantResolver) Name(ctx context.Context) string {
-	return r.tenantDetail.Tenant.Name
+// Returns the project name or error
+func (r *projectResolver) Name(ctx context.Context) string {
+	return r.projectDetail.Project.Name
 }
 
-// EdgeCluster returns tenant resolver
+// EdgeCluster returns project resolver
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
-// Returns the tenant resolver or error if something goes wrong
-func (r *tenantResolver) EdgeCluster(
+// Returns the project resolver or error if something goes wrong
+func (r *projectResolver) EdgeCluster(
 	ctx context.Context,
-	args tenant.TenantClusterEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
+	args project.ProjectClusterEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterResolver(
 		ctx,
 		string(args.EdgeClusterID),
 		nil)
 }
 
-// EdgeClusters returns tenant connection compatible with graphql-relay
+// EdgeClusters returns project connection compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
 // args: Mandatory. The argument list
-// Returns the tenant resolver or error if something goes wrong
-func (r *tenantResolver) EdgeClusters(
+// Returns the project resolver or error if something goes wrong
+func (r *projectResolver) EdgeClusters(
 	ctx context.Context,
-	args tenant.TenantEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
-	tenantIDs := []string{r.tenantID}
+	args project.ProjectEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
+	projectIDs := []string{r.projectID}
 	sortingOptions := []*edgeClusterGrpcContract.SortingOptionPair{}
 
 	connection, edgeClusterServiceClient, err := r.edgeClusterClientService.CreateClient()
@@ -160,7 +160,7 @@ func (r *tenantResolver) EdgeClusters(
 				Last:   0,
 			},
 			SortingOptions: sortingOptions,
-			TenantIDs:      tenantIDs,
+			ProjectIDs:     projectIDs,
 		})
 	if err != nil {
 		return nil, err
