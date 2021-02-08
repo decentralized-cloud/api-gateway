@@ -14,7 +14,7 @@ import (
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"github.com/micro-business/gokit-core/middleware"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/savsgio/atreugo/v9"
+	"github.com/savsgio/atreugo/v11"
 	"go.uber.org/zap"
 )
 
@@ -65,7 +65,7 @@ func NewTransportService(
 func (service *transportService) Start() error {
 	service.setupHandlers()
 
-	config := &atreugo.Config{GracefulShutdown: true}
+	config := atreugo.Config{GracefulShutdown: true}
 	var err error
 
 	host, err := service.configurationService.GetHttpHost()

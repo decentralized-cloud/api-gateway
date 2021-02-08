@@ -11,10 +11,10 @@ type ConfigurationContract interface {
 	// Returns the HTTP port number or error if something goes wrong
 	GetHttpPort() (int, error)
 
-	// GetTenantServiceAddress retrieves tenant service full gRPC address and returns it.
-	// The address will be used to dial the gRPC client to connect to the tenant service.
-	// Returns the tenant service address or error if something goes wrong
-	GetTenantServiceAddress() (string, error)
+	// GetProjectServiceAddress retrieves project service full gRPC address and returns it.
+	// The address will be used to dial the gRPC client to connect to the project service.
+	// Returns the project service address or error if something goes wrong
+	GetProjectServiceAddress() (string, error)
 
 	// GetEdgeClusterServiceAddress retrieves edge cluster service full gRPC address and returns it.
 	// The address will be used to dial the gRPC client to connect to the edge cluster service.

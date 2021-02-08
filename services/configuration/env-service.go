@@ -38,13 +38,13 @@ func (service *envConfigurationService) GetHttpPort() (int, error) {
 	return portNumber, nil
 }
 
-// GetTenantServiceAddress retrieves tenant service full gRPC address and returns it.
-// The address will be used to dial the gRPC client to connect to the tenant service.
-// Returns the tenant service address or error if something goes wrong
-func (service *envConfigurationService) GetTenantServiceAddress() (string, error) {
-	address := os.Getenv("TENANT_ADDRESS")
+// GetProjectServiceAddress retrieves project service full gRPC address and returns it.
+// The address will be used to dial the gRPC client to connect to the project service.
+// Returns the project service address or error if something goes wrong
+func (service *envConfigurationService) GetProjectServiceAddress() (string, error) {
+	address := os.Getenv("PROJECT_ADDRESS")
 	if strings.Trim(address, " ") == "" {
-		return "", NewUnknownError("TENANT_ADDRESS is required")
+		return "", NewUnknownError("PROJECT_ADDRESS is required")
 	}
 
 	return address, nil

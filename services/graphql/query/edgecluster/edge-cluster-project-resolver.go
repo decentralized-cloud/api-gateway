@@ -13,23 +13,23 @@ import (
 	"go.uber.org/zap"
 )
 
-type edgeClusterTenantResolver struct {
+type edgeClusterProjectResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
-	tenantID        string
+	projectID       string
 	name            string
 }
 
-// NewEdgeClusterTenantResolver creates new instance of the edgeClusterTenantResolver, setting up all dependencies and returns the instance
+// NewEdgeClusterProjectResolver creates new instance of the edgeClusterProjectResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // resolverCreator: Mandatory. Reference to the resolver creator service that can create new instances of resolvers
-// tenantID: Mandatory. the tenant unique identifier
+// projectID: Mandatory. the project unique identifier
 // Returns the new instance or error if something goes wrong
-func NewEdgeClusterTenantResolver(
+func NewEdgeClusterProjectResolver(
 	ctx context.Context,
 	resolverCreator types.ResolverCreatorContract,
 	logger *zap.Logger,
-	tenantID string) (edgecluster.EdgeClusterTenantResolverContract, error) {
+	projectID string) (edgecluster.EdgeClusterProjectResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -42,28 +42,28 @@ func NewEdgeClusterTenantResolver(
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if strings.Trim(tenantID, " ") == "" {
-		return nil, commonErrors.NewArgumentError("tenantID", "tenantID is required")
+	if strings.Trim(projectID, " ") == "" {
+		return nil, commonErrors.NewArgumentError("projectID", "projectID is required")
 	}
 
-	return &edgeClusterTenantResolver{
+	return &edgeClusterProjectResolver{
 		logger:          logger,
 		resolverCreator: resolverCreator,
-		tenantID:        tenantID,
+		projectID:       projectID,
 		name:            cuid.New(),
 	}, nil
 }
 
-// ID returns tenant unique identifier
+// ID returns project unique identifier
 // ctx: Mandatory. Reference to the context
-// Returns the tenant unique identifier
-func (r *edgeClusterTenantResolver) ID(ctx context.Context) graphql.ID {
-	return graphql.ID(r.tenantID)
+// Returns the project unique identifier
+func (r *edgeClusterProjectResolver) ID(ctx context.Context) graphql.ID {
+	return graphql.ID(r.projectID)
 }
 
-// Name returns tenant name
+// Name returns project name
 // ctx: Mandatory. Reference to the context
-// Returns the tenant name or error
-func (r *edgeClusterTenantResolver) Name(ctx context.Context) string {
+// Returns the project name or error
+func (r *edgeClusterProjectResolver) Name(ctx context.Context) string {
 	return r.name
 }

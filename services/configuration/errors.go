@@ -1,4 +1,4 @@
-// Package configuration implements configuration service required by the tenant service
+// Package configuration implements configuration service required by the project service
 package configuration
 
 import "fmt"

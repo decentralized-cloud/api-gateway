@@ -5,7 +5,7 @@ import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 	"github.com/graph-gophers/graphql-go"
 )
 
@@ -16,34 +16,34 @@ type UserResolverContract interface {
 	// Returns the user unique identifier
 	ID(ctx context.Context) graphql.ID
 
-	// Tenant returns tenant resolver
+	// Project returns project resolver
 	// ctx: Mandatory. Reference to the context
 	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
-	Tenant(
+	// Returns the project resolver or error if something goes wrong
+	Project(
 		ctx context.Context,
-		args UserTenantInputArgument) (tenant.TenantResolverContract, error)
+		args UserProjectInputArgument) (project.ProjectResolverContract, error)
 
-	// Tenants returns tenant connection compatible with graphql-relay
+	// Projects returns project connection compatible with graphql-relay
 	// ctx: Mandatory. Reference to the context
 	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
-	Tenants(
+	// Returns the project resolver or error if something goes wrong
+	Projects(
 		ctx context.Context,
-		args UserTenantsInputArgument) (tenant.TenantTypeConnectionResolverContract, error)
+		args UserProjectsInputArgument) (project.ProjectTypeConnectionResolverContract, error)
 
-	// EdgeCluster returns tenant resolver
+	// EdgeCluster returns project resolver
 	// ctx: Mandatory. Reference to the context
 	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
+	// Returns the project resolver or error if something goes wrong
 	EdgeCluster(
 		ctx context.Context,
 		args UserEdgeClusterInputArgument) (edgecluster.EdgeClusterResolverContract, error)
 
-	// EdgeClusters returns tenant connection compatible with graphql-relay
+	// EdgeClusters returns project connection compatible with graphql-relay
 	// ctx: Mandatory. Reference to the context
 	// args: Mandatory. The argument list
-	// Returns the tenant resolver or error if something goes wrong
+	// Returns the project resolver or error if something goes wrong
 	EdgeClusters(
 		ctx context.Context,
 		args UserEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error)

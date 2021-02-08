@@ -11,14 +11,14 @@ type SortingOptionPair struct {
 	Direction string
 }
 
-type UserTenantInputArgument struct {
-	TenantID string
+type UserProjectInputArgument struct {
+	ProjectID string
 }
 
-type UserTenantsInputArgument struct {
+type UserProjectsInputArgument struct {
 	relay.ConnectionArgument
 	SortingOptions *[]SortingOptionPair
-	TenantIDs      *[]graphql.ID
+	ProjectIDs     *[]graphql.ID
 }
 
 type UserEdgeClusterInputArgument struct {
@@ -29,5 +29,5 @@ type UserEdgeClustersInputArgument struct {
 	relay.ConnectionArgument
 	SortingOptions *[]SortingOptionPair
 	EdgeClusterIDs *[]graphql.ID
-	TenantIDs      *[]graphql.ID
+	ProjectIDs     *[]graphql.ID
 }

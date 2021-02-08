@@ -76,7 +76,7 @@ func setupDependencies(logger *zap.Logger) (err error) {
 		return
 	}
 
-	tenantClientService, err := graphql.NewTenantClientService(configurationService)
+	projectClientService, err := graphql.NewProjectClientService(configurationService)
 	if err != nil {
 		return
 	}
@@ -88,7 +88,7 @@ func setupDependencies(logger *zap.Logger) (err error) {
 
 	resolverCreator, err := graphql.NewResolverCreator(
 		logger,
-		tenantClientService,
+		projectClientService,
 		edgeClusterClientService)
 	if err != nil {
 		return

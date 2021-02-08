@@ -1,14 +1,14 @@
 import { GraphQLString, GraphQLNonNull } from 'graphql';
 import { mutationWithClientMutationId } from 'graphql-relay';
-import { TenantConnection } from '../type';
+import { ProjectConnection } from '../type';
 
 export default mutationWithClientMutationId({
-	name: 'CreateTenant',
+	name: 'CreateProject',
 	inputFields: {
 		name: { type: new GraphQLNonNull(GraphQLString) },
 	},
 	outputFields: {
-		tenant: { type: TenantConnection.edgeType },
+		project: { type: ProjectConnection.edgeType },
 	},
 	mutateAndGetPayload: () => ({}),
 });

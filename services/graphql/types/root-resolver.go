@@ -5,7 +5,7 @@ import (
 	"context"
 
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 )
 
 // RootResolverContract declares the root resolver
@@ -15,6 +15,6 @@ type RootResolverContract interface {
 	// Returns the user resolver or error if something goes wrong
 	User(ctx context.Context) (UserResolverContract, error)
 
-	tenant.RootResolverContract
+	project.RootResolverContract
 	edgecluster.RootResolverContract
 }

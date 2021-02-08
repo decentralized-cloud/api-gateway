@@ -5,43 +5,43 @@ import (
 	"context"
 
 	mutationedgecluster "github.com/decentralized-cloud/api-gateway/services/graphql/mutation/edgecluster"
-	mutationtenant "github.com/decentralized-cloud/api-gateway/services/graphql/mutation/tenant"
+	mutationproject "github.com/decentralized-cloud/api-gateway/services/graphql/mutation/project"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/query"
 	queryedgecluster "github.com/decentralized-cloud/api-gateway/services/graphql/query/edgecluster"
+	queryproject "github.com/decentralized-cloud/api-gateway/services/graphql/query/project"
 	queryrelay "github.com/decentralized-cloud/api-gateway/services/graphql/query/relay"
-	querytenant "github.com/decentralized-cloud/api-gateway/services/graphql/query/tenant"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/root"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/edgecluster"
+	"github.com/decentralized-cloud/api-gateway/services/graphql/types/project"
 	"github.com/decentralized-cloud/api-gateway/services/graphql/types/relay"
-	"github.com/decentralized-cloud/api-gateway/services/graphql/types/tenant"
 	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
-	tenantGrpcContract "github.com/decentralized-cloud/tenant/contract/grpc/go"
+	projectGrpcContract "github.com/decentralized-cloud/project/contract/grpc/go"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"go.uber.org/zap"
 )
 
 type resolverCreator struct {
 	logger                   *zap.Logger
-	tenantClientService      tenant.TenantClientContract
+	projectClientService     project.ProjectClientContract
 	edgeClusterClientService edgecluster.EdgeClusterClientContract
 }
 
 // NewResolverCreator creates new instance of the resolverCreator, setting up all dependencies and returns the instance
 // logger: Mandatory. Reference to the logger service
 // configurationService: Mandatory. Reference to the configuration service
-// tenantClientService: Mandatory. the tenant client service that creates gRPC connection and client to the tenant
+// projectClientService: Mandatory. the project client service that creates gRPC connection and client to the project
 // Returns the new instance or error if something goes wrong
 func NewResolverCreator(
 	logger *zap.Logger,
-	tenantClientService tenant.TenantClientContract,
+	projectClientService project.ProjectClientContract,
 	edgeClusterClientService edgecluster.EdgeClusterClientContract) (types.ResolverCreatorContract, error) {
 	if logger == nil {
 		return nil, commonErrors.NewArgumentNilError("logger", "logger is required")
 	}
 
-	if tenantClientService == nil {
-		return nil, commonErrors.NewArgumentNilError("tenantClientService", "tenantClientService is required")
+	if projectClientService == nil {
+		return nil, commonErrors.NewArgumentNilError("projectClientService", "projectClientService is required")
 	}
 
 	if edgeClusterClientService == nil {
@@ -50,7 +50,7 @@ func NewResolverCreator(
 
 	return &resolverCreator{
 		logger:                   logger,
-		tenantClientService:      tenantClientService,
+		projectClientService:     projectClientService,
 		edgeClusterClientService: edgeClusterClientService,
 	}, nil
 }
@@ -97,65 +97,65 @@ func (creator *resolverCreator) NewUserResolver(
 		creator,
 		creator.logger,
 		userID,
-		creator.tenantClientService,
+		creator.projectClientService,
 		creator.edgeClusterClientService)
 }
 
-// NewTenantResolver creates new TenantResolverContract and returns it
+// NewProjectResolver creates new ProjectResolverContract and returns it
 // ctx: Mandatory. Reference to the context
-// tenantID: Mandatory. The tenant unique identifier
-// tenantDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
-// Returns the TenantResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewTenantResolver(
+// projectID: Mandatory. The project unique identifier
+// projectDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
+// Returns the ProjectResolverContract or error if something goes wrong
+func (creator *resolverCreator) NewProjectResolver(
 	ctx context.Context,
-	tenantID string,
-	tenantDetail *tenant.TenantDetail) (tenant.TenantResolverContract, error) {
-	return querytenant.NewTenantResolver(
+	projectID string,
+	projectDetail *project.ProjectDetail) (project.ProjectResolverContract, error) {
+	return queryproject.NewProjectResolver(
 		ctx,
 		creator,
 		creator.logger,
-		creator.tenantClientService,
+		creator.projectClientService,
 		creator.edgeClusterClientService,
-		tenantID,
-		tenantDetail)
+		projectID,
+		projectDetail)
 }
 
-// NewTenantTypeEdgeResolver creates new TenantTypeEdgeResolverContract and returns it
+// NewProjectTypeEdgeResolver creates new ProjectTypeEdgeResolverContract and returns it
 // ctx: Mandatory. Reference to the context
-// tenantID: Mandatory. The tenant unique identifier
-// tenantDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
+// projectID: Mandatory. The project unique identifier
+// projectDetail: Optional. The tennat details, if provided, the value be used instead of contacting  the edge cluster service
 // cursor: Mandatory. The cursor
-// Returns the TenantTypeEdgeResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewTenantTypeEdgeResolver(
+// Returns the ProjectTypeEdgeResolverContract or error if something goes wrong
+func (creator *resolverCreator) NewProjectTypeEdgeResolver(
 	ctx context.Context,
-	tenantID string,
+	projectID string,
 	cursor string,
-	tenantDetail *tenant.TenantDetail) (tenant.TenantTypeEdgeResolverContract, error) {
-	return querytenant.NewTenantTypeEdgeResolver(
+	projectDetail *project.ProjectDetail) (project.ProjectTypeEdgeResolverContract, error) {
+	return queryproject.NewProjectTypeEdgeResolver(
 		ctx,
 		creator,
-		tenantID,
-		tenantDetail,
+		projectID,
+		projectDetail,
 		cursor)
 }
 
-// NewTenantTypeConnectionResolver creates new TenantTypeConnectionResolverContract and returns it
+// NewProjectTypeConnectionResolver creates new ProjectTypeConnectionResolverContract and returns it
 // ctx: Mandatory. Reference to the context
-// tenants: Mandatory. Reference the list of tenants
+// projects: Mandatory. Reference the list of projects
 // hasPreviousPage: Mandatory. Indicates whether more edges exist prior to the set defined by the clients arguments
 // hasNextPage: Mandatory. Indicates whether more edges exist following the set defined by the clients arguments
-// totalCount: Mandatory. The total count of matched tenants
-// Returns the TenantTypeConnectionResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewTenantTypeConnectionResolver(
+// totalCount: Mandatory. The total count of matched projects
+// Returns the ProjectTypeConnectionResolverContract or error if something goes wrong
+func (creator *resolverCreator) NewProjectTypeConnectionResolver(
 	ctx context.Context,
-	tenants []*tenantGrpcContract.TenantWithCursor,
+	projects []*projectGrpcContract.ProjectWithCursor,
 	hasPreviousPage bool,
 	hasNextPage bool,
-	totalCount int32) (tenant.TenantTypeConnectionResolverContract, error) {
-	return querytenant.NewTenantTypeConnectionResolver(
+	totalCount int32) (project.ProjectTypeConnectionResolverContract, error) {
+	return queryproject.NewProjectTypeConnectionResolver(
 		ctx,
 		creator,
-		tenants,
+		projects,
 		hasPreviousPage,
 		hasNextPage,
 		totalCount)
@@ -220,18 +220,18 @@ func (creator *resolverCreator) NewEdgeClusterTypeConnectionResolver(
 		totalCount)
 }
 
-// NewEdgeClusterTenantResolver creates new EdgeClusterTenatnResolverContract and returns it
+// NewEdgeClusterProjectResolver creates new EdgeClusterTenatnResolverContract and returns it
 // ctx: Mandatory. Reference to the context
-// tenantID: Mandatory. The tenant unique identifier
+// projectID: Mandatory. The project unique identifier
 // Returns the EdgeClusterTenatnResolverContract or error if something goes wrong
-func (creator *resolverCreator) NewEdgeClusterTenantResolver(
+func (creator *resolverCreator) NewEdgeClusterProjectResolver(
 	ctx context.Context,
-	tenantID string) (edgecluster.EdgeClusterTenantResolverContract, error) {
-	return queryedgecluster.NewEdgeClusterTenantResolver(
+	projectID string) (edgecluster.EdgeClusterProjectResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterProjectResolver(
 		ctx,
 		creator,
 		creator.logger,
-		tenantID)
+		projectID)
 }
 
 // NewEdgeClusterProvisionDetailResolver creates new EdgeClusterProvisionDetailResolverContract and returns it
@@ -329,96 +329,96 @@ func (creator *resolverCreator) NewEdgeClusterNodeSystemInfoResolverContract(
 		nodeInfo)
 }
 
-// NewCreateTenant creates new instance of the createTenant, setting up all dependencies and returns the instance
+// NewCreateProject creates new instance of the createProject, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewCreateTenant(ctx context.Context) (tenant.CreateTenantContract, error) {
-	return mutationtenant.NewCreateTenant(
+func (creator *resolverCreator) NewCreateProject(ctx context.Context) (project.CreateProjectContract, error) {
+	return mutationproject.NewCreateProject(
 		ctx,
 		creator,
 		creator.logger,
-		creator.tenantClientService)
+		creator.projectClientService)
 }
 
-// NewCreateTenantPayloadResolver creates new instance of the createTenantPayloadResolver, setting up all dependencies and returns the instance
+// NewCreateProjectPayloadResolver creates new instance of the createProjectPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
-// tenantID: Mandatory. The tenant unique identifier
-// tenantDetail: Mandatory. The tenant details
+// projectID: Mandatory. The project unique identifier
+// projectDetail: Mandatory. The project details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewCreateTenantPayloadResolver(
+func (creator *resolverCreator) NewCreateProjectPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
-	tenantID string,
-	tenantDetail *tenant.TenantDetail,
-	cursor string) (tenant.CreateTenantPayloadResolverContract, error) {
-	return mutationtenant.NewCreateTenantPayloadResolver(
+	projectID string,
+	projectDetail *project.ProjectDetail,
+	cursor string) (project.CreateProjectPayloadResolverContract, error) {
+	return mutationproject.NewCreateProjectPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
-		tenantID,
-		tenantDetail,
+		projectID,
+		projectDetail,
 		cursor)
 }
 
-// NewUpdateTenant creates new instance of the updateTenant, setting up all dependencies and returns the instance
+// NewUpdateProject creates new instance of the updateProject, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewUpdateTenant(ctx context.Context) (tenant.UpdateTenantContract, error) {
-	return mutationtenant.NewUpdateTenant(
+func (creator *resolverCreator) NewUpdateProject(ctx context.Context) (project.UpdateProjectContract, error) {
+	return mutationproject.NewUpdateProject(
 		ctx,
 		creator,
 		creator.logger,
-		creator.tenantClientService)
+		creator.projectClientService)
 }
 
-// NewUpdateTenantPayloadResolver creates new instance of the updateTenantPayloadResolver, setting up all dependencies and returns the instance
+// NewUpdateProjectPayloadResolver creates new instance of the updateProjectPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
-// tenantID: Mandatory. The tenant unique identifier
-// tenantDetail: Mandatory. The tenant details
+// projectID: Mandatory. The project unique identifier
+// projectDetail: Mandatory. The project details
 // cursor: Mandatory. The edge cluster cursor
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewUpdateTenantPayloadResolver(
+func (creator *resolverCreator) NewUpdateProjectPayloadResolver(
 	ctx context.Context,
 	clientMutationId *string,
-	tenantID string,
-	tenantDetail *tenant.TenantDetail,
-	cursor string) (tenant.UpdateTenantPayloadResolverContract, error) {
-	return mutationtenant.NewUpdateTenantPayloadResolver(
+	projectID string,
+	projectDetail *project.ProjectDetail,
+	cursor string) (project.UpdateProjectPayloadResolverContract, error) {
+	return mutationproject.NewUpdateProjectPayloadResolver(
 		ctx,
 		creator,
 		clientMutationId,
-		tenantID,
-		tenantDetail,
+		projectID,
+		projectDetail,
 		cursor)
 }
 
-// NewDeleteTenant creates new instance of the deleteTenant, setting up all dependencies and returns the instance
+// NewDeleteProject creates new instance of the deleteProject, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewDeleteTenant(ctx context.Context) (tenant.DeleteTenantContract, error) {
-	return mutationtenant.NewDeleteTenant(
+func (creator *resolverCreator) NewDeleteProject(ctx context.Context) (project.DeleteProjectContract, error) {
+	return mutationproject.NewDeleteProject(
 		ctx,
 		creator,
 		creator.logger,
-		creator.tenantClientService)
+		creator.projectClientService)
 }
 
-// NewDeleteTenantPayloadResolver creates new instance of the deleteTenantPayloadResolver, setting up all dependencies and returns the instance
+// NewDeleteProjectPayloadResolver creates new instance of the deleteProjectPayloadResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
-// tenantID: Mandatory. The tenant unique identifier
+// projectID: Mandatory. The project unique identifier
 // clientMutationId: Optional. Reference to the client mutation ID to correlate the request and response
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewDeleteTenantPayloadResolver(
+func (creator *resolverCreator) NewDeleteProjectPayloadResolver(
 	ctx context.Context,
-	tenantID string,
-	clientMutationId *string) (tenant.DeleteTenantPayloadResolverContract, error) {
-	return mutationtenant.NewDeleteTenantPayloadResolver(
+	projectID string,
+	clientMutationId *string) (project.DeleteProjectPayloadResolverContract, error) {
+	return mutationproject.NewDeleteProjectPayloadResolver(
 		ctx,
 		creator,
-		tenantID,
+		projectID,
 		clientMutationId)
 }
 
