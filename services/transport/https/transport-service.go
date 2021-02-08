@@ -86,7 +86,8 @@ func (service *transportService) Start() error {
 		return err
 	}
 
-	server.Path("OPTIONS", "/graphql", service.corsPreflightCheckForGraphQLHandler)
+	server.UseBefore()
+
 	server.NetHTTPPath("POST", "/graphql", service.graphQLHandler)
 	server.NetHTTPPath("GET", "/graphiql", graphiqlHandler)
 
@@ -127,16 +128,6 @@ func (service *transportService) readinessCheckHandler(ctx *atreugo.RequestCtx) 
 
 func (service *transportService) livenessCheckHandler(ctx *atreugo.RequestCtx) error {
 	ctx.Response.SetStatusCode(http.StatusOK)
-
-	return nil
-}
-
-func (service *transportService) corsPreflightCheckForGraphQLHandler(ctx *atreugo.RequestCtx) error {
-	ctx.Response.Header.Set("Access-Control-Allow-Origin", "*")
-	ctx.Response.Header.Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
-	ctx.Response.Header.Set("Access-Control-Allow-Headers", "Origin,DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization")
-
-	ctx.Response.SetStatusCode(http.StatusNoContent)
 
 	return nil
 }
