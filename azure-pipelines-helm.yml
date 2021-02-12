@@ -9,8 +9,8 @@ trigger:
       - feature/*
       - hotfix/*
   paths:
-    include:
-      - helm-charts/*
+    exclude:
+      - README.md
 
 pool:
   vmImage: "ubuntu-latest"

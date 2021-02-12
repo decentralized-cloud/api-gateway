@@ -11,7 +11,6 @@ trigger:
   paths:
     exclude:
       - README.md
-      - helm-charts/*
 
 pool:
   vmImage: "ubuntu-latest"
