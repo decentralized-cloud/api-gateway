@@ -18,7 +18,7 @@ require (
 	github.com/prometheus/client_golang v1.9.0
 	github.com/rogpeppe/go-internal v1.7.0 // indirect
 	github.com/savsgio/atreugo/v11 v11.6.0
-	github.com/spf13/cobra v1.1.1
+	github.com/spf13/cobra v1.1.3
 	github.com/thoas/go-funk v0.7.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
