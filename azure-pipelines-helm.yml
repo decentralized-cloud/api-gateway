@@ -4,7 +4,7 @@ trigger:
       - v*
   branches:
     include:
-      - master
+      - main
       - release/*
       - feature/*
       - hotfix/*
@@ -16,22 +16,23 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
     version: latest
-  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
     version: $(GitVersion.SemVer)
-  isMasterTriggered: $[eq(variables['Build.SourceBranch'], 'refs/heads/master')]
+  isMainTriggered: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   isTagTriggered: $[startsWith(variables['Build.SourceBranch'], 'refs/tags/v')]
 
 steps:
   - task: GitVersion@5
+    displayName: "Figure out GitVersion"
     inputs:
       runtime: "core"
       configFilePath: "./GitVersion.yml"
 
   - task: Docker@2
     displayName: "Build and Push Helm Chart"
-    condition: or(eq(variables.isMasterTriggered, true), eq(variables.isTagTriggered, true))
+    condition: or(eq(variables.isMainTriggered, true), eq(variables.isTagTriggered, true))
     inputs:
       command: "build"
       Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart"
