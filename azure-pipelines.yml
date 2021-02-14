@@ -4,7 +4,7 @@ trigger:
       - v*
   branches:
     include:
-      - master
+      - main
       - release/*
       - feature/*
       - hotfix/*
@@ -18,9 +18,9 @@ pool:
 variables:
   DOCKER_CONTAINER_REGISTRY: "Decentralized Cloud Docker Hub"
   DOCKER_REPOSITORY_NAME: "decentralizedcloud/api-gateway"
-  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
     version: latest
-  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/master')) }}:
+  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
     version: $(GitVersion.SemVer)
 
 steps:
