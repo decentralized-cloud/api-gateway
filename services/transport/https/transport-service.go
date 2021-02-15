@@ -9,7 +9,6 @@ import (
 	"github.com/decentralized-cloud/api-gateway/services/endpoint"
 	"github.com/decentralized-cloud/api-gateway/services/transport"
 	"github.com/friendsofgo/graphiql"
-	gokitEndpoint "github.com/go-kit/kit/endpoint"
 	httpTransport "github.com/go-kit/kit/transport/http"
 	commonErrors "github.com/micro-business/go-core/system/errors"
 	"github.com/micro-business/gokit-core/middleware"
@@ -23,6 +22,7 @@ type transportService struct {
 	configurationService      configuration.ConfigurationContract
 	endpointCreatorService    endpoint.EndpointCreatorContract
 	middlewareProviderService middleware.MiddlewareProviderContract
+	jwksURL                   string
 	graphQLHandler            *httpTransport.Server
 }
 
@@ -52,11 +52,17 @@ func NewTransportService(
 		return nil, commonErrors.NewArgumentNilError("middlewareProviderService", "middlewareProviderService is required")
 	}
 
+	jwksURL, err := configurationService.GetJwksURL()
+	if err != nil {
+		return nil, err
+	}
+
 	return &transportService{
 		logger:                    logger,
 		configurationService:      configurationService,
 		endpointCreatorService:    endpointCreatorService,
 		middlewareProviderService: middlewareProviderService,
+		jwksURL:                   jwksURL,
 	}, nil
 }
 
@@ -108,16 +114,15 @@ func (service *transportService) Stop() error {
 }
 
 func (service *transportService) setupHandlers() {
-	var graphQLEndpoint gokitEndpoint.Endpoint
-	{
-		graphQLEndpoint = service.endpointCreatorService.GraphQLEndpoint()
-		graphQLEndpoint = service.middlewareProviderService.CreateLoggingMiddleware("GraphQL")(graphQLEndpoint)
-		service.graphQLHandler = httpTransport.NewServer(
-			graphQLEndpoint,
-			decodeGraphQLRequest,
-			encodeGraphQLResponse,
-		)
-	}
+	endpoint := service.endpointCreatorService.GraphQLEndpoint()
+	endpoint = service.middlewareProviderService.CreateLoggingMiddleware("GraphQL")(endpoint)
+	endpoint = service.createAuthMiddleware("GraphQL")(endpoint)
+	service.graphQLHandler = httpTransport.NewServer(
+		endpoint,
+		decodeGraphQLRequest,
+		encodeGraphQLResponse,
+	)
+
 }
 
 func (service *transportService) readinessCheckHandler(ctx *atreugo.RequestCtx) error {

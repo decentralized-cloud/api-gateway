@@ -41,6 +41,8 @@ pod:
   services:
     project: "project:80"
     edgeCluster: "edge-cluster:80"
+  idp:
+    jwksURL: ""
 
 service:
   type: ClusterIP

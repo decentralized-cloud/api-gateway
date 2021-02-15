@@ -40,6 +40,8 @@ spec:
               value: "{{ .Values.pod.services.project }}"
             - name: EDGE_CLUSTER_ADDRESS
               value: "{{ .Values.pod.services.edgeCluster }}"
+            - name: JWKS_URL
+              value: "{{ .Values.pod.idp.jwksURL }}"
           ports:
             - name: http
               containerPort: {{ .Values.pod.httpport }}
