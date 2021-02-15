@@ -20,4 +20,8 @@ type ConfigurationContract interface {
 	// The address will be used to dial the gRPC client to connect to the edge cluster service.
 	// Returns the edge cluster service address or error if something goes wrong
 	GetEdgeClusterServiceAddress() (string, error)
+
+	// GetJwksURL retrieves the JWKS URL
+	// Returns the JWKS URL or error if something goes wrong
+	GetJwksURL() (string, error)
 }
