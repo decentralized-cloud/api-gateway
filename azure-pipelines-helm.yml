@@ -17,17 +17,21 @@ pool:
 
 variables:
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
-    version: latest
+    artifact_version: latest
   ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
-    version: $(GitVersion.SemVer)
+    artifact_version: $(GitVersion.SemVer)
   isMainTriggered: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
   isTagTriggered: $[startsWith(variables['Build.SourceBranch'], 'refs/tags/v')]
 
 steps:
-  - task: GitVersion@5
+  - task: gitversion/setup@0
+    displayName: "Setting up GitVersion"
+    inputs:
+      versionSpec: "5.x"
+
+  - task: gitversion/execute@0
     displayName: "Figure out GitVersion"
     inputs:
-      runtime: "core"
       configFilePath: "./GitVersion.yml"
 
   - task: Docker@2
@@ -37,4 +41,4 @@ steps:
       command: "build"
       Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart"
       buildContext: "$(system.defaultWorkingDirectory)"
-      arguments: "--build-arg GITHUB_ACCESS_CREDENTIAL=$(GITHUB_ACCESS_CREDENTIAL) --build-arg VERSION=${{variables.version}}"
+      arguments: "--build-arg GITHUB_ACCESS_CREDENTIAL=$(GITHUB_ACCESS_CREDENTIAL) --build-arg VERSION=${{variables.artifact_version}}"
