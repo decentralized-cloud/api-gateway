@@ -31,6 +31,11 @@ stages:
         parameters:
           version: ${{variables.artifactVersion}}
           vmImage: ${{variables.linuxVmImage}}
+          shouldBuildContract: true
+          shouldPublishServiceDockerImage: true
+          shouldTestPublishResult: true
+          shouldPublishHelmChartAsArtifact: true
+          shouldPublishHelmChart: ${{ variables.shouldPublishHelmChart }}
           contractScriptFilePath: ${{ variables.contractScriptFilePath }}
           contractScriptworkingDirectory: ${{ variables.contractScriptworkingDirectory }}
           dockerContainerRegistry: ${{variables.dockerContainerRegistry}}
@@ -44,7 +49,6 @@ stages:
           helmChartsDirectoryPath: ${{ variables.helmChartsDirectoryPath }}
           helmChartsOutputDirectoryPath: ${{ variables.helmChartsOutputDirectoryPath }}
           helmArtifactName: ${{ variables.helmArtifactName }}
-          shouldPublishHelmChart: ${{ variables.shouldPublishHelmChart }}
           buildAndPushHelmChartDockerFilePath: ${{ variables.buildAndPushHelmChartDockerFilePath }}
           buildAndPushHelmChartDockerBuildContext: ${{ variables.buildAndPushHelmChartDockerBuildContext }}
           githubAccessCredentials: ${{ variables.githubAccessCredentials }}
@@ -62,7 +66,7 @@ stages:
           namespace: ${{ variables.devNamespace }}
           chartPath: ${{ variables.chartPath }}
           releaseName: ${{ variables.releaseName }}
-          overrideValues: ${{ variables.helmOverrideValues }}
+          overrideValues: ${{ variables.devHelmOverrideValues }}
 
   - stage: Test
     dependsOn: [Dev]
@@ -77,7 +81,7 @@ stages:
           namespace: ${{ variables.testNamespace }}
           chartPath: ${{ variables.chartPath }}
           releaseName: ${{ variables.releaseName }}
-          overrideValues: ${{ variables.helmOverrideValues }}
+          overrideValues: ${{ variables.testHelmOverrideValues }}
 
   - stage: Prod
     dependsOn: [Test]
@@ -92,5 +96,4 @@ stages:
           namespace: ${{ variables.prodNamespace }}
           chartPath: ${{ variables.chartPath }}
           releaseName: ${{ variables.releaseName }}
-          overrideValues: ${{ variables.helmOverrideValues }}
-
+          overrideValues: ${{ variables.prodHelmOverrideValues }}
