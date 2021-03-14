@@ -9,4 +9,4 @@ WORKDIR /src
 
 RUN make dep
 RUN make test
-RUN make publish-test-results
+CMD ["make", "publish-test-results"]
