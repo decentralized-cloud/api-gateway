@@ -66,7 +66,7 @@ stages:
           namespace: ${{ variables.devNamespace }}
           chartPath: ${{ variables.chartPath }}
           releaseName: ${{ variables.releaseName }}
-          overrideValues: ${{ variables.devHelmOverrideValues }}
+          overrideValues: ${{ variables.helmOverrideValues }}
 
   - stage: Test
     dependsOn: [Dev]
@@ -81,7 +81,7 @@ stages:
           namespace: ${{ variables.testNamespace }}
           chartPath: ${{ variables.chartPath }}
           releaseName: ${{ variables.releaseName }}
-          overrideValues: ${{ variables.testHelmOverrideValues }}
+          overrideValues: ${{ variables.helmOverrideValues }}
 
   - stage: Prod
     dependsOn: [Test]
@@ -96,4 +96,4 @@ stages:
           namespace: ${{ variables.prodNamespace }}
           chartPath: ${{ variables.chartPath }}
           releaseName: ${{ variables.releaseName }}
-          overrideValues: ${{ variables.prodHelmOverrideValues }}
+          overrideValues: ${{ variables.helmOverrideValues }}
