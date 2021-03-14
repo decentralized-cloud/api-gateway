@@ -12,89 +12,85 @@ trigger:
     exclude:
       - README.md
 
-pool:
-  vmImage: "ubuntu-latest"
-
 variables:
-  DOCKER_CONTAINER_REGISTRY: "Decentralized Cloud Docker Hub"
-  DOCKER_REPOSITORY_NAME: "decentralizedcloud/api-gateway"
-  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
-    artifact_version: latest
-  ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
-    artifact_version: $(GitVersion.SemVer)
+  - template: variables.yml
 
-steps:
-  - task: gitversion/setup@0
-    displayName: "Setting up GitVersion"
-    inputs:
-      versionSpec: "5.x"
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: decentralized-cloud/templates
+      endpoint: decentralized-cloud
 
-  - task: gitversion/execute@0
-    displayName: "Figure out GitVersion"
-    inputs:
-      configFilePath: "./GitVersion.yml"
+name: $(GitVersion.SemVer)
 
-  - task: Bash@3
-    displayName: "Build GraphQL contract"
-    inputs:
-      filePath: "$(system.defaultWorkingDirectory)/script/compile-graphql.sh"
-      arguments: "$(system.defaultWorkingDirectory)/script"
+stages:
+  - stage: Build
+    jobs:
+      - template: build/build-test-publish.yml@templates
+        parameters:
+          version: ${{variables.artifactVersion}}
+          vmImage: ${{variables.linuxVmImage}}
+          contractScriptFilePath: ${{ variables.contractScriptFilePath }}
+          contractScriptworkingDirectory: ${{ variables.contractScriptworkingDirectory }}
+          dockerContainerRegistry: ${{variables.dockerContainerRegistry}}
+          dockerRepositoryName: ${{variables.dockerRepositoryName}}
+          dockerBuildFilePath: "$(system.defaultWorkingDirectory)/docker/Dockerfile.build"
+          dockerBuildContext: "$(system.defaultWorkingDirectory)"
+          testDockerComposeFilePath: ${{ variables.testDockerComposeFilePath }}
+          ciService: ${{ variables.ciService }}
+          coverallsToken: ${{ variables.coverallsToken }}
+          helmVersion: ${{ variables.helmVersion }}
+          helmChartsDirectoryPath: ${{ variables.helmChartsDirectoryPath }}
+          helmChartsOutputDirectoryPath: ${{ variables.helmChartsOutputDirectoryPath }}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          shouldPublishHelmChart: ${{ variables.shouldPublishHelmChart }}
+          buildAndPushHelmChartDockerFilePath: ${{ variables.buildAndPushHelmChartDockerFilePath }}
+          buildAndPushHelmChartDockerBuildContext: ${{ variables.buildAndPushHelmChartDockerBuildContext }}
+          githubAccessCredentials: ${{ variables.githubAccessCredentials }}
 
-  - task: Docker@2
-    displayName: "Build docker image"
-    inputs:
-      repository: $(DOCKER_REPOSITORY_NAME)
-      command: "build"
-      Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.build"
-      buildContext: "$(system.defaultWorkingDirectory)"
-      arguments: "--build-arg VERSION=${{variables.artifact_version}}"
-      tags: ${{variables.artifact_version}}
+  - stage: Dev
+    dependsOn: [Build]
+    jobs:
+      - template: release/deploy-service-helm.yml@templates
+        parameters:
+          environment: Dev
+          vmImage: ${{variables.linuxVmImage}}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          helmVersion: ${{ variables.helmVersion }}
+          kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
+          namespace: ${{ variables.devNamespace }}
+          chartPath: ${{ variables.chartPath }}
+          releaseName: ${{ variables.releaseName }}
+          overrideValues: ${{ variables.helmOverrideValues }}
 
-  - task: Docker@2
-    displayName: "Test and coverage"
-    inputs:
-      command: "build"
-      Dockerfile: "$(system.defaultWorkingDirectory)/docker/Dockerfile.testAndCoverage"
-      buildContext: "$(system.defaultWorkingDirectory)"
-      arguments: "--build-arg CI_SERVICE=$(CI_SERVICE) --build-arg COVERALLS_TOKEN=$(COVERALLS_TOKEN)"
+  - stage: Test
+    dependsOn: [Dev]
+    jobs:
+      - template: release/deploy-service-helm.yml@templates
+        parameters:
+          environment: Test
+          vmImage: ${{variables.linuxVmImage}}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          helmVersion: ${{ variables.helmVersion }}
+          kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
+          namespace: ${{ variables.testNamespace }}
+          chartPath: ${{ variables.chartPath }}
+          releaseName: ${{ variables.releaseName }}
+          overrideValues: ${{ variables.helmOverrideValues }}
 
-  - task: Docker@2
-    displayName: "Docker login"
-    inputs:
-      containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
-      command: "login"
+  - stage: Prod
+    dependsOn: [Test]
+    jobs:
+      - template: release/deploy-service-helm.yml@templates
+        parameters:
+          environment: Prod
+          vmImage: ${{variables.linuxVmImage}}
+          helmArtifactName: ${{ variables.helmArtifactName }}
+          helmVersion: ${{ variables.helmVersion }}
+          kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
+          namespace: ${{ variables.prodNamespace }}
+          chartPath: ${{ variables.chartPath }}
+          releaseName: ${{ variables.releaseName }}
+          overrideValues: ${{ variables.helmOverrideValues }}
 
-  - task: Docker@2
-    displayName: "Push docker image"
-    inputs:
-      containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
-      repository: $(DOCKER_REPOSITORY_NAME)
-      command: "push"
-      buildContext: "$(system.defaultWorkingDirectory)"
-      tags: ${{variables.artifact_version}}
-
-  - task: Docker@2
-    displayName: "Docker logout"
-    inputs:
-      containerRegistry: $(DOCKER_CONTAINER_REGISTRY)
-      command: "logout"
-
-  - task: HelmInstaller@0
-    displayName: "Installing helm"
-    inputs:
-      helmVersion: "3.5.2"
-      installKubectl: false
-
-  - task: Bash@3
-    displayName: "Packaging helm"
-    inputs:
-      targetType: "inline"
-      script: |
-        helm package --destination "$(system.defaultWorkingDirectory)/chart-output" --app-version ${{variables.artifact_version}} "$(system.defaultWorkingDirectory)/helm-charts"
-
-  - task: PublishPipelineArtifact@1
-    displayName: "Publish helm artifact"
-    inputs:
-      targetPath: "$(system.defaultWorkingDirectory)/chart-output"
-      artifact: "helm"
-      publishLocation: "pipeline"

@@ -1,0 +1,85 @@
+parameters:
+  - name: helmOverrideValuesIndividuals
+    type: object
+    default:
+      - "image.pullPolicy=Always,pod.idp.jwksURL="
+      - $(JWKS_URL)
+
+variables:
+  - name: artifactVersion
+    ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+      value: latest
+    ${{ if not(eq(variables['Build.SourceBranch'], 'refs/heads/main')) }}:
+      value: $(GitVersion.SemVer)
+
+  - name: linuxVmImage
+    value: "ubuntu-20.04"
+
+  - name: contractScriptFilePath
+    value: "$(system.defaultWorkingDirectory)/scripts/compile-graphql.sh"
+
+  - name: contractScriptworkingDirectory
+    value: "$(system.defaultWorkingDirectory)/scripts"
+
+  - name: dockerContainerRegistry
+    value: "Decentralized Cloud Docker Hub"
+
+  - name: dockerRepositoryName
+    value: "decentralizedcloud/api-gateway"
+
+  - name: testDockerComposeFilePath
+    value: "$(system.defaultWorkingDirectory)/docker/docker-compose-test.yml"
+
+  - name: ciService
+    value: $(CI_SERVICE)
+
+  - name: coverallsToken
+    value: $(COVERALLS_TOKEN)
+
+  - name: helmVersion
+    value: "3.5.2"
+
+  - name: helmChartsDirectoryPath
+    value: "$(system.defaultWorkingDirectory)/helm-charts"
+
+  - name: helmChartsOutputDirectoryPath
+    value: "$(system.defaultWorkingDirectory)/chart-output"
+
+  - name: helmArtifactName
+    value: "helm"
+
+  - name: shouldPublishHelmChart
+    ? ${{ if or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v')) }}
+    : value: true
+    ? ${{ if not(or(eq(variables['Build.SourceBranch'], 'refs/heads/main'), startsWith(variables['Build.SourceBranch'], 'refs/tags/v'))) }}
+    : value: false
+
+  - name: buildAndPushHelmChartDockerFilePath
+    value: "$(system.defaultWorkingDirectory)/docker/Dockerfile.buildAndPushHelmChart"
+
+  - name: buildAndPushHelmChartDockerBuildContext
+    value: "$(system.defaultWorkingDirectory)"
+
+  - name: githubAccessCredentials
+    value: $(GITHUB_ACCESS_CREDENTIAL)
+
+  - name: kubernetesServiceConnection
+    value: $(KUBERNETES_SERVICE_CONNECTION)
+
+  - name: devNamespace
+    value: "dev"
+
+  - name: testNamespace
+    value: "test"
+
+  - name: prodNamespace
+    value: "prod"
+
+  - name: chartPath
+    value: "$(System.DefaultWorkingDirectory)/helm/api-gateway-0.2.2.tgz"
+
+  - name: releaseName
+    value: "api-gateway"
+
+  - name: helmOverrideValues
+    value: ${{ join('', parameters.helmOverrideValuesIndividuals) }}

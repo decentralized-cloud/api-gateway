@@ -1,0 +1,11 @@
+version: "3.7"
+services:
+  tests:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile.testAndCoverage
+    networks:
+      - the_net
+
+networks:
+  the_net:
