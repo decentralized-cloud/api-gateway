@@ -45,9 +45,6 @@ variables:
   - name: helmChartsDirectoryPath
     value: "$(system.defaultWorkingDirectory)/helm-charts"
 
-  - name: helmChartsOutputDirectoryPath
-    value: "$(system.defaultWorkingDirectory)/chart-output"
-
   - name: helmArtifactName
     value: "helm"
 
