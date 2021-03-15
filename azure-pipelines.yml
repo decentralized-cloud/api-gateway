@@ -29,8 +29,8 @@ stages:
     jobs:
       - template: build/build-test-publish.yml@templates
         parameters:
-          version: ${{variables.artifactVersion}}
-          vmImage: ${{variables.linuxVmImage}}
+          version: ${{ variables.artifactVersion }}
+          vmImage: ${{ variables.linuxVmImage }}
           shouldBuildContract: true
           shouldPublishServiceDockerImage: true
           shouldTestPublishResult: true
@@ -38,14 +38,13 @@ stages:
           shouldPublishHelmChart: ${{ variables.shouldPublishHelmChart }}
           contractScriptFilePath: ${{ variables.contractScriptFilePath }}
           contractScriptworkingDirectory: ${{ variables.contractScriptworkingDirectory }}
-          dockerContainerRegistry: ${{variables.dockerContainerRegistry}}
-          dockerRepositoryName: ${{variables.dockerRepositoryName}}
-          dockerBuildFilePath: "$(system.defaultWorkingDirectory)/docker/Dockerfile.build"
-          dockerBuildContext: "$(system.defaultWorkingDirectory)"
+          dockerContainerRegistry: ${{ variables.dockerContainerRegistry }}
+          dockerRepositoryName: ${{ variables.dockerRepositoryName }}
+          dockerBuildFilePath: ${{ variables.dockerBuildFilePath }}
+          dockerBuildContext: ${{ variables.dockerBuildContext }}
           testDockerComposeFilePath: ${{ variables.testDockerComposeFilePath }}
-          ciService: ${{ variables.ciService }}
-          coverallsToken: ${{ variables.coverallsToken }}
-          helmVersion: ${{ variables.helmVersion }}
+          coverallsServiceName: ${{ variables.coverallsServiceName }}
+          coverallsRepoToken: ${{ variables.coverallsRepoToken }}
           helmChartsDirectoryPath: ${{ variables.helmChartsDirectoryPath }}
           helmChartsOutputDirectoryPath: ${{ variables.helmChartsOutputDirectoryPath }}
           helmArtifactName: ${{ variables.helmArtifactName }}
@@ -59,9 +58,8 @@ stages:
       - template: release/deploy-service-helm.yml@templates
         parameters:
           environment: Dev
-          vmImage: ${{variables.linuxVmImage}}
+          vmImage: ${{ variables.linuxVmImage }}
           helmArtifactName: ${{ variables.helmArtifactName }}
-          helmVersion: ${{ variables.helmVersion }}
           kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
           namespace: ${{ variables.devNamespace }}
           chartPath: ${{ variables.chartPath }}
@@ -74,9 +72,8 @@ stages:
       - template: release/deploy-service-helm.yml@templates
         parameters:
           environment: Test
-          vmImage: ${{variables.linuxVmImage}}
+          vmImage: ${{ variables.linuxVmImage }}
           helmArtifactName: ${{ variables.helmArtifactName }}
-          helmVersion: ${{ variables.helmVersion }}
           kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
           namespace: ${{ variables.testNamespace }}
           chartPath: ${{ variables.chartPath }}
@@ -89,9 +86,8 @@ stages:
       - template: release/deploy-service-helm.yml@templates
         parameters:
           environment: Prod
-          vmImage: ${{variables.linuxVmImage}}
+          vmImage: ${{ variables.linuxVmImage }}
           helmArtifactName: ${{ variables.helmArtifactName }}
-          helmVersion: ${{ variables.helmVersion }}
           kubernetesServiceConnection: ${{ variables.kubernetesServiceConnection }}
           namespace: ${{ variables.prodNamespace }}
           chartPath: ${{ variables.chartPath }}

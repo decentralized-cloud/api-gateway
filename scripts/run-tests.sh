@@ -17,5 +17,5 @@ fi
 cd "$current_directory"/..
 
 docker-compose  -f docker/docker-compose-test.yml build
-docker-compose  -f docker/docker-compose-test.yml run --rm -e CI_SERVICE=$CI_SERVICE -e COVERALLS_TOKEN=$COVERALLS_TOKEN tests
+docker-compose  -f docker/docker-compose-test.yml run --rm -e COVERALLS_SERVICE_NAME=$COVERALLS_SERVICE_NAME -e COVERALLS_REPO_TOKEN=$COVERALLS_REPO_TOKEN tests
 

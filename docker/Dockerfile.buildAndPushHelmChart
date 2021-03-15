@@ -22,4 +22,3 @@ RUN helm repo index . --url https://decentralized-cloud.github.io/helm/
 RUN git add .
 RUN git commit -am "CI: API Gateway - $VERSION"
 RUN git push
-
