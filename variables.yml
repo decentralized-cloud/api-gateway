@@ -27,17 +27,20 @@ variables:
   - name: dockerRepositoryName
     value: "decentralizedcloud/api-gateway"
 
+  - name: dockerBuildFilePath
+    value: "$(system.defaultWorkingDirectory)/docker/Dockerfile.build"
+
+  - name: dockerBuildContext
+    value: "$(system.defaultWorkingDirectory)"
+
   - name: testDockerComposeFilePath
     value: "$(system.defaultWorkingDirectory)/docker/docker-compose-test.yml"
 
-  - name: ciService
-    value: $(CI_SERVICE)
+  - name: coverallsServiceName
+    value: $(COVERALLS_SERVICE_NAME)
 
-  - name: coverallsToken
-    value: $(COVERALLS_TOKEN)
-
-  - name: helmVersion
-    value: "3.5.2"
+  - name: coverallsRepoToken
+    value: $(COVERALLS_REPO_TOKEN)
 
   - name: helmChartsDirectoryPath
     value: "$(system.defaultWorkingDirectory)/helm-charts"

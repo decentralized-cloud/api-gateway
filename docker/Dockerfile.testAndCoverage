@@ -1,12 +1,7 @@
 FROM golang:1.16
 LABEL maintainer="morteza.alizadeh@gmail.com"
 
-ARG CI_SERVICE
-ARG COVERALLS_TOKEN
-
 ADD . /src
 WORKDIR /src
-
 RUN make dep
-RUN make test
-CMD ["make", "publish-test-results"]
+CMD ["make", "test-and-publish-test-results"]

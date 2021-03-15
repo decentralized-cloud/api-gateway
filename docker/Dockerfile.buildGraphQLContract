@@ -5,4 +5,3 @@ ADD . /src
 WORKDIR /src/contract/graphql/schema-generator
 RUN npm install
 RUN npm run build
-

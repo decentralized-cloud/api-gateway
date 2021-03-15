@@ -12,4 +12,3 @@ FROM alpine:3
 WORKDIR /
 COPY --from=0 /src/bin/api-gateway .
 CMD ["/api-gateway", "start"]
-

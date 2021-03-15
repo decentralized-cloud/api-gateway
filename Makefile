@@ -12,8 +12,8 @@ BUILD_DATE ?= $(shell date +%FT%T%z)
 PREFIX = github.com/micro-business/go-core/pkg/util
 LDFLAGS += -X $(PREFIX).version=$(VERSION) -X $(PREFIX).commit=$(COMMIT) -X $(PREFIX).date=$(BUILD_DATE) -X $(PREFIX).platform=$(GOOS)/$(GOARCH)
 REPORTS_DIR ?= reports
-CI_SERVICE ?=
-COVERALLS_TOKEN ?=
+COVERALLS_SERVICE_NAME ?=
+COVERALLS_REPO_TOKEN ?=
 
 # Go variables
 export CGO_ENABLED ?= 0
@@ -64,7 +64,10 @@ test: ## Run unit tests
 
 .PHONY: publish-test-results
 publish-test-results: ## Publish test results
-	@goveralls -coverprofile="$(REPORTS_DIR)/coverage.out" -service=$(CI_SERVICE) -repotoken $(COVERALLS_TOKEN)
+	@goveralls -coverprofile="$(REPORTS_DIR)/coverage.out" -service=$(COVERALLS_SERVICE_NAME) -repotoken $(COVERALLS_REPO_TOKEN)
+
+.PHONY: test-and-publish-test-results
+test-and-publish-test-results: test publish-test-results ## Test and publish test results
 
 .PHONY: build-and-push-helm-chart
 build-and-push-helm-chart: ## Build and push helm chart
