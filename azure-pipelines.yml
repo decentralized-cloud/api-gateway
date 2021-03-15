@@ -46,7 +46,6 @@ stages:
           coverallsServiceName: ${{ variables.coverallsServiceName }}
           coverallsRepoToken: ${{ variables.coverallsRepoToken }}
           helmChartsDirectoryPath: ${{ variables.helmChartsDirectoryPath }}
-          helmChartsOutputDirectoryPath: ${{ variables.helmChartsOutputDirectoryPath }}
           helmArtifactName: ${{ variables.helmArtifactName }}
           buildAndPushHelmChartDockerFilePath: ${{ variables.buildAndPushHelmChartDockerFilePath }}
           buildAndPushHelmChartDockerBuildContext: ${{ variables.buildAndPushHelmChartDockerBuildContext }}
