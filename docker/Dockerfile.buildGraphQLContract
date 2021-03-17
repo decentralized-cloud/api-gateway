@@ -3,5 +3,5 @@ LABEL maintainer="morteza.alizadeh@gmail.com"
 
 ADD . /src
 WORKDIR /src/contract/graphql/schema-generator
-RUN npm install
-RUN npm run build
+RUN yarn install
+RUN yarn run build
