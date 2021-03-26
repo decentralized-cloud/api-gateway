@@ -5,6 +5,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	commonErrors "github.com/micro-business/go-core/system/errors"
 )
 
 type envConfigurationService struct {
@@ -27,12 +29,12 @@ func (service *envConfigurationService) GetHttpHost() (string, error) {
 func (service *envConfigurationService) GetHttpPort() (int, error) {
 	portNumberString := os.Getenv("HTTP_PORT")
 	if strings.Trim(portNumberString, " ") == "" {
-		return 0, NewUnknownError("HTTP_PORT is required")
+		return 0, commonErrors.NewUnknownError("HTTP_PORT is required")
 	}
 
 	portNumber, err := strconv.Atoi(portNumberString)
 	if err != nil {
-		return 0, NewUnknownErrorWithError("Failed to convert HTTPS_PORT to integer", err)
+		return 0, commonErrors.NewUnknownErrorWithError("Failed to convert HTTPS_PORT to integer", err)
 	}
 
 	return portNumber, nil
@@ -44,7 +46,7 @@ func (service *envConfigurationService) GetHttpPort() (int, error) {
 func (service *envConfigurationService) GetProjectServiceAddress() (string, error) {
 	address := os.Getenv("PROJECT_ADDRESS")
 	if strings.Trim(address, " ") == "" {
-		return "", NewUnknownError("PROJECT_ADDRESS is required")
+		return "", commonErrors.NewUnknownError("PROJECT_ADDRESS is required")
 	}
 
 	return address, nil
@@ -56,7 +58,7 @@ func (service *envConfigurationService) GetProjectServiceAddress() (string, erro
 func (service *envConfigurationService) GetEdgeClusterServiceAddress() (string, error) {
 	address := os.Getenv("EDGE_CLUSTER_ADDRESS")
 	if strings.Trim(address, " ") == "" {
-		return "", NewUnknownError("EDGE_CLUSTER_ADDRESS is required")
+		return "", commonErrors.NewUnknownError("EDGE_CLUSTER_ADDRESS is required")
 	}
 
 	return address, nil
@@ -68,7 +70,7 @@ func (service *envConfigurationService) GetJwksURL() (string, error) {
 	jwksURL := os.Getenv("JWKS_URL")
 
 	if strings.Trim(jwksURL, " ") == "" {
-		return "", NewUnknownError("JWKS_URL is required")
+		return "", commonErrors.NewUnknownError("JWKS_URL is required")
 	}
 
 	return jwksURL, nil
