@@ -176,8 +176,8 @@ func (r *edgeClusterResolver) Nodes(ctx context.Context) (*[]edgecluster.EdgeClu
 
 	response := []edgecluster.EdgeClusterNodeStatusResolverContract{}
 
-	for _, item := range listEdgeClusterNodesResponse.Nodes {
-		resolver, err := r.resolverCreator.NewEdgeClusterNodeStatusResolver(ctx, item)
+	for _, node := range listEdgeClusterNodesResponse.Nodes {
+		resolver, err := r.resolverCreator.NewEdgeClusterNodeStatusResolver(ctx, node)
 
 		if err != nil {
 			return nil, err

@@ -54,7 +54,7 @@ func (r *edgeClusterNodeConditionResolver) Type(ctx context.Context) string {
 // ctx: Mandatory. Reference to the context
 // Returns the status of the condition, one of True, False, Unknown.
 func (r *edgeClusterNodeConditionResolver) Status(ctx context.Context) string {
-	return edgeclusterGrpcContract.EdgeClusterNodeConditionStatus_name[int32(r.condition.Status)]
+	return edgeclusterGrpcContract.EdgeClusterConditionStatus_name[int32(r.condition.Status)]
 }
 
 // LastHeartbeatTime returns the last time we got an update on a given condition.
