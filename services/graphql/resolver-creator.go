@@ -179,6 +179,19 @@ func (creator *resolverCreator) NewEdgeClusterResolver(
 		edgeClusterDetail)
 }
 
+// NewEdgeClusterObjectMetadataResolverContract creates new instance of the EdgeClusterObjectMetadataResolverContract, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// metadata: Mandatory. Contains the object metadata.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterObjectMetadataResolverContract(
+	ctx context.Context,
+	metadata *edgeclusterGrpcContract.EdgeClusterObjectMetadata) (edgecluster.EdgeClusterObjectMetadataResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterObjectMetadataResolver(
+		ctx,
+		creator.logger,
+		metadata)
+}
+
 // NewEdgeClusterTypeEdgeResolver creates new EdgeClusterTypeEdgeResolverContract and returns it
 // ctx: Mandatory. Reference to the context
 // edgeClusterID: Mandatory. The edge cluster unique identifier
@@ -275,19 +288,34 @@ func (creator *resolverCreator) NewPortResolver(
 		port)
 }
 
-// NewEdgeClusterNodeStatusResolver creates new instance of the edgeClusterNodeStatusResolver, setting up all dependencies and returns the instance
+// NewEdgeClusterNodeResolver creates new instance of the edgeClusterNodeResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // logger: Mandatory. Reference to the logger service
 // node: Mandatory. Contains information about the edge cluster node.
 // Returns the new instance or error if something goes wrong
-func (creator *resolverCreator) NewEdgeClusterNodeStatusResolver(
+func (creator *resolverCreator) NewEdgeClusterNodeResolver(
 	ctx context.Context,
-	node *edgeclusterGrpcContract.EdgeClusterNode) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
-	return queryedgecluster.NewEdgeClusterNodeStatusResolver(
+	node *edgeclusterGrpcContract.EdgeClusterNode) (edgecluster.EdgeClusterNodeResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterNodeResolver(
 		ctx,
 		creator.logger,
 		creator,
 		node)
+}
+
+// NewEdgeClusterNodeStatusResolver creates new instance of the edgeClusterNodeStatusResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// logger: Mandatory. Reference to the logger service
+// status: Mandatory. Contains information about the edge cluster node status.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterNodeStatusResolver(
+	ctx context.Context,
+	status *edgeclusterGrpcContract.EdgeClusterNodeStatus) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterNodeStatusResolver(
+		ctx,
+		creator.logger,
+		creator,
+		status)
 }
 
 // NewEdgeClusterNodeConditionResolver creates new instance of the edgeClusterNodeConditionResolver, setting up all dependencies and returns the instance

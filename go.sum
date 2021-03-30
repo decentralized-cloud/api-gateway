@@ -103,8 +103,8 @@ github.com/creack/pty v1.1.7/go.mod h1:lj5s0c3V2DBrqTV7llrYr5NG6My20zk30Fl46Y7Do
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/decentralized-cloud/edge-cluster v0.8.0 h1:w/3NSKGit9BmFOptW2IM80AM5I9hF3AY7LJlW2XUAoA=
-github.com/decentralized-cloud/edge-cluster v0.8.0/go.mod h1:qScpnkVvcK5TJksPsnA2qatOzddd+Qaub6IjIKT2vlA=
+github.com/decentralized-cloud/edge-cluster v0.8.1 h1:30rhWDtuzEIp3foKIiSbRqQ1gN/Xv6xZQUJjyJBWwPI=
+github.com/decentralized-cloud/edge-cluster v0.8.1/go.mod h1:qScpnkVvcK5TJksPsnA2qatOzddd+Qaub6IjIKT2vlA=
 github.com/decentralized-cloud/project v0.6.0 h1:o5+/aYBbd122BEXozE7gk7pE9VNiv3cl57sSaq3D4CY=
 github.com/decentralized-cloud/project v0.6.0/go.mod h1:L39LO/tzq61azrrJKzGcNXopOkVJiQuJ2iG5auu0Ze8=
 github.com/decred/dcrd/chaincfg/chainhash v1.0.2/go.mod h1:BpbrGgrPTr3YJYRN3Bm+D9NuaFd+zGyNeIKgrhCXK60=
