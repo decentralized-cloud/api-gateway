@@ -278,11 +278,11 @@ func (creator *resolverCreator) NewPortResolver(
 // NewEdgeClusterNodeStatusResolver creates new instance of the edgeClusterNodeStatusResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // logger: Mandatory. Reference to the logger service
-// node: Mandatory. Contains information about the current status of a node.
+// node: Mandatory. Contains information about the edge cluster node.
 // Returns the new instance or error if something goes wrong
 func (creator *resolverCreator) NewEdgeClusterNodeStatusResolver(
 	ctx context.Context,
-	node *edgeclusterGrpcContract.EdgeClusterNodeStatus) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
+	node *edgeclusterGrpcContract.EdgeClusterNode) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
 	return queryedgecluster.NewEdgeClusterNodeStatusResolver(
 		ctx,
 		creator.logger,

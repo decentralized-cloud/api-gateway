@@ -14,19 +14,19 @@ import (
 type edgeClusterNodeStatusResolver struct {
 	logger          *zap.Logger
 	resolverCreator types.ResolverCreatorContract
-	node            *edgeclusterGrpcContract.EdgeClusterNodeStatus
+	node            *edgeclusterGrpcContract.EdgeClusterNode
 }
 
 // NewEdgeClusterNodeStatusResolver creates new instance of the edgeClusterNodeStatusResolver, setting up all dependencies and returns the instance
 // ctx: Mandatory. Reference to the context
 // logger: Mandatory. Reference to the logger service
-// node: Mandatory. Contains information about the current status of a node.
+// node: Mandatory. Contains information about the edge cluster node.
 // Returns the new instance or error if something goes wrong
 func NewEdgeClusterNodeStatusResolver(
 	ctx context.Context,
 	logger *zap.Logger,
 	resolverCreator types.ResolverCreatorContract,
-	node *edgeclusterGrpcContract.EdgeClusterNodeStatus) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
+	node *edgeclusterGrpcContract.EdgeClusterNode) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -56,7 +56,7 @@ func NewEdgeClusterNodeStatusResolver(
 func (r *edgeClusterNodeStatusResolver) Conditions(ctx context.Context) (*[]edgecluster.EdgeClusterNodeConditionResolverContract, error) {
 	response := []edgecluster.EdgeClusterNodeConditionResolverContract{}
 
-	for _, item := range r.node.Conditions {
+	for _, item := range r.node.Status.Conditions {
 		resolver, err := r.resolverCreator.NewEdgeClusterNodeConditionResolver(ctx, item)
 
 		if err != nil {
@@ -75,7 +75,7 @@ func (r *edgeClusterNodeStatusResolver) Conditions(ctx context.Context) (*[]edge
 func (r *edgeClusterNodeStatusResolver) Addresses(ctx context.Context) (*[]edgecluster.EdgeClusterNodeAddressResolverContract, error) {
 	response := []edgecluster.EdgeClusterNodeAddressResolverContract{}
 
-	for _, item := range r.node.Addresses {
+	for _, item := range r.node.Status.Addresses {
 		resolver, err := r.resolverCreator.NewEdgeClusterNodeAddressResolverContract(ctx, item)
 
 		if err != nil {
@@ -92,5 +92,5 @@ func (r *edgeClusterNodeStatusResolver) Addresses(ctx context.Context) (*[]edgec
 // ctx: Mandatory. Reference to the context
 // Returns the set of ids/uuids to uniquely identify the node.
 func (r *edgeClusterNodeStatusResolver) NodeInfo(ctx context.Context) (edgecluster.EdgeClusterNodeSystemInfoResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterNodeSystemInfoResolverContract(ctx, r.node.NodeInfo)
+	return r.resolverCreator.NewEdgeClusterNodeSystemInfoResolverContract(ctx, r.node.Status.NodeInfo)
 }
