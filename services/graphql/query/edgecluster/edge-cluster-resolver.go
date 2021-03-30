@@ -136,22 +136,22 @@ func (r *edgeClusterResolver) ClusterType(ctx context.Context) (clusterType stri
 
 // Project returns edge cluster project
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster project
+// Returns the edge cluster project resolver or error if something goes wrong.
 func (r *edgeClusterResolver) Project(ctx context.Context) (edgecluster.EdgeClusterProjectResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterProjectResolver(ctx, r.edgeClusterDetail.EdgeCluster.ProjectID)
 }
 
 // ProvisionDetail returns edge cluster provisioning detail
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster provisioning detail
+// Returns the edge cluster provisioning detail resolver or error if something goes wrong.
 func (r *edgeClusterResolver) ProvisionDetail(ctx context.Context) (edgecluster.EdgeClusterProvisionDetailResolverContract, error) {
 	return r.resolverCreator.NewEdgeClusterProvisionDetailResolver(ctx, r.edgeClusterDetail.ProvisionDetail)
 }
 
-// Ingress returns the ingress details of the edge cluster master node
+// Returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
 // ctx: Mandatory. Reference to the context
-// Returns the ingress details of the edge cluster master node
-func (r *edgeClusterResolver) Nodes(ctx context.Context) (*[]edgecluster.EdgeClusterNodeStatusResolverContract, error) {
+// Returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
+func (r *edgeClusterResolver) Nodes(ctx context.Context) ([]edgecluster.EdgeClusterNodeResolverContract, error) {
 	connection, edgeClusterServiceClient, err := r.edgeClusterClientService.CreateClient()
 	if err != nil {
 		return nil, err
@@ -174,10 +174,10 @@ func (r *edgeClusterResolver) Nodes(ctx context.Context) (*[]edgecluster.EdgeClu
 		return nil, errors.New(listEdgeClusterNodesResponse.ErrorMessage)
 	}
 
-	response := []edgecluster.EdgeClusterNodeStatusResolverContract{}
+	response := []edgecluster.EdgeClusterNodeResolverContract{}
 
 	for _, node := range listEdgeClusterNodesResponse.Nodes {
-		resolver, err := r.resolverCreator.NewEdgeClusterNodeStatusResolver(ctx, node)
+		resolver, err := r.resolverCreator.NewEdgeClusterNodeResolver(ctx, node)
 
 		if err != nil {
 			return nil, err
@@ -186,5 +186,5 @@ func (r *edgeClusterResolver) Nodes(ctx context.Context) (*[]edgecluster.EdgeClu
 		response = append(response, resolver)
 	}
 
-	return &response, nil
+	return response, nil
 }

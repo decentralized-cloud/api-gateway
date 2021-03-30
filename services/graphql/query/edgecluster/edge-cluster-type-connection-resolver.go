@@ -54,7 +54,7 @@ func NewEdgeClusterTypeConnectionResolver(
 
 // PageInfo returns the paging information compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
-// Returns the paging information
+// Returns the paging information resolver or error if something goes wrong.
 func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (relay.PageInfoResolverContract, error) {
 	var startCursor, endCursor string
 
@@ -73,7 +73,7 @@ func (r *edgeClusterTypeConnectionResolver) PageInfo(ctx context.Context) (relay
 
 // Edges returns the edge cluster edges compatible with graphql-relay
 // ctx: Mandatory. Reference to the context
-// Returns the edge cluster edges
+// Returns the edge cluster edges resolver or error if something goes wrong.
 func (r *edgeClusterTypeConnectionResolver) Edges(ctx context.Context) (*[]edgecluster.EdgeClusterTypeEdgeResolverContract, error) {
 	edgeClusters := funk.Filter(r.edgeClusters, func(edgeCluster *edgeclusterGrpcContract.EdgeClusterWithCursor) bool {
 		return edgeCluster != nil

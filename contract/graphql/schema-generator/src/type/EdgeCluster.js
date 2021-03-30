@@ -3,7 +3,7 @@ import { NodeInterface } from '../interface';
 import Project from './EdgeClusterProject';
 import EdgeClusterProvisionDetail from './EdgeClusterProvisionDetail';
 import EdgeClusterType from './EdgeClusterType';
-import EdgeClusterNodeStatus from './EdgeClusterNodeStatus';
+import EdgeClusterNode from './EdgeClusterNode';
 
 export default new GraphQLObjectType({
 	name: 'EdgeCluster',
@@ -16,8 +16,8 @@ export default new GraphQLObjectType({
 		project: { type: new GraphQLNonNull(Project), description: 'The project that owns the edge cluster' },
 		provisionDetail: { type: EdgeClusterProvisionDetail, description: 'The edge cluster provision details' },
 		nodes: {
-			type: new GraphQLList(new GraphQLNonNull(EdgeClusterNodeStatus)),
-			description: 'The list of an existing edge cluster nodes details',
+			type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(EdgeClusterNode))),
+			description: 'The list of edge cluster nodes details',
 		},
 	},
 	interfaces: [NodeInterface],

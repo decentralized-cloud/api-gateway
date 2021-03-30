@@ -52,8 +52,8 @@ func NewEdgeClusterProvisionDetailResolver(
 
 // Ingress returns the ingress details of the edge cluster master node
 // ctx: Mandatory. Reference to the context
-// Returns the ingress details of the edge cluster master node
-func (r *edgeClusterProvisionDetailResolver) Ingress(ctx context.Context) (*[]edgecluster.IngressResolverContract, error) {
+// Returns the ingress details of the edge cluster master node resolvers or error if something goes wrong.
+func (r *edgeClusterProvisionDetailResolver) Ingress(ctx context.Context) ([]edgecluster.IngressResolverContract, error) {
 	if r.provisionDetail.Ingress == nil {
 		return nil, nil
 	}
@@ -70,13 +70,13 @@ func (r *edgeClusterProvisionDetailResolver) Ingress(ctx context.Context) (*[]ed
 		response = append(response, resolver)
 	}
 
-	return &response, nil
+	return response, nil
 }
 
 // Ingress returns the ingress details of the edge cluster master node
 // ctx: Mandatory. Reference to the context
-// Returns the ingress details of the edge cluster master node
-func (r *edgeClusterProvisionDetailResolver) Ports(ctx context.Context) (*[]edgecluster.PortResolverContract, error) {
+// Returns the ingress details of the edge cluster master node resolvers or error if something goes wrong.
+func (r *edgeClusterProvisionDetailResolver) Ports(ctx context.Context) ([]edgecluster.PortResolverContract, error) {
 	if r.provisionDetail.Ports == nil {
 		return nil, nil
 	}
@@ -93,7 +93,7 @@ func (r *edgeClusterProvisionDetailResolver) Ports(ctx context.Context) (*[]edge
 		response = append(response, resolver)
 	}
 
-	return &response, nil
+	return response, nil
 }
 
 // KubeconfigContent returns the edge cluster Kubeconfig content

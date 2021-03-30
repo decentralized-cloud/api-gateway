@@ -43,8 +43,8 @@ type EdgeCluster implements Node {
   """The edge cluster provision details"""
   provisionDetail: EdgeClusterProvisionDetail
 
-  """The list of an existing edge cluster nodes details"""
-  nodes: [EdgeClusterNodeStatus!]
+  """The list of edge cluster nodes details"""
+  nodes: [EdgeClusterNode!]!
 }
 
 """The different cluster types"""
@@ -63,10 +63,10 @@ The edge cluster provision details contains details such as current status of th
 """
 type EdgeClusterProvisionDetail {
   """The ingress details of the edge cluster master node"""
-  ingress: [Ingress!]
+  ingress: [Ingress!]!
 
   """The ingress details of the edge cluster master node"""
-  ports: [Port!]
+  ports: [Port!]!
 
   """The provisioned edge cluster kubeconfig content"""
   kubeconfigContent: String
@@ -108,37 +108,58 @@ enum Protocol {
   SCTP
 }
 
+"""Contains information about the edge cluster node"""
+type EdgeClusterNode {
+  """The node metadata"""
+  metadata: EdgeClusterObjectMetadata!
+
+  """The most recently observed status of the node"""
+  status: EdgeClusterNodeStatus!
+}
+
+"""Contains standard edge cluster objects metadata."""
+type EdgeClusterObjectMetadata {
+  """The object unique identitfier"""
+  id: ID!
+
+  """The object name"""
+  name: String!
+
+  """The object namespace"""
+  namespace: String
+}
+
 """Contains information about the current status of a node"""
 type EdgeClusterNodeStatus {
   """Conditions is an array of current observed node conditions"""
-  Conditions: [EdgeClusterNodeCondition!]
+  conditions: [EdgeClusterNodeCondition!]!
 
   """Addresses is the list of addresses reachable to the node"""
-  Addresses: [EdgeClusterNodeAddress!]
+  addresses: [EdgeClusterNodeAddress!]!
 
   """NodeInfo is the set of ids/uuids to uniquely identify the node"""
-  NodeInfo: EdgeClusterNodeSystemInfo!
+  nodeInfo: EdgeClusterNodeSystemInfo!
 }
 
 """Condition information for a node"""
 type EdgeClusterNodeCondition {
   """Type of node condition"""
-  Type: EdgeClusterNodeConditionType!
+  type: EdgeClusterNodeConditionType!
 
   """Status of the condition, one of True, False, Unknown"""
-  Status: EdgeClusterNodeConditionStatus!
+  status: EdgeClusterNodeConditionStatus!
 
   """Last time we got an update on a given condition"""
-  LastHeartbeatTime: String!
+  lastHeartbeatTime: String!
 
   """Last time the condition transit from one status to another"""
-  LastTransitionTime: String!
+  lastTransitionTime: String!
 
   """(brief) reason for the condition last transition"""
-  Reason: String!
+  reason: String!
 
   """Human readable message indicating details about last transition"""
-  Message: String!
+  message: String!
 }
 
 """The valid conditions of node"""
@@ -186,10 +207,10 @@ type EdgeClusterNodeAddress {
   """
   Edge cluster node address type, one of Hostname, ExternalIP or InternalIP
   """
-  NodeAddressType: EdgeClusterNodeAddressType!
+  nodeAddressType: EdgeClusterNodeAddressType!
 
   """The node address"""
-  Address: String!
+  address: String!
 }
 
 """The valid address type of edge cluster node"""
@@ -206,42 +227,42 @@ type EdgeClusterNodeSystemInfo {
   """
   MachineID reported by the node. For unique machine identification in the cluster this field is preferred
   """
-  MachineID: String!
+  machineID: String!
 
   """
   SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat host
   """
-  SystemUUID: String!
+  systemUUID: String!
 
   """Boot ID reported by the node"""
-  BootID: String!
+  bootID: String!
 
   """
   Kernel Version reported by the node from "uname -r" (e.g. 3.16.0-0.bpo.4-amd64).
   """
-  KernelVersion: String!
+  kernelVersion: String!
 
   """
   OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy))
   """
-  OSImage: String!
+  osImage: String!
 
   """
   ContainerRuntime Version reported by the node through runtime remote API (e.g. docker://1.5.0)
   """
-  ContainerRuntimeVersion: String!
+  containerRuntimeVersion: String!
 
   """Kubelet Version reported by the node"""
-  KubeletVersion: String!
+  kubeletVersion: String!
 
   """KubeProxy Version reported by the node"""
-  KubeProxyVersion: String!
+  kubeProxyVersion: String!
 
   """The Operating System reported by the node"""
-  OperatingSystem: String!
+  operatingSystem: String!
 
   """The Architecture reported by the node"""
-  Architecture: String!
+  architecture: String!
 }
 
 """A connection to a list of items."""
