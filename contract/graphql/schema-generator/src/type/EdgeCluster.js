@@ -4,6 +4,7 @@ import Project from './EdgeClusterProject';
 import EdgeClusterProvisionDetail from './EdgeClusterProvisionDetail';
 import EdgeClusterType from './EdgeClusterType';
 import EdgeClusterNode from './EdgeClusterNode';
+import EdgeClusterPod from './EdgeClusterPod';
 
 export default new GraphQLObjectType({
 	name: 'EdgeCluster',
@@ -18,6 +19,14 @@ export default new GraphQLObjectType({
 		nodes: {
 			type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(EdgeClusterNode))),
 			description: 'The list of edge cluster nodes details',
+		},
+		pods: {
+			type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(EdgeClusterPod))),
+			description: 'The list of edge cluster nodes details',
+			args: {
+				nodeName: { type: GraphQLString },
+				namespace: { type: GraphQLString },
+			},
 		},
 	},
 	interfaces: [NodeInterface],
