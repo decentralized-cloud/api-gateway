@@ -542,3 +542,60 @@ func (creator *resolverCreator) NewDeleteEdgeClusterPayloadResolver(
 		edgeClusterID,
 		clientMutationId)
 }
+
+// NewEdgeClusterPodResolver creates new instance of the NewEdgeClusterPodResolver, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// logger: Mandatory. Reference to the logger service
+// pod: Mandatory. Contains information about the edge cluster pod
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterPodResolver(
+	ctx context.Context,
+	pod *edgeclusterGrpcContract.EdgeClusterPod) (edgecluster.EdgeClusterPodResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterPodResolver(
+		ctx,
+		creator.logger,
+		creator,
+		pod)
+}
+
+// NewEdgeClusterPodStatusResolver creates new instance of the EdgeClusterPodStatusResolverContract, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// logger: Mandatory. Reference to the logger service
+// status: Mandatory. Contains information about the edge cluster pod status
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterPodStatusResolver(
+	ctx context.Context,
+	status *edgeclusterGrpcContract.EdgeClusterPodStatus) (edgecluster.EdgeClusterPodStatusResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterPodStatusResolver(
+		ctx,
+		creator.logger,
+		creator,
+		status)
+}
+
+// NewEdgeClusterPodSpecResolver creates new instance of the EdgeClusterPodSpecResolverContract, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// logger: Mandatory. Reference to the logger service
+// spec: Mandatory. Contains information about the edge cluster pod specification
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterPodSpecResolver(
+	ctx context.Context,
+	spec *edgeclusterGrpcContract.EdgeClusterPodSpec) (edgecluster.EdgeClusterPodSpecResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterPodSpecResolver(
+		ctx,
+		creator.logger,
+		spec)
+}
+
+// NewEdgeClusterPodConditionResolver creates new instance of the EdgeClusterPodConditionResolverContract, setting up all dependencies and returns the instance
+// ctx: Mandatory. Reference to the context
+// condition: Mandatory. Contains condition information for a pod.
+// Returns the new instance or error if something goes wrong
+func (creator *resolverCreator) NewEdgeClusterPodConditionResolver(
+	ctx context.Context,
+	condition *edgeclusterGrpcContract.EdgeClusterPodCondition) (edgecluster.EdgeClusterPodConditionResolverContract, error) {
+	return queryedgecluster.NewEdgeClusterPodConditionResolver(
+		ctx,
+		creator.logger,
+		condition)
+}

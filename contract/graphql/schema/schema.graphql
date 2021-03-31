@@ -45,6 +45,9 @@ type EdgeCluster implements Node {
 
   """The list of edge cluster nodes details"""
   nodes: [EdgeClusterNode!]!
+
+  """The list of edge cluster nodes details"""
+  pods(nodeName: String, namespace: String): [EdgeClusterPod!]!
 }
 
 """The different cluster types"""
@@ -141,7 +144,7 @@ type EdgeClusterNodeStatus {
   nodeInfo: EdgeClusterNodeSystemInfo!
 }
 
-"""Condition information for a node"""
+""" Current service state of node"""
 type EdgeClusterNodeCondition {
   """Type of node condition"""
   type: EdgeClusterNodeConditionType!
@@ -263,6 +266,69 @@ type EdgeClusterNodeSystemInfo {
 
   """The Architecture reported by the node"""
   architecture: String!
+}
+
+"""Contains information about the edge cluster pod"""
+type EdgeClusterPod {
+  """The pod metadata"""
+  metadata: EdgeClusterObjectMetadata!
+
+  """The most recently observed status of the pod"""
+  status: EdgeClusterPodStatus!
+
+  """The specification of the desired behavior of the pod."""
+  spec: EdgeClusterPodSpec!
+}
+
+"""
+Contains the most recently observed status of the existing edge cluster pod
+"""
+type EdgeClusterPodStatus {
+  """IP address allocated to the pod. Routable at least within the cluster."""
+  hostIP: String!
+
+  """IP address allocated to the pod. Routable at least within the cluster."""
+  podIP: String!
+
+  """Current service state of edge cluster pod"""
+  conditions: [EdgeClusterPodCondition!]!
+}
+
+""" Current service state of pod"""
+type EdgeClusterPodCondition {
+  """Type of pod condition"""
+  type: EdgeClusterPodConditionType!
+
+  """Status of the condition, one of True, False, Unknown"""
+  status: EdgeClusterNodeConditionStatus!
+
+  """Last time we got an update on a given condition"""
+  lastProbeTime: String!
+
+  """Last time the condition transit from one status to another"""
+  lastTransitionTime: String!
+
+  """(brief) reason for the condition last transition"""
+  reason: String!
+
+  """Human readable message indicating details about last transition"""
+  message: String!
+}
+
+"""The edge cluster pod condition"""
+enum EdgeClusterPodConditionType {
+  ContainersReady
+  PodInitialized
+  PodReady
+  PodScheduled
+}
+
+"""
+Contains the specification of the desired behavior of the existing edge cluster pod
+"""
+type EdgeClusterPodSpec {
+  """The name of the node where the Pod is deployed into"""
+  nodeName: String!
 }
 
 """A connection to a list of items."""

@@ -128,282 +128,41 @@ type QueryResolverCreatorContract interface {
 	NewEdgeClusterNodeSystemInfoResolverContract(
 		ctx context.Context,
 		nodeInfo *edgeclusterGrpcContract.EdgeClusterNodeSystemInfo) (EdgeClusterNodeSystemInfoResolverContract, error)
-}
 
-// EdgeClusterObjectMetadataResolverContract declares the standard edge cluster object's metadata.
-type EdgeClusterObjectMetadataResolverContract interface {
-	// ID returns the object unique identitfier
+	// NewEdgeClusterPodResolver creates new instance of the NewEdgeClusterPodResolver, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
-	// Returns the object unique identitfier
-	ID(ctx context.Context) graphql.ID
+	// logger: Mandatory. Reference to the logger service
+	// pod: Mandatory. Contains information about the edge cluster pod
+	// Returns the new instance or error if something goes wrong
+	NewEdgeClusterPodResolver(
+		ctx context.Context,
+		pod *edgeclusterGrpcContract.EdgeClusterPod) (EdgeClusterPodResolverContract, error)
 
-	// Name returns the object name
+	// NewEdgeClusterPodStatusResolver creates new instance of the EdgeClusterPodStatusResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
-	// Returns the object name
-	Name(ctx context.Context) string
+	// logger: Mandatory. Reference to the logger service
+	// status: Mandatory. Contains information about the edge cluster pod status
+	// Returns the new instance or error if something goes wrong
+	NewEdgeClusterPodStatusResolver(
+		ctx context.Context,
+		status *edgeclusterGrpcContract.EdgeClusterPodStatus) (EdgeClusterPodStatusResolverContract, error)
 
-	// Namespace returns the object namespace
+	// NewEdgeClusterPodSpecResolver creates new instance of the EdgeClusterPodSpecResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
-	// Returns the object namespace
-	Namespace(ctx context.Context) *string
-}
+	// logger: Mandatory. Reference to the logger service
+	// spec: Mandatory. Contains information about the edge cluster pod specification
+	// Returns the new instance or error if something goes wrong
+	NewEdgeClusterPodSpecResolver(
+		ctx context.Context,
+		spec *edgeclusterGrpcContract.EdgeClusterPodSpec) (EdgeClusterPodSpecResolverContract, error)
 
-// EdgeClusterNodeConditionResolverContract declares the resolver that returns Node Condition
-type EdgeClusterNodeConditionResolverContract interface {
-	// Type returns the type of node condition.
+	// NewEdgeClusterPodConditionResolver creates new instance of the EdgeClusterPodConditionResolverContract, setting up all dependencies and returns the instance
 	// ctx: Mandatory. Reference to the context
-	// Returns the type of node condition.
-	Type(ctx context.Context) string
-
-	// Status returns the status of the condition, one of True, False, Unknown.
-	// ctx: Mandatory. Reference to the context
-	// Returns the status of the condition, one of True, False, Unknown.
-	Status(ctx context.Context) string
-
-	// LastHeartbeatTime returns the last time we got an update on a given condition.
-	// ctx: Mandatory. Reference to the context
-	// Returns the last time we got an update on a given condition.
-	LastHeartbeatTime(ctx context.Context) string
-
-	// LastTransitionTime returns the last time the condition transit from one status to another.
-	// ctx: Mandatory. Reference to the context
-	// Returns the last time the condition transit from one status to another.
-	LastTransitionTime(ctx context.Context) string
-
-	// Reason returns the (brief) reason for the condition's last transition.
-	// ctx: Mandatory. Reference to the context
-	// Returns the (brief) reason for the condition's last transition.
-	Reason(ctx context.Context) string
-
-	// Message returns the human readable message indicating details about last transition.
-	// ctx: Mandatory. Reference to the context
-	// Returns the human readable message indicating details about last transition.
-	Message(ctx context.Context) string
-}
-
-// EdgeClusterNodeAddressResolverContract declares the resolver that contains information for the edge cluster node's address.
-type EdgeClusterNodeAddressResolverContract interface {
-	// Type returns the edge cluster node address type, one of Hostname, ExternalIP or InternalIP.
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster node address type, one of Hostname, ExternalIP or InternalIP.
-	NodeAddressType(ctx context.Context) string
-
-	// Address returns the node address.
-	// ctx: Mandatory. Reference to the context
-	// Returns the node address.
-	Address(ctx context.Context) string
-}
-
-// EdgeClusterNodeSystemInfoResolverContract declares the resolver that contains a set of ids/uuids to uniquely identify the node.
-type EdgeClusterNodeSystemInfoResolverContract interface {
-	// MachineID reported by the node. For unique machine identification in the cluster this field is preferred.
-	// ctx: Mandatory. Reference to the context
-	// Returns the MachineID reported by the node. For unique machine identification in the cluster this field is preferred.
-	MachineID(ctx context.Context) string
-
-	// SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts
-	// ctx: Mandatory. Reference to the context
-	// Returns the SystemUUID reported by the node. For unique machine identification MachineID is preferred. This field is specific to Red Hat hosts
-	SystemUUID(ctx context.Context) string
-
-	// BootID reported by the node.
-	// ctx: Mandatory. Reference to the context
-	// Returns the Boot ID reported by the node.
-	BootID(ctx context.Context) string
-
-	// KernelVersion reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).
-	// ctx: Mandatory. Reference to the context
-	// Returns the Kernel Version reported by the node from 'uname -r' (e.g. 3.16.0-0.bpo.4-amd64).
-	KernelVersion(ctx context.Context) string
-
-	// OSImage reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
-	// ctx: Mandatory. Reference to the context
-	// Returns the OS Image reported by the node from /etc/os-release (e.g. Debian GNU/Linux 7 (wheezy)).
-	OSImage(ctx context.Context) string
-
-	// ContainerRuntimeVersion reported by the node through runtime remote API (e.g. docker://1.5.0).
-	// ctx: Mandatory. Reference to the context
-	// Returns the ContainerRuntime Version reported by the node through runtime remote API (e.g. docker://1.5.0).
-	ContainerRuntimeVersion(ctx context.Context) string
-
-	// KubeletVersion reported by the node.
-	// ctx: Mandatory. Reference to the context
-	// Returns the Kubelet Version reported by the node.
-	KubeletVersion(ctx context.Context) string
-
-	// KubeProxyVersion reported by the node.
-	// ctx: Mandatory. Reference to the context
-	// Returns the KubeProxy Version reported by the node.
-	KubeProxyVersion(ctx context.Context) string
-
-	// OperatingSystem System reported by the node
-	// ctx: Mandatory. Reference to the context
-	// Returns the Operating System reported by the node
-	OperatingSystem(ctx context.Context) string
-
-	// The Architecture reported by the node
-	// ctx: Mandatory. Reference to the context
-	// Returns the Architecture reported by the node
-	Architecture(ctx context.Context) string
-}
-
-// EdgeClusterNodeStatusResolverContract declares the resolver that contains information about the status of a node.
-type EdgeClusterNodeStatusResolverContract interface {
-	// Conditions is an array of current observed node conditions.
-	// ctx: Mandatory. Reference to the context
-	// Returns an array of current observed node conditions resolver or error if something goes wrong.
-	Conditions(ctx context.Context) ([]EdgeClusterNodeConditionResolverContract, error)
-
-	// Addresses is the list of addresses reachable to the node.
-	// ctx: Mandatory. Reference to the context
-	// Returns the list of addresses reachable to the node resolver or error if something goes wrong.
-	Addresses(ctx context.Context) ([]EdgeClusterNodeAddressResolverContract, error)
-
-	// NodeInfo is the set of ids/uuids to uniquely identify the node.
-	// ctx: Mandatory. Reference to the context
-	// Returns the set of ids/uuids to uniquely identify the node resolver or error if something goes wrong.
-	NodeInfo(ctx context.Context) (EdgeClusterNodeSystemInfoResolverContract, error)
-}
-
-// EdgeClusterNodeResolverContract declares the resolver that contains information about the edge cluster node.
-type EdgeClusterNodeResolverContract interface {
-	// Metadata contains the node metadata
-	// ctx: Mandatory. Reference to the context
-	// Returns the node metadata resolver or error if something goes wrong.
-	Metadata(ctx context.Context) (EdgeClusterObjectMetadataResolverContract, error)
-
-	// Status contains the most recently observed status of the node
-	// ctx: Mandatory. Reference to the context
-	// Returns the most recently observed status of the node resolver or error if something goes wrong.
-	Status(ctx context.Context) (EdgeClusterNodeStatusResolverContract, error)
-}
-
-// EdgeClusterResolverContract declares the resolver that can retrieve edge cluster information
-type EdgeClusterResolverContract interface {
-	// ID returns edge cluster unique identifier
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster unique identifier
-	ID(ctx context.Context) graphql.ID
-
-	// Name returns edge cluster name
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster name
-	Name(ctx context.Context) string
-
-	// ClusterSecret returns edge cluster secret
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster secret
-	ClusterSecret(ctx context.Context) string
-
-	// ClusterType returns the edge cluster current type
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster current type or error if something went wrong
-	ClusterType(ctx context.Context) (string, error)
-
-	// Project returns edge cluster project
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster project resolver or error if something goes wrong.
-	Project(ctx context.Context) (EdgeClusterProjectResolverContract, error)
-
-	// ProvisionDetail returns edge cluster provisioning detail
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster provisioning detail resolver or error if something goes wrong.
-	ProvisionDetail(ctx context.Context) (EdgeClusterProvisionDetailResolverContract, error)
-
-	// Returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
-	// ctx: Mandatory. Reference to the context
-	// Returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
-	Nodes(ctx context.Context) ([]EdgeClusterNodeResolverContract, error)
-}
-
-// EdgeClusterTypeConnectionResolverContract declares the resolver that returns edge cluster edge compatible with graphql-relay
-type EdgeClusterTypeConnectionResolverContract interface {
-	// PageInfo returns the paging information compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the paging information resolver or error if something goes wrong.
-	PageInfo(ctx context.Context) (relay.PageInfoResolverContract, error)
-
-	// Edges returns the edge cluster edges compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster edges resolver or error if something goes wrong.
-	Edges(ctx context.Context) (*[]EdgeClusterTypeEdgeResolverContract, error)
-
-	// TotalCount returns total count of the matched edge clusters
-	// ctx: Mandatory. Reference to the context
-	// Returns the total count of the matched edge cluster
-	TotalCount(ctx context.Context) *int32
-}
-
-// EdgeClusterTypeEdgeResolverContract declares the resolver that returns edge cluster edge compatible with graphql-relay
-type EdgeClusterTypeEdgeResolverContract interface {
-	// Node returns the edge cluster resolver
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster resolver or error if something goes wrong
-	Node(ctx context.Context) (EdgeClusterResolverContract, error)
-
-	// Cursor returns the cursor for the edge cluster edge compatible with graphql-relay
-	// ctx: Mandatory. Reference to the context
-	// Returns the cursor
-	Cursor(ctx context.Context) string
-}
-
-// EdgeClusterProjectResolverContract declares the resolver that returns edge cluster project
-type EdgeClusterProjectResolverContract interface {
-	// ID returns project unique identifier
-	// ctx: Mandatory. Reference to the context
-	// Returns the project  unique identifier
-	ID(ctx context.Context) graphql.ID
-
-	// Name returns project name
-	// ctx: Mandatory. Reference to the context
-	// Returns the project name
-	Name(ctx context.Context) string
-}
-
-// IngressResolverContract declares the resolver that returns Ingress
-type IngressResolverContract interface {
-	// IP is set for load-balancer ingress points that are IP based
-	// (typically GCE or OpenStack load-balancers)
-	// ctx: Mandatory. Reference to the context
-	// Returns the IP is set for load-balancer ingress points that are IP based
-	IP(ctx context.Context) *string
-
-	// Hostname is set for load-balancer ingress points that are DNS based
-	// (typically AWS load-balancers)
-	// ctx: Mandatory. Reference to the context
-	// Returns the Hostname is set for load-balancer ingress points that are DNS based
-	Hostname(ctx context.Context) *string
-}
-
-// PortResolverContract declares the resolver that returns Port
-type PortResolverContract interface {
-	// Port returns the port number of the edge-cluster master port of which status is recorded here
-	// ctx: Mandatory. Reference to the context
-	// Returns the port number of the edge-cluster master port of which status is recorded here
-	Port(ctx context.Context) int32
-
-	// Protocol returns the protocol of the edge-cluster master port of which status is recorded here
-	// ctx: Mandatory. Reference to the context
-	// Returns the protocol of the edge-cluster master port of which status is recorded here
-	Protocol(ctx context.Context) string
-}
-
-// EdgeClusterProvisionDetailResolverContract declares the resolver that returns edge cluster provisioning details
-type EdgeClusterProvisionDetailResolverContract interface {
-	// Ingress returns the ingress details of the edge cluster master node
-	// ctx: Mandatory. Reference to the context
-	// Returns the ingress details of the edge cluster master node resolvers or error if something goes wrong.
-	Ingress(ctx context.Context) ([]IngressResolverContract, error)
-
-	// Ports is a list of records of edge-cluster master ports
-	// ctx: Mandatory. Reference to the context
-	// Returns the Ports is a list of records of edge-cluster master ports resolvers or error if something goes wrong.
-	Ports(ctx context.Context) ([]PortResolverContract, error)
-
-	// KubeconfigContent returns the edge cluster Kubeconfig content
-	// ctx: Mandatory. Reference to the context
-	// Returns the edge cluster Kubeconfig content
-	KubeconfigContent(ctx context.Context) *string
+	// condition: Mandatory. Contains condition information for a pod.
+	// Returns the new instance or error if something goes wrong
+	NewEdgeClusterPodConditionResolver(
+		ctx context.Context,
+		condition *edgeclusterGrpcContract.EdgeClusterPodCondition) (EdgeClusterPodConditionResolverContract, error)
 }
 
 type EdgeClusterDetail struct {

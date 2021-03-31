@@ -148,7 +148,7 @@ func (r *edgeClusterResolver) ProvisionDetail(ctx context.Context) (edgecluster.
 	return r.resolverCreator.NewEdgeClusterProvisionDetailResolver(ctx, r.edgeClusterDetail.ProvisionDetail)
 }
 
-// Returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
+// Nodes returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
 // ctx: Mandatory. Reference to the context
 // Returns the resolver that resolves the nodes that are part of the given edge cluster or error if something goes wrong.
 func (r *edgeClusterResolver) Nodes(ctx context.Context) ([]edgecluster.EdgeClusterNodeResolverContract, error) {
@@ -178,6 +178,58 @@ func (r *edgeClusterResolver) Nodes(ctx context.Context) ([]edgecluster.EdgeClus
 
 	for _, node := range listEdgeClusterNodesResponse.Nodes {
 		resolver, err := r.resolverCreator.NewEdgeClusterNodeResolver(ctx, node)
+
+		if err != nil {
+			return nil, err
+		}
+
+		response = append(response, resolver)
+	}
+
+	return response, nil
+}
+
+// Pods returns the resolver that resolves the pods that are part of the given edge cluster or error if something goes wrong.
+// ctx: Mandatory. Reference to the context
+// args: Mandatory. Reference to the query argument
+// Returns the resolver that resolves the pods that are part of the given edge cluster or error if something goes wrong.
+func (r *edgeClusterResolver) Pods(ctx context.Context, args edgecluster.EdgeClusterPodInputArgument) ([]edgecluster.EdgeClusterPodResolverContract, error) {
+	connection, edgeClusterServiceClient, err := r.edgeClusterClientService.CreateClient()
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		_ = connection.Close()
+	}()
+
+	request := &edgeclusterGrpcContract.ListEdgeClusterPodsRequest{
+		EdgeClusterID: r.edgeclusterID,
+	}
+
+	if args.NodeName != nil {
+		request.NodeName = *args.NodeName
+	}
+
+	if args.Namespace != nil {
+		request.Namespace = *args.Namespace
+	}
+
+	listEdgeClusterNodesResponse, err := edgeClusterServiceClient.ListEdgeClusterPods(
+		ctx,
+		request)
+	if err != nil {
+		return nil, err
+	}
+
+	if listEdgeClusterNodesResponse.Error != edgeclusterGrpcContract.Error_NO_ERROR {
+		return nil, errors.New(listEdgeClusterNodesResponse.ErrorMessage)
+	}
+
+	response := []edgecluster.EdgeClusterPodResolverContract{}
+
+	for _, pod := range listEdgeClusterNodesResponse.Pods {
+		resolver, err := r.resolverCreator.NewEdgeClusterPodResolver(ctx, pod)
 
 		if err != nil {
 			return nil, err
