@@ -22,7 +22,7 @@ export GOARCH ?= amd64
 GOFILES = $(shell find . -type f -name '*.go' -not -path "*/mock/*.go" -not -path "*.pb.go" -not -path "*-packr.go")
 
 .PHONY: all
-all: build-graphql dep build install ## Build GraphQL contract, get deps, and build, and install binary
+all: build-graphql dep build-mocks build install ## Build GraphQL contract, get deps, and build, and install binary
 
 .PHONY: clean
 clean: ## Clean the working area and the project
@@ -47,6 +47,10 @@ build: GOARGS += -tags "$(GOTAGS)" -ldflags "$(LDFLAGS)" -o $(BUILD_DIR)/$(BINAR
 build: ## Build the binary
 	@packr
 	@go build -v $(GOARGS) $(PACKAGE_DIR)/main.go
+
+.PHONY: build-mocks
+build-mocks: ## Build mocks
+	@$(CURRENT_DIRECTORY)/scripts/build-mocks.sh
 
 .PHONY: install
 install: ## Install the api-gateway binary to /usr/local/bin
