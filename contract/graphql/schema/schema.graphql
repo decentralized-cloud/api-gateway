@@ -41,13 +41,16 @@ type EdgeCluster implements Node {
   project: EdgeClusterProject!
 
   """The edge cluster provision details"""
-  provisionDetail: EdgeClusterProvisionDetail
+  provisionDetails: ProvisionDetails!
 
   """The list of edge cluster nodes details"""
   nodes: [EdgeClusterNode!]!
 
-  """The list of edge cluster nodes details"""
+  """The list of edge cluster pods details"""
   pods(nodeName: String, namespace: String): [EdgeClusterPod!]!
+
+  """The list of edge cluster services details"""
+  services(namespace: String): [EdgeClusterService!]!
 }
 
 """The different cluster types"""
@@ -64,39 +67,50 @@ type EdgeClusterProject implements Node {
 """
 The edge cluster provision details contains details such as current status of the edge cluster as well as ingress address of the edge cluster to connect to
 """
-type EdgeClusterProvisionDetail {
-  """The ingress details of the edge cluster master node"""
-  ingress: [Ingress!]!
-
-  """The ingress details of the edge cluster master node"""
-  ports: [Port!]!
+type ProvisionDetails {
+  """LoadBalancer contains the current status of the load-balancer"""
+  loadBalancer: LoadBalancerStatus
 
   """The provisioned edge cluster kubeconfig content"""
   kubeconfigContent: String
 }
 
-"""
-Ingress represents the status of a load-balancer ingress point traffic intended for the service should be sent to an ingress point
-"""
-type Ingress {
+"""LoadBalancerStatus represents the status of a load-balancer"""
+type LoadBalancerStatus {
   """
-  IP is set for load-balancer ingress points that are IP based, (typically GCE or OpenStack load-balancers)
+  Ingress is a list containing ingress points for the load-balancer. Traffic intended for the service should be sent to these ingress points
   """
-  ip: String
-
-  """
-  Hostname is set for load-balancer ingress points that are DNS based, (typically AWS load-balancers)
-  """
-  hostname: String
+  ingress: [LoadBalancerIngress!]!
 }
 
-"""Port contains information on service port"""
-type Port {
-  """The port number of the edge-cluster master port"""
+"""
+LoadBalancerIngress represents the status of a load-balancer ingress point traffic intended for the service should be sent to an ingress point
+"""
+type LoadBalancerIngress {
+  """IP is set for load-balancer ingress points that are IP based"""
+  ip: String!
+
+  """Hostname is set for load-balancer ingress points that are DNS based"""
+  hostname: String!
+
+  """Ports is a list of records of service ports"""
+  portStatus: [PortStatus!]!
+}
+
+"""PortStatus represents the error condition of a service port"""
+type PortStatus {
+  """
+  Port is the port number of the service port of which status is recorded here
+  """
   port: Int!
 
-  """The protocol of the edge-cluster master port"""
+  """
+  Protocol is the protocol of the service port of which status is recorded here
+  """
   protocol: Protocol!
+
+  """Error is to record the problem with the service port"""
+  error: String
 }
 
 """Protocol defines network protocols"""
@@ -114,14 +128,14 @@ enum Protocol {
 """Contains information about the edge cluster node"""
 type EdgeClusterNode {
   """The node metadata"""
-  metadata: EdgeClusterObjectMetadata!
+  metadata: ObjectMeta!
 
   """The most recently observed status of the node"""
-  status: EdgeClusterNodeStatus!
+  status: NodeStatus!
 }
 
-"""Contains standard edge cluster objects metadata."""
-type EdgeClusterObjectMetadata {
+"""Contains standard edge cluster objects metadata"""
+type ObjectMeta {
   """The object unique identitfier"""
   id: ID!
 
@@ -129,44 +143,44 @@ type EdgeClusterObjectMetadata {
   name: String!
 
   """The object namespace"""
-  namespace: String
+  namespace: String!
 }
 
 """Contains information about the current status of a node"""
-type EdgeClusterNodeStatus {
+type NodeStatus {
   """Conditions is an array of current observed node conditions"""
-  conditions: [EdgeClusterNodeCondition!]!
+  conditions: [NodeCondition!]!
 
   """Addresses is the list of addresses reachable to the node"""
-  addresses: [EdgeClusterNodeAddress!]!
+  addresses: [NodeAddress!]!
 
   """NodeInfo is the set of ids/uuids to uniquely identify the node"""
-  nodeInfo: EdgeClusterNodeSystemInfo!
+  nodeInfo: NodeSystemInfo!
 }
 
 """ Current service state of node"""
-type EdgeClusterNodeCondition {
-  """Type of node condition"""
-  type: EdgeClusterNodeConditionType!
+type NodeCondition {
+  """Type is the type of the condition"""
+  type: NodeConditionType!
 
-  """Status of the condition, one of True, False, Unknown"""
-  status: EdgeClusterNodeConditionStatus!
+  """Status is the status of the condition"""
+  status: ConditionStatus!
 
   """Last time we got an update on a given condition"""
   lastHeartbeatTime: String!
 
-  """Last time the condition transit from one status to another"""
+  """Last time the condition transitioned from one status to another"""
   lastTransitionTime: String!
 
-  """(brief) reason for the condition last transition"""
+  """Unique, one-word, CamelCase reason for the condition last transition"""
   reason: String!
 
-  """Human readable message indicating details about last transition"""
+  """Human-readable message indicating details about last transition"""
   message: String!
 }
 
 """The valid conditions of node"""
-enum EdgeClusterNodeConditionType {
+enum NodeConditionType {
   """NodeReady means kubelet is healthy and ready to accept pods"""
   Ready
 
@@ -192,7 +206,7 @@ enum EdgeClusterNodeConditionType {
 }
 
 """These are valid condition statuses"""
-enum EdgeClusterNodeConditionStatus {
+enum ConditionStatus {
   """True means a resource is in the condition"""
   True
 
@@ -206,18 +220,18 @@ enum EdgeClusterNodeConditionStatus {
 }
 
 """The information for the edge cluster node address"""
-type EdgeClusterNodeAddress {
+type NodeAddress {
   """
   Edge cluster node address type, one of Hostname, ExternalIP or InternalIP
   """
-  nodeAddressType: EdgeClusterNodeAddressType!
+  nodeAddressType: NodeAddressType!
 
   """The node address"""
   address: String!
 }
 
 """The valid address type of edge cluster node"""
-enum EdgeClusterNodeAddressType {
+enum NodeAddressType {
   Hostname
   ExternalIP
   InternalIP
@@ -226,7 +240,7 @@ enum EdgeClusterNodeAddressType {
 }
 
 """contains a set of ids/uuids to uniquely identify the node"""
-type EdgeClusterNodeSystemInfo {
+type NodeSystemInfo {
   """
   MachineID reported by the node. For unique machine identification in the cluster this field is preferred
   """
@@ -241,7 +255,7 @@ type EdgeClusterNodeSystemInfo {
   bootID: String!
 
   """
-  Kernel Version reported by the node from "uname -r" (e.g. 3.16.0-0.bpo.4-amd64).
+  Kernel Version reported by the node from "uname -r" (e.g. 3.16.0-0.bpo.4-amd64)
   """
   kernelVersion: String!
 
@@ -271,52 +285,52 @@ type EdgeClusterNodeSystemInfo {
 """Contains information about the edge cluster pod"""
 type EdgeClusterPod {
   """The pod metadata"""
-  metadata: EdgeClusterObjectMetadata!
+  metadata: ObjectMeta!
 
   """The most recently observed status of the pod"""
-  status: EdgeClusterPodStatus!
+  status: PodStatus!
 
-  """The specification of the desired behavior of the pod."""
-  spec: EdgeClusterPodSpec!
+  """The specification of the desired behavior of the pod"""
+  spec: PodSpec!
 }
 
 """
 Contains the most recently observed status of the existing edge cluster pod
 """
-type EdgeClusterPodStatus {
-  """IP address allocated to the pod. Routable at least within the cluster."""
+type PodStatus {
+  """IP address allocated to the pod. Routable at least within the cluster"""
   hostIP: String!
 
-  """IP address allocated to the pod. Routable at least within the cluster."""
+  """IP address allocated to the pod. Routable at least within the cluster"""
   podIP: String!
 
   """Current service state of edge cluster pod"""
-  conditions: [EdgeClusterPodCondition!]!
+  conditions: [PodCondition!]!
 }
 
 """ Current service state of pod"""
-type EdgeClusterPodCondition {
-  """Type of pod condition"""
-  type: EdgeClusterPodConditionType!
+type PodCondition {
+  """Type is the type of the condition"""
+  type: PodConditionType!
 
-  """Status of the condition, one of True, False, Unknown"""
-  status: EdgeClusterNodeConditionStatus!
+  """Status is the status of the condition"""
+  status: ConditionStatus!
 
   """Last time we got an update on a given condition"""
   lastProbeTime: String!
 
-  """Last time the condition transit from one status to another"""
+  """Last time the condition transitioned from one status to another"""
   lastTransitionTime: String!
 
-  """(brief) reason for the condition last transition"""
+  """Unique, one-word, CamelCase reason for the condition last transition"""
   reason: String!
 
-  """Human readable message indicating details about last transition"""
+  """Human-readable message indicating details about last transition"""
   message: String!
 }
 
 """The edge cluster pod condition"""
-enum EdgeClusterPodConditionType {
+enum PodConditionType {
   ContainersReady
   PodInitialized
   PodReady
@@ -326,9 +340,119 @@ enum EdgeClusterPodConditionType {
 """
 Contains the specification of the desired behavior of the existing edge cluster pod
 """
-type EdgeClusterPodSpec {
+type PodSpec {
   """The name of the node where the Pod is deployed into"""
   nodeName: String!
+}
+
+"""Contains information about the edge cluster service"""
+type EdgeClusterService {
+  """The service metadata"""
+  metadata: ObjectMeta!
+
+  """The most recently observed status of the service"""
+  status: ServiceStatus!
+
+  """The specification of the desired behavior of the service"""
+  spec: ServiceSpec!
+}
+
+"""
+Contains the most recently observed status of the existing edge cluster service
+"""
+type ServiceStatus {
+  """LoadBalancer contains the current status of the load-balancer"""
+  loadBalancer: LoadBalancerStatus
+
+  """Current service state of service"""
+  conditions: [ServiceCondition!]!
+}
+
+""" Current service state of pod"""
+type ServiceCondition {
+  """Type is the type of the condition"""
+  type: String!
+
+  """Status is the status of the condition"""
+  status: ConditionStatus!
+
+  """Last time the condition transitioned from one status to another"""
+  lastTransitionTime: String!
+
+  """Unique, one-word, CamelCase reason for the condition last transition"""
+  reason: String!
+
+  """Human-readable message indicating details about last transition"""
+  message: String!
+}
+
+"""
+Contains the specification of the desired behavior of the existing edge cluster service
+"""
+type ServiceSpec {
+  """The list of ports that are exposed by this service"""
+  ports: [ServicePort!]!
+
+  """clusterIPs is a list of IP addresses assigned to this service"""
+  clusterIPs: [String!]!
+
+  """type determines how the Service is exposed"""
+  type: ServiceType!
+
+  """
+  externalIPs is a list of IP addresses for which nodes in the cluster will also accept traffic for this service
+  """
+  externalIPs: [String!]!
+
+  """
+  externalName is the external reference that discovery mechanisms will return as an alias for this service (e.g. a DNS CNAME record)
+  """
+  externalName: String
+}
+
+"""ServicePort contains information on service port"""
+type ServicePort {
+  """The name of this port within the service"""
+  name: String!
+
+  """The IP protocol for this port"""
+  protocol: Protocol!
+
+  """The port that will be exposed by this service"""
+  port: Int!
+
+  """
+  Number or name of the port to access on the pods targeted by the service
+  """
+  targetPort: String!
+
+  """
+  The port on each node on which this service is exposed when type is NodePort or LoadBalancer
+  """
+  nodePort: Int!
+}
+
+"""ServiceType string describes ingress methods for a service"""
+enum ServiceType {
+  """
+  ClusterIP means a service will only be accessible inside the cluster, via the cluster IP
+  """
+  ClusterIP
+
+  """
+  NodePort means a service will be exposed on one port of every node, in addition to ClusterIP type
+  """
+  NodePort
+
+  """
+  LoadBalancer means a service will be exposed via an external load balancer (if the cloud provider supports it), in addition to NodePort type
+  """
+  LoadBalancer
+
+  """
+  ExternalName means a service consists of only a reference to an external name that kubedns or equivalent will return as a CNAME record, with no exposing or proxying of any pods involved
+  """
+  ExternalName
 }
 
 """A connection to a list of items."""

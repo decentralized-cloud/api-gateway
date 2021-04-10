@@ -26,7 +26,7 @@ func NewEdgeClusterPodResolver(
 	ctx context.Context,
 	logger *zap.Logger,
 	resolverCreator types.ResolverCreatorContract,
-	pod *edgeclusterGrpcContract.EdgeClusterPod) (edgecluster.EdgeClusterPodResolverContract, error) {
+	pod *edgeclusterGrpcContract.EdgeClusterPod) (edgecluster.PodResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -53,20 +53,20 @@ func NewEdgeClusterPodResolver(
 // Metadata contains the pod metadata
 // ctx: Mandatory. Reference to the context
 // Returns the pod metadata resolver or error if something goes wrong.
-func (r *edgeClusterPodResolver) Metadata(ctx context.Context) (edgecluster.EdgeClusterObjectMetadataResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterObjectMetadataResolverContract(ctx, r.pod.Metadata)
+func (r *edgeClusterPodResolver) Metadata(ctx context.Context) (edgecluster.ObjectMetaResolverContract, error) {
+	return r.resolverCreator.NewObjectMetaResolver(ctx, r.pod.Metadata)
 }
 
 // Status contains the most recently observed status of the pod
 // ctx: Mandatory. Reference to the context
 // Returns the most recently observed status of the pod resolver or error if something goes wrong.
-func (r *edgeClusterPodResolver) Status(ctx context.Context) (edgecluster.EdgeClusterPodStatusResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterPodStatusResolver(ctx, r.pod.Status)
+func (r *edgeClusterPodResolver) Status(ctx context.Context) (edgecluster.PodStatusResolverContract, error) {
+	return r.resolverCreator.NewPodStatusResolver(ctx, r.pod.Status)
 }
 
 // Status contains the specification of the desired behavior of the pod
 // ctx: Mandatory. Reference to the context
 // Returns the specification of the desired behavior of the pod resolver or error if something goes wrong.
-func (r *edgeClusterPodResolver) Spec(ctx context.Context) (edgecluster.EdgeClusterPodSpecResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterPodSpecResolver(ctx, r.pod.Spec)
+func (r *edgeClusterPodResolver) Spec(ctx context.Context) (edgecluster.PodSpecResolverContract, error) {
+	return r.resolverCreator.NewPodSpecResolver(ctx, r.pod.Spec)
 }

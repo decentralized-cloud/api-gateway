@@ -26,7 +26,7 @@ func NewEdgeClusterNodeResolver(
 	ctx context.Context,
 	logger *zap.Logger,
 	resolverCreator types.ResolverCreatorContract,
-	node *edgeclusterGrpcContract.EdgeClusterNode) (edgecluster.EdgeClusterNodeResolverContract, error) {
+	node *edgeclusterGrpcContract.EdgeClusterNode) (edgecluster.NodeResolverContract, error) {
 	if ctx == nil {
 		return nil, commonErrors.NewArgumentNilError("ctx", "ctx is required")
 	}
@@ -53,13 +53,13 @@ func NewEdgeClusterNodeResolver(
 // Metadata contains the node metadata
 // ctx: Mandatory. Reference to the context
 // Returns the node metadata resolver or error if something goes wrong.
-func (r *edgeClusterNodeResolver) Metadata(ctx context.Context) (edgecluster.EdgeClusterObjectMetadataResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterObjectMetadataResolverContract(ctx, r.node.Metadata)
+func (r *edgeClusterNodeResolver) Metadata(ctx context.Context) (edgecluster.ObjectMetaResolverContract, error) {
+	return r.resolverCreator.NewObjectMetaResolver(ctx, r.node.Metadata)
 }
 
 // Status contains the most recently observed status of the node
 // ctx: Mandatory. Reference to the context
 // Returns the most recently observed status of the node resolver or error if something goes wrong.
-func (r *edgeClusterNodeResolver) Status(ctx context.Context) (edgecluster.EdgeClusterNodeStatusResolverContract, error) {
-	return r.resolverCreator.NewEdgeClusterNodeStatusResolver(ctx, r.node.Status)
+func (r *edgeClusterNodeResolver) Status(ctx context.Context) (edgecluster.NodeStatusResolverContract, error) {
+	return r.resolverCreator.NewNodeStatusResolver(ctx, r.node.Status)
 }

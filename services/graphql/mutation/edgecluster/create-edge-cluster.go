@@ -126,7 +126,7 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 	if args.Input.ClusterType == "K3S" {
 		clusterType = edgeclusterGrpcContract.ClusterType_K3S
 	} else {
-		return nil, fmt.Errorf("Cluster type is not supported. Cluster type: %v", args.Input.ClusterType)
+		return nil, fmt.Errorf("cluster type is not supported. Cluster type: %v", args.Input.ClusterType)
 	}
 
 	response, err := edgeClusterServiceClient.CreateEdgeCluster(
@@ -151,8 +151,8 @@ func (m *createEdgeCluster) MutateAndGetPayload(
 		args.Input.ClientMutationId,
 		response.EdgeClusterID,
 		&edgecluster.EdgeClusterDetail{
-			EdgeCluster:     response.EdgeCluster,
-			ProvisionDetail: response.ProvisionDetail,
+			EdgeCluster:      response.EdgeCluster,
+			ProvisionDetails: response.ProvisionDetail,
 		},
 		response.Cursor)
 }

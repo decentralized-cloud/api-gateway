@@ -22,7 +22,7 @@ export GOARCH ?= amd64
 GOFILES = $(shell find . -type f -name '*.go' -not -path "*/mock/*.go" -not -path "*.pb.go" -not -path "*-packr.go")
 
 .PHONY: all
-all: build-graphql dep build-mocks build install ## Build GraphQL contract, get deps, and build, and install binary
+all: compile-graphql dep build-mocks build install ## Compile GraphQL, get deps, and build, and install binary
 
 .PHONY: clean
 clean: ## Clean the working area and the project
@@ -38,8 +38,8 @@ dep: ## Install dependencies
 	@go mod tidy
 	@go get -v -t ./...
 
-.PHONY: build-graphql
-build-graphql: ## Build GraphQL
+.PHONY: compile-graphql
+compile-graphql: ## Compile GraphQL
 	@$(CURRENT_DIRECTORY)/scripts/compile-graphql.sh
 
 .PHONY: build

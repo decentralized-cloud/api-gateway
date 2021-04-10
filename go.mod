@@ -3,8 +3,8 @@ module github.com/decentralized-cloud/api-gateway
 go 1.16
 
 require (
-	github.com/decentralized-cloud/edge-cluster v0.8.1
-	github.com/decentralized-cloud/project v0.6.0
+	github.com/decentralized-cloud/edge-cluster v0.9.4
+	github.com/decentralized-cloud/project v0.8.3
 	github.com/friendsofgo/graphiql v0.2.2
 	github.com/go-kit/kit v0.10.0
 	github.com/gobuffalo/envy v1.9.0 // indirect
@@ -22,6 +22,6 @@ require (
 	github.com/valyala/fasthttp v1.22.0
 	go.uber.org/zap v1.16.0
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
-	golang.org/x/sys v0.0.0-20210326220804-49726bf1d181 // indirect
+	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57 // indirect
 	google.golang.org/grpc v1.36.1
 )

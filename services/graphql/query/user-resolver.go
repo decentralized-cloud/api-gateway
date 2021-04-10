@@ -155,9 +155,9 @@ func (r *userResolver) Projects(
 		_ = connection.Close()
 	}()
 
-	response, err := projectServiceClient.Search(
+	response, err := projectServiceClient.ListProjects(
 		ctx,
-		&projectGrpcContract.SearchRequest{
+		&projectGrpcContract.ListProjectsRequest{
 			Pagination:     &pagination,
 			SortingOptions: sortingOptions,
 			ProjectIDs:     projectIDs,
@@ -262,9 +262,9 @@ func (r *userResolver) EdgeClusters(
 		_ = connection.Close()
 	}()
 
-	response, err := edgeClusterServiceClient.Search(
+	response, err := edgeClusterServiceClient.ListEdgeClusters(
 		ctx,
-		&edgeClusterGrpcContract.SearchRequest{
+		&edgeClusterGrpcContract.ListEdgeClustersRequest{
 			Pagination:     &pagination,
 			SortingOptions: sortingOptions,
 			EdgeClusterIDs: edgeClusterIDs,
