@@ -1,10 +1,56 @@
 // packae edgecluster implements used edge cluster related types in the GraphQL transport layer
 package edgecluster
 
-import "context"
+import (
+	"context"
 
-// EdgeClusterNodeConditionResolverContract declares the resolver that returns the current service state of node
-type EdgeClusterNodeConditionResolverContract interface {
+	edgeclusterGrpcContract "github.com/decentralized-cloud/edge-cluster/contract/grpc/go"
+)
+
+type EdgeClusterNodeResolverCreatorContract interface {
+	// NewNodeConditionResolver creates new instance of the NodeConditionResolverContractContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// condition: Mandatory. Contains condition information for a node.
+	// Returns the new instance or error if something goes wrong
+	NewNodeConditionResolver(
+		ctx context.Context,
+		condition *edgeclusterGrpcContract.NodeCondition) (NodeConditionResolverContract, error)
+
+	// NewNodeAddressResolver creates new instance of the NodeAddressResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// nodeAddresss: Mandatory. Contains information for the edge cluster node's address.
+	// Returns the new instance or error if something goes wrong
+	NewNodeAddressResolver(
+		ctx context.Context,
+		nodeAddresss *edgeclusterGrpcContract.EdgeClusterNodeAddress) (NodeAddressResolverContract, error)
+
+	// NewNodeSystemInfoResolver creates new instance of the NodeSystemInfoResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// nodeInfo: Mandatory. Contains a set of ids/uuids to uniquely identify the node.
+	// Returns the new instance or error if something goes wrong
+	NewNodeSystemInfoResolver(
+		ctx context.Context,
+		nodeInfo *edgeclusterGrpcContract.NodeSystemInfo) (NodeSystemInfoResolverContract, error)
+
+	// NewNodeStatusResolver creates new instance of the NodeStatusResolverContractContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// status: Mandatory. Contains information about the edge cluster node status
+	// Returns the new instance or error if something goes wrong
+	NewNodeStatusResolver(
+		ctx context.Context,
+		status *edgeclusterGrpcContract.NodeStatus) (NodeStatusResolverContract, error)
+
+	// NewEdgeClusterNodeResolver creates new instance of the NodeResolverContract, setting up all dependencies and returns the instance
+	// ctx: Mandatory. Reference to the context
+	// node: Mandatory. Contains information about the edge cluster node
+	// Returns the new instance or error if something goes wrong
+	NewEdgeClusterNodeResolver(
+		ctx context.Context,
+		node *edgeclusterGrpcContract.EdgeClusterNode) (NodeResolverContract, error)
+}
+
+// NodeConditionResolverContract declares the resolver that returns the current service state of node
+type NodeConditionResolverContract interface {
 	// Type returns the type of node condition.
 	// ctx: Mandatory. Reference to the context
 	// Returns the type of node condition.
@@ -36,8 +82,8 @@ type EdgeClusterNodeConditionResolverContract interface {
 	Message(ctx context.Context) string
 }
 
-// EdgeClusterNodeAddressResolverContract declares the resolver that contains information for the edge cluster node's address.
-type EdgeClusterNodeAddressResolverContract interface {
+// NodeAddressResolverContract declares the resolver that contains information for the edge cluster node's address.
+type NodeAddressResolverContract interface {
 	// Type returns the edge cluster node address type, one of Hostname, ExternalIP or InternalIP.
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster node address type, one of Hostname, ExternalIP or InternalIP.
@@ -49,8 +95,8 @@ type EdgeClusterNodeAddressResolverContract interface {
 	Address(ctx context.Context) string
 }
 
-// EdgeClusterNodeSystemInfoResolverContract declares the resolver that contains a set of ids/uuids to uniquely identify the node.
-type EdgeClusterNodeSystemInfoResolverContract interface {
+// NodeSystemInfoResolverContract declares the resolver that contains a set of ids/uuids to uniquely identify the node.
+type NodeSystemInfoResolverContract interface {
 	// MachineID reported by the node. For unique machine identification in the cluster this field is preferred.
 	// ctx: Mandatory. Reference to the context
 	// Returns the MachineID reported by the node. For unique machine identification in the cluster this field is preferred.
@@ -102,33 +148,33 @@ type EdgeClusterNodeSystemInfoResolverContract interface {
 	Architecture(ctx context.Context) string
 }
 
-// EdgeClusterNodeStatusResolverContract declares the resolver that contains information about the status of a node.
-type EdgeClusterNodeStatusResolverContract interface {
+// NodeStatusResolverContract declares the resolver that contains information about the status of a node.
+type NodeStatusResolverContract interface {
 	// Conditions is an array of current observed node conditions.
 	// ctx: Mandatory. Reference to the context
 	// Returns an array of current observed node conditions resolver or error if something goes wrong.
-	Conditions(ctx context.Context) ([]EdgeClusterNodeConditionResolverContract, error)
+	Conditions(ctx context.Context) ([]NodeConditionResolverContract, error)
 
 	// Addresses is the list of addresses reachable to the node.
 	// ctx: Mandatory. Reference to the context
 	// Returns the list of addresses reachable to the node resolver or error if something goes wrong.
-	Addresses(ctx context.Context) ([]EdgeClusterNodeAddressResolverContract, error)
+	Addresses(ctx context.Context) ([]NodeAddressResolverContract, error)
 
 	// NodeInfo is the set of ids/uuids to uniquely identify the node.
 	// ctx: Mandatory. Reference to the context
 	// Returns the set of ids/uuids to uniquely identify the node resolver or error if something goes wrong.
-	NodeInfo(ctx context.Context) (EdgeClusterNodeSystemInfoResolverContract, error)
+	NodeInfo(ctx context.Context) (NodeSystemInfoResolverContract, error)
 }
 
-// EdgeClusterNodeResolverContract declares the resolver that contains information about the edge cluster node.
-type EdgeClusterNodeResolverContract interface {
+// NodeResolverContract declares the resolver that contains information about the edge cluster node.
+type NodeResolverContract interface {
 	// Metadata contains the node metadata
 	// ctx: Mandatory. Reference to the context
 	// Returns the node metadata resolver or error if something goes wrong.
-	Metadata(ctx context.Context) (EdgeClusterObjectMetadataResolverContract, error)
+	Metadata(ctx context.Context) (ObjectMetaResolverContract, error)
 
 	// Status contains the most recently observed status of the node
 	// ctx: Mandatory. Reference to the context
 	// Returns the most recently observed status of the node resolver or error if something goes wrong.
-	Status(ctx context.Context) (EdgeClusterNodeStatusResolverContract, error)
+	Status(ctx context.Context) (NodeStatusResolverContract, error)
 }

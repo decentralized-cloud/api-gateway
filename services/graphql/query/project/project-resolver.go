@@ -150,9 +150,9 @@ func (r *projectResolver) EdgeClusters(
 		_ = connection.Close()
 	}()
 
-	response, err := edgeClusterServiceClient.Search(
+	response, err := edgeClusterServiceClient.ListEdgeClusters(
 		ctx,
-		&edgeClusterGrpcContract.SearchRequest{
+		&edgeClusterGrpcContract.ListEdgeClustersRequest{
 			Pagination: &edgeClusterGrpcContract.Pagination{
 				After:  "",
 				First:  1000,

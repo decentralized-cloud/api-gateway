@@ -11,5 +11,5 @@ type EdgeClusterClientContract interface {
 	// CreateClient creats a new edge cluster gRPC client and returns the connection
 	// and the client to the caller.
 	// Returns connection and the edge cluster gRPC client or error if something goes wrong.
-	CreateClient() (*grpc.ClientConn, edgeClusterGrpcContract.EdgeClusterServiceClient, error)
+	CreateClient() (*grpc.ClientConn, edgeClusterGrpcContract.ServiceClient, error)
 }

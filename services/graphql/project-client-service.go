@@ -35,11 +35,11 @@ func NewProjectClientService(
 // CreateClient creats a new project gRPC client and returns the connection
 // and the client to the caller.
 // Returns connection and the project gRPC client or error if something goes wrong.
-func (service *projectClientService) CreateClient() (*grpc.ClientConn, projectGrpcContract.ProjectServiceClient, error) {
+func (service *projectClientService) CreateClient() (*grpc.ClientConn, projectGrpcContract.ServiceClient, error) {
 	connection, err := grpc.Dial(service.serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return connection, projectGrpcContract.NewProjectServiceClient(connection), nil
+	return connection, projectGrpcContract.NewServiceClient(connection), nil
 }

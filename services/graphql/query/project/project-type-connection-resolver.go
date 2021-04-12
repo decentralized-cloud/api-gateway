@@ -80,21 +80,18 @@ func (r *projectTypeConnectionResolver) Edges(ctx context.Context) (*[]project.P
 	}).([]*projectGrpcContract.ProjectWithCursor)
 
 	edges := []project.ProjectTypeEdgeResolverContract{}
-
 	for _, item := range projects {
-		edge, err := r.resolverCreator.NewProjectTypeEdgeResolver(
+		if edge, err := r.resolverCreator.NewProjectTypeEdgeResolver(
 			ctx,
 			item.ProjectID,
 			item.Cursor,
 			&project.ProjectDetail{
 				Project: item.Project,
-			})
-
-		if err != nil {
+			}); err != nil {
 			return nil, err
+		} else {
+			edges = append(edges, edge)
 		}
-
-		edges = append(edges, edge)
 	}
 
 	return &edges, nil

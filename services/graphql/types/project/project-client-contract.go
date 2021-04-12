@@ -11,5 +11,5 @@ type ProjectClientContract interface {
 	// CreateClient creats a new project gRPC client and returns the connection
 	// and the client to the caller.
 	// Returns connection and the project gRPC client or error if something goes wrong.
-	CreateClient() (*grpc.ClientConn, projectGrpcContract.ProjectServiceClient, error)
+	CreateClient() (*grpc.ClientConn, projectGrpcContract.ServiceClient, error)
 }

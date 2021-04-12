@@ -35,11 +35,11 @@ func NewEdgeClusterClientService(
 // CreateClient creats a new edge cluster gRPC client and returns the connection
 // and the client to the caller.
 // Returns connection and the edge cluster gRPC client or error if something goes wrong.
-func (service *edgeClusterClientService) CreateClient() (*grpc.ClientConn, edgeClusterGrpcContract.EdgeClusterServiceClient, error) {
+func (service *edgeClusterClientService) CreateClient() (*grpc.ClientConn, edgeClusterGrpcContract.ServiceClient, error) {
 	connection, err := grpc.Dial(service.serviceAddress, grpc.WithInsecure())
 	if err != nil {
 		return nil, nil, err
 	}
 
-	return connection, edgeClusterGrpcContract.NewEdgeClusterServiceClient(connection), nil
+	return connection, edgeClusterGrpcContract.NewServiceClient(connection), nil
 }
