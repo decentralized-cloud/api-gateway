@@ -167,7 +167,8 @@ func (r *edgeClusterResolver) Nodes(ctx context.Context) ([]edgecluster.NodeReso
 			EdgeClusterID: r.edgeclusterID,
 		})
 	if err != nil {
-		return nil, err
+		// if failed to retrieve nodes, return empty list
+		return []edgecluster.NodeResolverContract{}, err
 	}
 
 	if listEdgeClusterNodesResponse.Error != edgeclusterGrpcContract.Error_NO_ERROR {
@@ -220,7 +221,8 @@ func (r *edgeClusterResolver) Pods(ctx context.Context, args edgecluster.EdgeClu
 	}
 
 	if listEdgeClusterNodesResponse.Error != edgeclusterGrpcContract.Error_NO_ERROR {
-		return nil, errors.New(listEdgeClusterNodesResponse.ErrorMessage)
+		// if failed to retrieve pods, return empty list
+		return []edgecluster.PodResolverContract{}, nil
 	}
 
 	response := []edgecluster.PodResolverContract{}
@@ -265,7 +267,8 @@ func (r *edgeClusterResolver) Services(ctx context.Context, args edgecluster.Edg
 	}
 
 	if listEdgeClusterNodesResponse.Error != edgeclusterGrpcContract.Error_NO_ERROR {
-		return nil, errors.New(listEdgeClusterNodesResponse.ErrorMessage)
+		// if failed to retrieve services, return empty list
+		return []edgecluster.ServiceResolverContract{}, nil
 	}
 
 	response := []edgecluster.ServiceResolverContract{}
