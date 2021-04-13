@@ -67,3 +67,10 @@ func (r *provisionDetailsResolver) KubeconfigContent(ctx context.Context) *strin
 
 	return &r.provisionDetails.KubeConfigContent
 }
+
+// Ports returns the ports that are exposed by the service
+// ctx: Mandatory. Reference to the context
+// Returns the ports that are exposed by the service
+func (r *provisionDetailsResolver) Ports(ctx context.Context) []int32 {
+	return r.provisionDetails.Ports
+}

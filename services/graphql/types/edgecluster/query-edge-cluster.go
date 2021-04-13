@@ -168,4 +168,9 @@ type ProvisionDetailsResolverContract interface {
 	// ctx: Mandatory. Reference to the context
 	// Returns the edge cluster Kubeconfig content
 	KubeconfigContent(ctx context.Context) *string
+
+	// Ports returns the ports that are exposed by the service
+	// ctx: Mandatory. Reference to the context
+	// Returns the ports that are exposed by the service
+	Ports(ctx context.Context) []int32
 }

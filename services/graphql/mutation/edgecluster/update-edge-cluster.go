@@ -153,7 +153,7 @@ func (m *updateEdgeCluster) MutateAndGetPayload(
 		edgeClusterID,
 		&edgecluster.EdgeClusterDetail{
 			EdgeCluster:      response.EdgeCluster,
-			ProvisionDetails: response.ProvisionDetail,
+			ProvisionDetails: &edgeclusterGrpcContract.ProvisionDetail{},
 		},
 		response.Cursor)
 }

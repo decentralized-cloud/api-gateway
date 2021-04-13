@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLInt, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString } from 'graphql';
 import LoadBalancerStatus from './LoadBalancerStatus';
 
 export default new GraphQLObjectType({
@@ -13,6 +13,10 @@ export default new GraphQLObjectType({
 		kubeconfigContent: {
 			type: GraphQLString,
 			description: 'The provisioned edge cluster kubeconfig content',
+		},
+		ports: {
+			type: new GraphQLNonNull(new GraphQLList(new GraphQLNonNull(GraphQLInt))),
+			description: 'The ports that are exposed by the service',
 		},
 	},
 });

@@ -73,6 +73,9 @@ type ProvisionDetails {
 
   """The provisioned edge cluster kubeconfig content"""
   kubeconfigContent: String
+
+  """The ports that are exposed by the service"""
+  ports: [Int!]!
 }
 
 """LoadBalancerStatus represents the status of a load-balancer"""
