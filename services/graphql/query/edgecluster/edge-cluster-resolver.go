@@ -167,12 +167,12 @@ func (r *edgeClusterResolver) Nodes(ctx context.Context) ([]edgecluster.NodeReso
 			EdgeClusterID: r.edgeclusterID,
 		})
 	if err != nil {
-		// if failed to retrieve nodes, return empty list
-		return []edgecluster.NodeResolverContract{}, err
+		return nil, err
 	}
 
 	if listEdgeClusterNodesResponse.Error != edgeclusterGrpcContract.Error_NO_ERROR {
-		return nil, errors.New(listEdgeClusterNodesResponse.ErrorMessage)
+		// if failed to retrieve nodes, return empty list
+		return []edgecluster.NodeResolverContract{}, err
 	}
 
 	response := []edgecluster.NodeResolverContract{}
