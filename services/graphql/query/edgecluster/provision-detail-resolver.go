@@ -54,6 +54,10 @@ func NewProvisionDetailsResolver(
 // ctx: Mandatory. Reference to the context
 // Returns the load balancer status resolver or error if something goes wrong.
 func (r *provisionDetailsResolver) LoadBalancer(ctx context.Context) (edgecluster.LoadBalancerStatusResolverContract, error) {
+	if r.provisionDetails.LoadBalancer == nil {
+		return nil, nil
+	}
+
 	return r.resolverCreator.NewLoadBalancerStatusResolver(ctx, r.provisionDetails.LoadBalancer)
 }
 

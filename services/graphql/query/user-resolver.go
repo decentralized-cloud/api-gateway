@@ -199,7 +199,6 @@ func (r *userResolver) EdgeCluster(
 func (r *userResolver) EdgeClusters(
 	ctx context.Context,
 	args types.UserEdgeClustersInputArgument) (edgecluster.EdgeClusterTypeConnectionResolverContract, error) {
-
 	pagination := edgeClusterGrpcContract.Pagination{}
 
 	if args.After != nil {
