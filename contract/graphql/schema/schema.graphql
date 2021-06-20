@@ -5,9 +5,38 @@ type Query {
 type User implements Node {
   id: ID!
   project(projectID: ID!): Project
-  projects(after: String, first: Int, before: String, last: Int, projectIDs: [ID!], sortingOptions: [SortingOptionPair!]): ProjectTypeConnection
+  projects(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+    projectIDs: [ID!]
+    sortingOptions: [SortingOptionPair!]
+  ): ProjectTypeConnection
   edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], projectIDs: [ID!], sortingOptions: [SortingOptionPair!]): EdgeClusterTypeConnection
+  edgeClusters(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+    edgeClusterIDs: [ID!]
+    projectIDs: [ID!]
+    sortingOptions: [SortingOptionPair!]
+  ): EdgeClusterTypeConnection
 }
 
 """An object with an ID"""
@@ -20,7 +49,21 @@ type Project implements Node {
   id: ID!
   name: String!
   edgeCluster(edgeClusterID: ID!): EdgeCluster
-  edgeClusters(after: String, first: Int, before: String, last: Int, edgeClusterIDs: [ID!], sortOption: String): EdgeClusterTypeConnection
+  edgeClusters(
+    """Returns the items in the list that come after the specified cursor."""
+    after: String
+
+    """Returns the first n items from the list."""
+    first: Int
+
+    """Returns the items in the list that come before the specified cursor."""
+    before: String
+
+    """Returns the last n items from the list."""
+    last: Int
+    edgeClusterIDs: [ID!]
+    sortOption: String
+  ): EdgeClusterTypeConnection
 }
 
 """The edge cluster"""
