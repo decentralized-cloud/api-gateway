@@ -11,7 +11,7 @@ require (
 	github.com/gobuffalo/packd v1.0.0 // indirect
 	github.com/gobuffalo/packr v1.30.1
 	github.com/golang/mock v1.6.0
-	github.com/graph-gophers/graphql-go v1.1.0
+	github.com/graph-gophers/graphql-go v1.3.0
 	github.com/lucsky/cuid v1.2.0
 	github.com/micro-business/go-core v0.6.2
 	github.com/prometheus/client_golang v1.11.0
