@@ -14,7 +14,7 @@ require (
 	github.com/graph-gophers/graphql-go v1.1.0
 	github.com/lucsky/cuid v1.2.0
 	github.com/micro-business/go-core v0.6.2
-	github.com/prometheus/client_golang v1.11.0
+	github.com/prometheus/client_golang v1.11.1
 	github.com/rogpeppe/go-internal v1.8.0 // indirect
 	github.com/savsgio/atreugo/v11 v11.7.2
 	github.com/spf13/cobra v1.1.3
