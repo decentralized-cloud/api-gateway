@@ -22,6 +22,6 @@ require (
 	github.com/valyala/fasthttp v1.26.0
 	go.uber.org/zap v1.17.0
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e // indirect
-	golang.org/x/sys v0.0.0-20210616094352-59db8d763f22 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	google.golang.org/grpc v1.38.0
 )
